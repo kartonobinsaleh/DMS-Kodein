@@ -36,7 +36,7 @@ export function Sidebar() {
 
   const SidebarContent = () => (
     <div className="flex h-full w-full flex-col bg-white border-r border-gray-200">
-      <div className="p-6 border-b border-gray-100 flex items-center gap-3">
+      <div className="p-6 border-b border-gray-200 flex items-center gap-3">
         <div className="h-7 w-7 bg-indigo-600 rounded-lg" />
         <h1 className="text-sm font-bold text-gray-800 tracking-tight">DMS System</h1>
       </div>
@@ -66,7 +66,7 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-100">
+      <div className="p-4 border-t border-gray-200">
         <div className="mb-4 flex items-center gap-3 px-2">
           <div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold uppercase">
              {session?.user?.name?.[0] || 'A'}

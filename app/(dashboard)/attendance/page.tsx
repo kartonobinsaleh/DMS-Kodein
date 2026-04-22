@@ -79,7 +79,7 @@ export default function AttendancePage() {
         <input
           type="text"
           placeholder="Filter students / class..."
-          className="w-full bg-white border border-gray-100 rounded-xl pl-9 pr-4 py-2.5 text-sm shadow-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+          className="w-full bg-white border border-gray-200 rounded-xl pl-9 pr-4 py-2.5 text-sm shadow-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -93,10 +93,10 @@ export default function AttendancePage() {
           </div>
         ) : (
           filteredStudents.map((student) => (
-            <div key={student.id} className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
-              <div className="px-5 py-3 bg-gray-50/50 border-b border-gray-100 flex justify-between items-center">
+            <div key={student.id} className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col overflow-hidden">
+              <div className="px-5 py-3 bg-gray-50/50 border-b border-gray-200 flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                  <div className="h-6 w-6 bg-white border border-gray-100 rounded flex items-center justify-center text-gray-400 text-xs font-bold uppercase">
+                  <div className="h-6 w-6 bg-white border border-gray-200 rounded flex items-center justify-center text-gray-400 text-xs font-bold uppercase">
                     {student.name[0]}
                   </div>
                   <h3 className="text-sm font-semibold text-gray-800 leading-none">
@@ -113,7 +113,7 @@ export default function AttendancePage() {
                   student.ownedDevices.map((device) => {
                     const isBorrowed = device.status === "BORROWED";
                     return (
-                      <div key={device.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
+                      <div key={device.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200">
                         <div className="flex items-center gap-3">
                           <div className={cn("p-2 rounded-lg text-gray-400", isBorrowed ? "bg-red-50 text-red-600" : "bg-gray-50")}>
                             {device.type === "LAPTOP" ? <Laptop size={16} /> : <Smartphone size={16} />}

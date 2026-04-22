@@ -45,7 +45,7 @@ export default function StudentsPage() {
         subtitle="Operational database of registered students for daily device activity."
       />
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="relative w-full max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
           <input
@@ -53,7 +53,7 @@ export default function StudentsPage() {
             placeholder="Search by name or class..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-100 rounded-lg pl-9 pr-4 py-2 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+            className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-4 py-2 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
           />
         </div>
         <Button
@@ -65,11 +65,11 @@ export default function StudentsPage() {
         </Button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100">
+              <tr className="bg-gray-50/50 border-b border-gray-200">
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight">Name</th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight">Class</th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight text-right">Actions</th>
@@ -119,7 +119,7 @@ export default function StudentsPage() {
 
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-100 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in-95 duration-150">
             <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <User size={16} className="text-indigo-600" />
               Register New Student
@@ -133,7 +133,7 @@ export default function StudentsPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g. John Doe"
-                  className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
                 />
               </div>
               <div className="space-y-1">
@@ -143,7 +143,7 @@ export default function StudentsPage() {
                   value={formData.class}
                   onChange={(e) => setFormData({ ...formData, class: e.target.value })}
                   placeholder="e.g. 10-A"
-                  className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
                 />
               </div>
               <div className="flex gap-2 pt-2">

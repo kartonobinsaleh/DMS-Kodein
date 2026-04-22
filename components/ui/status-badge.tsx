@@ -11,15 +11,15 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
       case "AVAILABLE":
       case "ON_TIME":
       case "RETURNED":
-        return "bg-green-600 text-white";
-      case "BORROWED":
-      case "NOT_RETURNED":
-        return "bg-red-600 text-white";
+        return "bg-green-50 text-green-600 border-green-200/50";
       case "LATE":
       case "MAINTENANCE":
-        return "bg-amber-500 text-white";
+        return "bg-amber-50 text-amber-500 border-amber-200/50";
+      case "BORROWED":
+      case "NOT_RETURNED":
+        return "bg-red-50 text-red-600 border-red-200/50";
       default:
-        return "bg-gray-100 text-gray-600";
+        return "bg-gray-50 text-gray-500 border-gray-200";
     }
   };
 
@@ -37,7 +37,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
 
   return (
     <span className={cn(
-      "inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-tight whitespace-nowrap shadow-sm",
+      "inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-tight whitespace-nowrap border self-center",
       getStatusStyles(status),
       className
     )}>

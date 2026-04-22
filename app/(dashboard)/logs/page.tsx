@@ -101,20 +101,20 @@ export default function AdminLogsPage() {
         subtitle="Comprehensive database of daily student device activity."
       />
 
-      <div className="bg-white border border-gray-100 rounded-xl p-3 flex flex-wrap items-center gap-3 shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-xl p-3 flex flex-wrap items-center gap-3 shadow-sm">
         <div className="flex-1 min-w-[200px] relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
           <input
             type="text"
             placeholder="Filter daily records..."
-            className="w-full pl-9 pr-4 py-1.5 rounded-lg border border-gray-100 bg-gray-50 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+            className="w-full pl-9 pr-4 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-lg text-gray-500">
+          <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg text-gray-500">
             <Calendar size={14} />
             <input 
               type="date" 
@@ -123,7 +123,7 @@ export default function AdminLogsPage() {
               onChange={(e) => setFilterDate(e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-2 bg-gray-50 border border-gray-100 px-3 py-1.5 rounded-lg text-gray-500">
+          <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg text-gray-500">
              <Filter size={14} />
              <select 
                className="bg-transparent text-xs font-medium outline-none cursor-pointer"
@@ -137,11 +137,11 @@ export default function AdminLogsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100">
+              <tr className="bg-gray-50/50 border-b border-gray-200">
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight">Student / Asset</th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight text-center">Timeline</th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight text-center">Status</th>
@@ -191,7 +191,7 @@ export default function AdminLogsPage() {
 
       {editingLog && (
          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
-            <div className="bg-white w-full max-w-sm rounded-xl shadow-2xl border border-gray-100 p-6 animate-in zoom-in-95 duration-150">
+            <div className="bg-white w-full max-w-sm rounded-xl shadow-2xl border border-gray-200 p-6 animate-in zoom-in-95 duration-150">
                <div className="flex justify-between items-start mb-6">
                   <div>
                     <h2 className="text-sm font-bold text-gray-800 leading-none mb-1">Override Record</h2>
@@ -206,7 +206,7 @@ export default function AdminLogsPage() {
                   <div className="space-y-1">
                     <label className="text-xs font-medium text-gray-500 ml-1">Manual Status</label>
                     <select 
-                      className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm font-medium focus:border-indigo-600 outline-none cursor-pointer"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium focus:border-indigo-600 outline-none cursor-pointer"
                       value={overrideStatus}
                       onChange={(e) => setOverrideStatus(e.target.value)}
                     >
@@ -220,7 +220,7 @@ export default function AdminLogsPage() {
                     <label className="text-xs font-medium text-gray-500 ml-1">Operational Note</label>
                     <textarea 
                       placeholder="Correction rationale..."
-                      className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none resize-none min-h-[80px]"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none resize-none min-h-[80px]"
                       value={overrideReason}
                       onChange={(e) => setOverrideReason(e.target.value)}
                     />

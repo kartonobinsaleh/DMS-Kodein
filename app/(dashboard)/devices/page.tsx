@@ -45,7 +45,7 @@ export default function DevicesPage() {
         subtitle="Manage daily student device inventory and operational status."
       />
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="relative w-full max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
           <input
@@ -53,7 +53,7 @@ export default function DevicesPage() {
             placeholder="Search assets by name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-100 rounded-lg pl-9 pr-4 py-2 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+            className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-4 py-2 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
           />
         </div>
         <Button
@@ -68,11 +68,11 @@ export default function DevicesPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isLoading && devices.length === 0 ? (
           Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-32 animate-pulse rounded-xl bg-white border border-gray-100" />
+            <div key={i} className="h-32 animate-pulse rounded-xl bg-white border border-gray-200" />
           ))
         ) : filteredDevices.length > 0 ? (
           filteredDevices.map((device) => (
-            <div key={device.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between group">
+            <div key={device.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between group">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gray-50 rounded-lg text-gray-400">
@@ -113,7 +113,7 @@ export default function DevicesPage() {
 
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-100 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in-95 duration-150">
              <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <Database size={16} className="text-indigo-600" />
               Register New Asset
@@ -127,7 +127,7 @@ export default function DevicesPage() {
                   value={newDeviceName}
                   onChange={(e) => setNewDeviceName(e.target.value)}
                   placeholder="e.g. Laptop 05"
-                  className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
                 />
               </div>
               <div className="flex gap-2 pt-2">

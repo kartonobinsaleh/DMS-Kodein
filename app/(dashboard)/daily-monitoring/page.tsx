@@ -60,9 +60,9 @@ export default function DailyMonitoringPage() {
         subtitle="Real-time status of daily student device activity."
       />
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center">
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+          <div className="h-2 w-2 rounded-full bg-green-600 animate-pulse" />
           <span className="text-xs font-medium text-gray-500">Live Status Active</span>
         </div>
         <Button
@@ -70,7 +70,7 @@ export default function DailyMonitoringPage() {
           variant="ghost"
           loading={loading}
           size="sm"
-          className="bg-gray-50 border border-gray-100"
+          className="bg-gray-50 border border-gray-200"
           leftIcon={<RefreshCcw size={14} />}
         >
           Refresh Sync
@@ -83,11 +83,11 @@ export default function DailyMonitoringPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-100">
+              <tr className="bg-gray-50/50 border-b border-gray-200">
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight">Student</th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight">Device</th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight text-center">Check-Out</th>
