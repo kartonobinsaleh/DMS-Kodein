@@ -1,0 +1,22 @@
+{
+  "name": "DMS KODEIN SCHOOL",
+  "short_name": "DMS Kodein",
+  "description": "Device Management System for Kodein School",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1D83C5",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
