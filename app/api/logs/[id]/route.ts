@@ -35,6 +35,8 @@ export async function PATCH(
       data: {
         ...(data.dailyStatus && { dailyStatus: data.dailyStatus }),
         ...(data.checkInTime && { checkInTime: new Date(data.checkInTime) }),
+        reason: data.reason, // Audit trail reason
+        staffId: (session.user as any).id, // Record who performed the override
       },
       include: {
         student: { select: { name: true, class: true } },

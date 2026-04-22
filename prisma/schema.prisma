@@ -56,7 +56,8 @@ model DailyLog {
   
   studentId    String
   deviceId     String
-  staffId      String?
+  staffId      String?   // Last staff member who handled this log
+  reason       String?   // New: Admin override reason
   
   student      Student   @relation(fields: [studentId], references: [id])
   device       Device    @relation(fields: [deviceId], references: [id])

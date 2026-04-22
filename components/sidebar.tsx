@@ -10,6 +10,8 @@ import {
   ArrowRightLeft,
   LogOut,
   Monitor,
+  ShieldAlert,
+  Clock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -20,7 +22,7 @@ const navigation = [
   { name: "Attendance", href: "/attendance", icon: Clock },
   { name: "Devices", href: "/devices", icon: Smartphone },
   { name: "Students", href: "/students", icon: Users },
-  { name: "Transactions", href: "/transactions", icon: ArrowRightLeft },
+  { name: "Audit Logs", href: "/logs", icon: ShieldAlert },
 ];
 
 export function Sidebar() {
