@@ -6,6 +6,45 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Student {
+  id           String        @id @default(cuid())
+  name         String
+  class        String
+  createdAt    DateTime      @default(now())
+  transactions Transaction[]
+}
+
+model Device {
+  id           String        @id @default(cuid())
+  name         String
+  status       DeviceStatus  @default(AVAILABLE)
+  createdAt    DateTime      @default(now())
+  transactions Transaction[]
+}
+
+model Transaction {
+  id         String            @id @default(cuid())
+  studentId  String
+  deviceId   String
+  borrowTime DateTime          @default(now())
+  returnTime DateTime?
+  status     TransactionStatus @default(ACTIVE)
+  condition  String?
+  createdAt  DateTime          @default(now())
+  device     Device            @relation(fields: [deviceId], references: [id])
+  student    Student           @relation(fields: [studentId], references: [id])
+}
+
 enum Role {
   ADMIN
   STAFF
@@ -20,48 +59,4 @@ enum DeviceStatus {
 enum TransactionStatus {
   ACTIVE
   COMPLETED
-}
-
-model User {
-  id       String @id @default(cuid())
-  name     String
-  email    String @unique
-  password String
-  role     Role   @default(STAFF)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Student {
-  id        String @id @default(cuid())
-  name      String
-  class     String
-  createdAt DateTime @default(now())
-
-  transactions Transaction[]
-}
-
-model Device {
-  id        String       @id @default(cuid())
-  name      String
-  status    DeviceStatus @default(AVAILABLE)
-  createdAt DateTime     @default(now())
-
-  transactions Transaction[]
-}
-
-model Transaction {
-  id          String            @id @default(cuid())
-  studentId   String
-  deviceId    String
-  borrowTime  DateTime          @default(now())
-  returnTime  DateTime?
-  status      TransactionStatus @default(ACTIVE)
-  condition   String?           // Note: condition when returned
-
-  student Student @relation(fields: [studentId], references: [id])
-  device  Device  @relation(fields: [deviceId], references: [id])
-
-  createdAt DateTime @default(now())
 }
