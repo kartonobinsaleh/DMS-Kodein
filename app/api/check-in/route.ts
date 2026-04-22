@@ -4,23 +4,15 @@ import { DailyLogService } from "@/services/daily-log.service";
 export async function POST(req: Request) {
   try {
     const { studentId, deviceId } = await req.json();
-
-    if (!studentId || !deviceId) {
-      return NextResponse.json(
-        { success: false, message: "MISSING_REQUIRED_FIELDS" },
-        { status: 400 }
-      );
-    }
-
-    const log = await DailyLogService.checkInDevice(studentId, deviceId);
+    const result = await DailyLogService.checkInDevice(studentId, deviceId);
 
     return NextResponse.json({
       success: true,
-      data: log,
+      data: result,
     });
   } catch (error: any) {
     return NextResponse.json(
-      { success: false, message: error.message || "INTERNAL_ERROR" },
+      { success: false, message: error.message },
       { status: 500 }
     );
   }

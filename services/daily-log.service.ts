@@ -23,6 +23,8 @@ export class DailyLogService {
   }
 
   static async checkOutDevice(studentId: string, deviceId: string) {
+    if (!studentId || !deviceId) throw new Error("MISSING_REQUIRED_FIELDS");
+
     const today = this.getTodayDate();
 
     // 1. Validasi Keberadaan & Kepemilikan (Ownership Validation)
@@ -62,6 +64,8 @@ export class DailyLogService {
   }
 
   static async checkInDevice(studentId: string, deviceId: string) {
+    if (!studentId || !deviceId) throw new Error("MISSING_REQUIRED_FIELDS");
+
     const today = this.getTodayDate();
     const now = new Date();
     const deadline = this.getDeadline();
@@ -97,9 +101,15 @@ export class DailyLogService {
   /**
    * Mengambil daftar log dengan filter
    */
-  static async getLogs(filters: { date?: Date; studentId?: string; status?: any }) {
+  static async getLogs(filters: { date?: string | Date; studentId?: string; status?: any }) {
     const today = this.getTodayDate();
-    const queryDate = filters.date || today;
+    
+    // Normalisasi tanggal harian
+    let queryDate = today;
+    if (filters.date) {
+      const d = new Date(filters.date);
+      queryDate = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+    }
 
     return await prisma.dailyLog.findMany({
       where: {
