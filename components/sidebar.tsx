@@ -34,32 +34,6 @@ export function Sidebar() {
   const { data: session } = useSession();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [showInstallBtn, setShowInstallBtn] = useState(false);
-
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e: any) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstallBtn(true);
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    };
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === "accepted") {
-      setShowInstallBtn(false);
-    }
-    setDeferredPrompt(null);
-  };
 
   const SidebarContent = () => (
     <div className="flex h-full w-full flex-col bg-white border-r border-gray-200">
@@ -105,15 +79,6 @@ export function Sidebar() {
             </Link>
           );
         })}
-        {showInstallBtn && (
-          <button
-            onClick={handleInstallClick}
-            className="mx-3 mb-2 flex items-center gap-3 px-3 py-2 text-xs font-bold text-primary bg-primary-light border border-primary/20 rounded-lg hover:bg-primary-light/80 transition-all shadow-sm animate-pulse"
-          >
-            <Smartphone size={16} />
-            INSTALL APP (OFFLINE)
-          </button>
-        )}
       </nav>
 
       <div className="p-4 border-t border-gray-200">

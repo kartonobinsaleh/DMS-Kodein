@@ -2,6 +2,7 @@
   "name": "DMS KODEIN SCHOOL",
   "short_name": "DMS Kodein",
   "description": "Device Management System for Kodein School",
+  "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
