@@ -11,6 +11,20 @@ export async function GET() {
   }
 
   try {
+    const [
+      totalDevices,
+      availableDevices,
+      borrowedDevices,
+      activeTransactions,
+      totalStudents,
+    ] = await Promise.all([
+      prisma.device.count(),
+      prisma.device.count({ where: { status: "AVAILABLE" } }),
+      prisma.device.count({ where: { status: "BORROWED" } }),
+      prisma.transaction.findMany({ where: { status: "ACTIVE" } }),
+      prisma.student.count(),
+    ]);
+
     const overdueDevices = activeTransactions.filter(tx => 
       checkIfOverdue(tx.borrowTime, tx.status)
     ).length;
@@ -23,7 +37,8 @@ export async function GET() {
       overdueDevices,
       totalStudents,
     });
-  } catch (_error) {
+  } catch (error) {
+    console.error("Dashboard API Error:", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

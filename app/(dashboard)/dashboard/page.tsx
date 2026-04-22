@@ -16,6 +16,7 @@ interface Stats {
   availableDevices: number;
   borrowedDevices: number;
   activeTransactions: number;
+  overdueDevices: number;
   totalStudents: number;
 }
 
