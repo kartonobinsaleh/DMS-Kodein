@@ -3,11 +3,15 @@
 import { useEffect, useState } from "react";
 import { 
   Search, 
-  AlertTriangle, 
   Edit2,
   X,
   Filter,
-  Calendar
+  Calendar,
+  ClipboardList,
+  Clock,
+  User,
+  Smartphone,
+  Laptop
 } from "lucide-react";
 import { toast } from "sonner";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -52,7 +56,7 @@ export default function AdminLogsPage() {
         setLogs([]);
       }
     } catch (error) {
-      toast.error("Audit log failed.");
+      toast.error("Sync failed.");
       setLogs([]);
     } finally {
       setLoading(false);
@@ -95,98 +99,109 @@ export default function AdminLogsPage() {
   const displayLogs = Array.isArray(logs) ? logs.filter(l => l.student.name.toLowerCase().includes(search.toLowerCase())) : [];
 
   return (
-    <div className="space-y-4 page-fade-in pb-10">
+    <div className="space-y-4 page-fade-in pb-20">
       <PageHeader 
         title="Daily Activity Logs"
         subtitle="Comprehensive database of daily student device activity."
       />
 
-      <div className="bg-white border border-gray-200 rounded-xl p-3 flex flex-wrap items-center gap-3 shadow-sm">
-        <div className="flex-1 min-w-[200px] relative">
+      {/* Sticky Combined Filter Controls */}
+      <div className="bg-white border border-gray-200 rounded-xl p-3 flex flex-col gap-3 shadow-sm sticky top-0 z-10 transition-shadow">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
           <input
             type="text"
-            placeholder="Filter daily records..."
-            className="w-full pl-9 pr-4 py-1.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+            placeholder="Search student name..."
+            className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg text-gray-500">
+        <div className="flex gap-2">
+          <div className="flex-1 flex items-center gap-2 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg text-gray-500">
             <Calendar size={14} />
             <input 
               type="date" 
-              className="bg-transparent text-xs font-medium outline-none cursor-pointer"
+              className="bg-transparent text-xs font-bold outline-none cursor-pointer w-full"
               value={filterDate}
               onChange={(e) => setFilterDate(e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 px-3 py-1.5 rounded-lg text-gray-500">
+          <div className="flex-1 flex items-center gap-2 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg text-gray-500">
              <Filter size={14} />
              <select 
-               className="bg-transparent text-xs font-medium outline-none cursor-pointer"
+               className="bg-transparent text-xs font-bold outline-none cursor-pointer w-full"
                value={filterClass}
                onChange={(e) => setFilterClass(e.target.value)}
              >
-               <option value="">All</option>
+               <option value="">All Classes</option>
                {["10-A", "10-B", "11-A", "11-B", "12-A", "12-B", "12-C"].map(c => <option key={c} value={c}>{c}</option>)}
              </select>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-200">
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight">Student / Asset</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight text-center">Timeline</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight text-center">Status</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight text-right">Edit</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {displayLogs.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="px-6 py-10 text-center text-sm text-gray-400 italic">No records available.</td>
-                </tr>
-              ) : (
-                displayLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4">
-                      <p className="text-sm font-medium text-gray-800 leading-none mb-1">{log.student.name}</p>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none">{log.device.name}</p>
-                    </td>
-                    <td className="px-6 py-4 text-center font-mono text-[11px] text-gray-500">
-                       <span className="opacity-40">O:</span> {new Date(log.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                       {log.checkInTime && <span className="ml-2 text-indigo-400"><span className="opacity-40 text-gray-400">I:</span> {new Date(log.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>}
-                    </td>
-                    <td className="px-6 py-4 text-center">
-                       <StatusBadge status={log.dailyStatus} className="scale-90" />
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <Button 
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setEditingLog(log);
-                          setOverrideStatus(log.dailyStatus);
-                          setOverrideReason(log.reason || "");
-                        }}
-                        className="p-1 h-auto text-gray-300 hover:text-indigo-600"
-                      >
-                        <Edit2 size={16} />
-                      </Button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {displayLogs.length === 0 ? (
+          <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">
+             <ClipboardList size={32} className="mx-auto mb-2 text-gray-200" />
+             <p className="text-xs font-medium text-gray-400 italic">No historical records for this date.</p>
+          </div>
+        ) : (
+          displayLogs.map((log) => (
+            <div key={log.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col hover:border-indigo-200 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+                    <User size={20} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-gray-900 leading-none mb-1">{log.student.name}</h3>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">{log.student.class}</p>
+                  </div>
+                </div>
+                <StatusBadge status={log.dailyStatus} className="scale-90" />
+              </div>
+
+              <div className="space-y-3 bg-gray-50/50 p-3 rounded-lg border border-gray-100 mb-4">
+                <div className="flex items-center gap-2">
+                  {log.device.type === "LAPTOP" ? <Laptop size={14} className="text-gray-400" /> : <Smartphone size={14} className="text-gray-400" />}
+                  <span className="text-xs font-bold text-gray-700">{log.device.name}</span>
+                </div>
+                <div className="flex justify-between text-[11px] font-mono">
+                  <div className="flex items-center gap-1.5 text-gray-500">
+                    <Clock size={12} className="text-gray-300" />
+                    <span>In: {new Date(log.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  </div>
+                  <div className="text-indigo-600 font-bold">
+                    Out: {log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "PENDING"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between mt-auto pt-2">
+                 <div className="flex-1">
+                    {log.reason && (
+                       <p className="text-[10px] text-gray-500 italic truncate pr-4">Note: {log.reason}</p>
+                    )}
+                 </div>
+                 <Button 
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setEditingLog(log);
+                      setOverrideStatus(log.dailyStatus);
+                      setOverrideReason(log.reason || "");
+                    }}
+                    className="h-10 w-10 p-0 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 border border-transparent hover:border-indigo-100 rounded-xl"
+                  >
+                    <Edit2 size={18} />
+                  </Button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {editingLog && (
@@ -194,8 +209,8 @@ export default function AdminLogsPage() {
             <div className="bg-white w-full max-w-sm rounded-xl shadow-2xl border border-gray-200 p-6 animate-in zoom-in-95 duration-150">
                <div className="flex justify-between items-start mb-6">
                   <div>
-                    <h2 className="text-sm font-bold text-gray-800 leading-none mb-1">Override Record</h2>
-                    <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-widest">{editingLog.student.name}</p>
+                    <h2 className="text-sm font-bold text-gray-800 leading-none mb-1">Correction Record</h2>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{editingLog.student.name}</p>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setEditingLog(null)} className="p-0 h-auto text-gray-400">
                     <X size={18} />
@@ -204,9 +219,9 @@ export default function AdminLogsPage() {
 
                <div className="space-y-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-500 ml-1">Manual Status</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Manual Status</label>
                     <select 
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm font-medium focus:border-indigo-600 outline-none cursor-pointer"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-3 text-sm font-bold focus:border-indigo-600 outline-none cursor-pointer"
                       value={overrideStatus}
                       onChange={(e) => setOverrideStatus(e.target.value)}
                     >
@@ -217,10 +232,10 @@ export default function AdminLogsPage() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-gray-500 ml-1">Operational Note</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Operational Note</label>
                     <textarea 
-                      placeholder="Correction rationale..."
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none resize-none min-h-[80px]"
+                      placeholder="Rationale for manual correction..."
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm focus:border-indigo-600 outline-none resize-none min-h-[100px]"
                       value={overrideReason}
                       onChange={(e) => setOverrideReason(e.target.value)}
                     />
@@ -230,7 +245,7 @@ export default function AdminLogsPage() {
                     disabled={isSaving}
                     loading={isSaving}
                     onClick={handleOverride}
-                    className="w-full"
+                    className="w-full h-12 rounded-xl text-xs font-bold uppercase tracking-widest"
                   >
                     Save Correction
                   </Button>

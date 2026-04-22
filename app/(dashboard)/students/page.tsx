@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useStudentStore } from "@/store/use-student-store";
-import { Plus, Search, Trash2, User } from "lucide-react";
+import { Plus, Search, Trash2, User, GraduationCap } from "lucide-react";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
@@ -39,74 +39,68 @@ export default function StudentsPage() {
   };
 
   return (
-    <div className="space-y-4 page-fade-in pb-10">
+    <div className="space-y-4 page-fade-in pb-20">
       <PageHeader
         title="Student Management"
         subtitle="Operational database of registered students for daily device activity."
       />
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div className="relative w-full max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+      <div className="sticky top-0 z-10 space-y-3 bg-gray-50/80 backdrop-blur-md pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="relative w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
             type="text"
-            placeholder="Search by name or class..."
+            placeholder="Search name or class group..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-4 py-2 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm placeholder:text-gray-400 transition-all"
           />
         </div>
         <Button
           onClick={() => setShowAddModal(true)}
-          size="sm"
-          leftIcon={<Plus size={14} />}
+          className="w-full h-12 rounded-xl text-xs font-bold uppercase tracking-widest"
+          leftIcon={<Plus size={16} />}
         >
-          Add Student
+          Register New Student
         </Button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50/50 border-b border-gray-200">
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight">Name</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight">Class</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50 italic-table-empty">
-              {isLoading && students.length === 0 ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i} className="animate-pulse">
-                    <td colSpan={3} className="px-6 py-4"><div className="h-5 bg-gray-50 rounded" /></td>
-                  </tr>
-                ))
-              ) : filteredStudents.length > 0 ? (
-                filteredStudents.map((student) => (
-                  <tr key={student.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-800">{student.name}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600 font-medium">{student.class}</td>
-                    <td className="px-6 py-4 text-right">
-                      <Button 
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setStudentToDelete(student.id)}
-                        className="text-gray-400 hover:text-red-600"
-                      >
-                        <Trash2 size={16} />
-                      </Button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={3} className="px-6 py-10 text-center text-sm text-gray-400 italic">No records found.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {isLoading && students.length === 0 ? (
+          Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="h-24 animate-pulse bg-white rounded-xl border border-gray-200" />
+          ))
+        ) : filteredStudents.length > 0 ? (
+          filteredStudents.map((student) => (
+            <div key={student.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between group hover:border-indigo-200 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-50 transition-colors">
+                  <User size={20} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-gray-900 leading-none mb-1">{student.name}</h3>
+                  <div className="flex items-center gap-1.5 text-gray-400">
+                    <GraduationCap size={12} />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">{student.class}</span>
+                  </div>
+                </div>
+              </div>
+              <Button 
+                variant="ghost"
+                size="sm"
+                onClick={() => setStudentToDelete(student.id)}
+                className="h-10 w-10 p-0 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+              >
+                <Trash2 size={18} />
+              </Button>
+            </div>
+          ))
+        ) : (
+          <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">
+             <User size={32} className="mx-auto mb-2 text-gray-200" />
+             <p className="text-xs font-medium text-gray-400 italic">No matching students found.</p>
+          </div>
+        )}
       </div>
 
       <ConfirmationModal
@@ -114,41 +108,41 @@ export default function StudentsPage() {
         onClose={() => setStudentToDelete(null)}
         onConfirm={handleDelete}
         title="Delete Record"
-        description="Permanently remove this student record from the system."
+        description="Permanently remove this student record from the operational system."
       />
 
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
-          <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in-95 duration-150">
-            <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <User size={16} className="text-indigo-600" />
+          <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-2xl border border-gray-200 animate-in zoom-in-95 duration-150">
+            <h2 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><Plus size={16} /></div>
               Register New Student
             </h2>
-            <form onSubmit={handleAddStudent} className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500 ml-1">Full Name</label>
+            <form onSubmit={handleAddStudent} className="space-y-5">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Student Full Name</label>
                 <input
                   autoFocus
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g. John Doe"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500 ml-1">Class Group</label>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Class Group</label>
                 <input
                   type="text"
                   value={formData.class}
                   onChange={(e) => setFormData({ ...formData, class: e.target.value })}
                   placeholder="e.g. 10-A"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
-              <div className="flex gap-2 pt-2">
-                <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1">Cancel</Button>
-                <Button type="submit" disabled={!formData.name.trim() || !formData.class.trim()} className="flex-1">Save Student</Button>
+              <div className="flex gap-3 pt-2">
+                <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Cancel</Button>
+                <Button type="submit" disabled={!formData.name.trim() || !formData.class.trim()} className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Save Record</Button>
               </div>
             </form>
           </div>
