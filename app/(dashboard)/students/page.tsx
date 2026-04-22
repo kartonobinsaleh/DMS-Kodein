@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useStudentStore } from "@/store/use-student-store";
-import { Plus, Search, Trash2, User, GraduationCap, Edit2 } from "lucide-react";
+import { Plus, Search, Trash2, User, GraduationCap, Edit2, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
+import { StudentQRModal } from "@/components/student-qr-modal";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/ui/page-container";
@@ -19,6 +20,7 @@ export default function StudentsPage() {
   const [formData, setFormData] = useState({ name: "", class: "" });
   const [activeStudentId, setActiveStudentId] = useState<string | null>(null);
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
+  const [studentForQR, setStudentForQR] = useState<any | null>(null);
   const [submitLoading, setSubmitLoading] = useState(false);
 
   useEffect(() => {
@@ -135,6 +137,15 @@ export default function StudentsPage() {
                 <Button 
                   variant="ghost"
                   size="sm"
+                  onClick={() => setStudentForQR(student)}
+                  className="h-10 w-10 p-0 text-gray-300 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-all"
+                  title="Lihat QR Pass"
+                >
+                  <QrCode size={18} />
+                </Button>
+                <Button 
+                  variant="ghost"
+                  size="sm"
                   onClick={() => openEditModal(student)}
                   className="h-10 w-10 p-0 text-gray-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
                 >
@@ -242,6 +253,11 @@ export default function StudentsPage() {
           </div>
         </div>
       )}
+      <StudentQRModal 
+        isOpen={!!studentForQR}
+        onClose={() => setStudentForQR(null)}
+        student={studentForQR}
+      />
     </PageContainer>
   );
 }

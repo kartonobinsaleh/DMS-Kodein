@@ -8,10 +8,13 @@ import {
   LogOut,
   CheckCircle,
   AlertTriangle,
-  Clock
+  Clock,
+  QrCode
 } from "lucide-react";
+import Link from "next/link";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { CheckOutButton, CheckInButton } from "@/components/daily-log-actions";
+import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { PageContainer } from "@/components/ui/page-container";
 import { ActionBar } from "@/components/ui/action-bar";
@@ -121,6 +124,14 @@ export default function AttendancePage() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
+        <Link href="/attendance/scan">
+          <Button
+            className="w-full sm:w-auto h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-md bg-indigo-600 hover:bg-indigo-700"
+            leftIcon={<QrCode size={16} />}
+          >
+            Scan Digital Pass
+          </Button>
+        </Link>
       </ActionBar>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
