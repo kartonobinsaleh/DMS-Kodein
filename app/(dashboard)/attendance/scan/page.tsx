@@ -21,6 +21,7 @@ import { CheckInButton, CheckOutButton } from "@/components/daily-log-actions";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 function ScannerContent() {
   const searchParams = useSearchParams();
@@ -53,8 +54,9 @@ function ScannerContent() {
         },
         () => {} // Silent scan error
       );
+      logger.info("Scanner started successfully");
     } catch (err) {
-      console.error("Camera start failed", err);
+      logger.error("Camera start failed", err);
       toast.error("Gagal menyalakan kamera. Pastikan izin kamera diberikan.");
       setIsScanning(false);
     }
@@ -65,10 +67,11 @@ function ScannerContent() {
     if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
       try {
         await html5QrCodeRef.current.stop();
+        logger.info("Scanner stopped");
         setIsScanning(false);
       } catch (err) {
         // Abaikan error jika memang sudah berhenti
-        console.log("Scanner already stopped:", err);
+        logger.debug("Scanner already stopped", err);
         setIsScanning(false);
       }
     } else {
@@ -141,15 +144,19 @@ function ScannerContent() {
       );
 
       const results = await Promise.all(promises);
-      if (results.every(r => r.success)) {
+      const allSuccess = results.every(r => r.success);
+      if (allSuccess) {
         toast.success(`${student.name}: ${actionLabel} Berhasil`, { duration: 1500 });
+        logger.info(`Batch process success for ${student.name}`);
         setLastProcessedId(student.id);
         setTimeout(resetScanner, 1500);
       } else {
+        logger.warn(`Batch process partial failure for ${student.name}`);
         toast.error("Gagal memproses perangkat.");
         setTimeout(resetScanner, 3000);
       }
     } catch (error) {
+      logger.error("System error during batch process", error);
       toast.error("Error Sistem.");
       setTimeout(resetScanner, 3000);
     } finally {
