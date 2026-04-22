@@ -18,6 +18,7 @@ import { Card } from "@/components/ui/card";
 import { SummaryStrip } from "@/components/ui/summary-strip";
 import { StatCard } from "@/components/ui/stat-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface DailyLog {
   id: string;
@@ -140,10 +141,11 @@ export default function DailyMonitoringPage() {
             </Card>
           ))
         ) : logs.length === 0 ? (
-          <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">
-             <Clock size={32} className="mx-auto mb-2 text-gray-200" />
-             <p className="text-xs font-medium text-gray-400 italic">Belum ada aktivitas hari ini.</p>
-          </div>
+          <EmptyState 
+            icon={Clock}
+            title="Belum ada aktivitas"
+            description="Aktivitas harian perangkat akan muncul di sini."
+          />
         ) : (
           logs.map((log) => (
             <Card key={log.id} className="p-4 flex flex-col justify-between hover:border-indigo-200 transition-colors group">

@@ -24,6 +24,7 @@ import { Card } from "@/components/ui/card";
 import { SummaryStrip } from "@/components/ui/summary-strip";
 import { StatCard } from "@/components/ui/stat-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface DailyLog {
   id: string;
@@ -217,10 +218,11 @@ export default function AdminLogsPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {displayLogs.length === 0 ? (
-          <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">
-             <ClipboardList size={32} className="mx-auto mb-2 text-gray-200" />
-             <p className="text-xs font-medium text-gray-400 italic">Tidak ada catatan untuk tanggal ini.</p>
-          </div>
+          <EmptyState 
+            icon={ClipboardList}
+            title="Tidak ada catatan"
+            description="Belum ada aktivitas tercatat untuk parameter pencarian ini."
+          />
         ) : (
           displayLogs.map((log) => (
             <Card key={log.id} className="flex flex-col group hover:border-primary/10 transition-all">

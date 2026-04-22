@@ -12,6 +12,7 @@ import { PageContainer } from "@/components/ui/page-container";
 import { ActionBar } from "@/components/ui/action-bar";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function DevicesPage() {
   const { devices, isLoading, fetchDevices, addDevice, deleteDevice } = useDeviceStore();
@@ -171,7 +172,11 @@ export default function DevicesPage() {
             </Card>
           ))
         ) : (
-          <div className="col-span-full py-10 text-center text-sm text-gray-400 italic">Perangkat tidak ditemukan.</div>
+          <EmptyState 
+            icon={Smartphone}
+            title="Perangkat tidak ditemukan"
+            description="Belum ada unit perangkat yang terdaftar atau sesuai pencarian."
+          />
         )}
       </div>
 

@@ -12,6 +12,7 @@ import { PageContainer } from "@/components/ui/page-container";
 import { ActionBar } from "@/components/ui/action-bar";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function StudentsPage() {
   const { students, isLoading, fetchStudents, addStudent, deleteStudent } = useStudentStore();
@@ -177,10 +178,11 @@ export default function StudentsPage() {
             </Card>
           ))
         ) : (
-          <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">
-             <User size={32} className="mx-auto mb-2 text-gray-200" />
-             <p className="text-xs font-medium text-gray-400 italic">Siswa tidak ditemukan.</p>
-          </div>
+          <EmptyState 
+            icon={User}
+            title="Siswa tidak ditemukan"
+            description="Silakan periksa kembali nama atau filter yang digunakan."
+          />
         )}
       </div>
 

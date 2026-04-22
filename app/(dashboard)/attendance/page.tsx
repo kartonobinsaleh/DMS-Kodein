@@ -22,6 +22,7 @@ import { Card } from "@/components/ui/card";
 import { SummaryStrip } from "@/components/ui/summary-strip";
 import { StatCard } from "@/components/ui/stat-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 
 interface DailyLog {
@@ -177,10 +178,11 @@ export default function AttendancePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filteredStudents.length === 0 ? (
-          <div className="col-span-full text-center py-20 bg-white rounded-xl border border-dashed border-gray-200">
-            <Clock size={32} className="mx-auto mb-2 text-gray-200" />
-            <p className="text-xs font-medium text-gray-400">Tidak ada siswa yang sesuai.</p>
-          </div>
+          <EmptyState 
+            icon={Search}
+            title="Tidak ada siswa"
+            description="Coba gunakan nama siswa atau kelas lain."
+          />
         ) : (
           filteredStudents.map((student) => (
             <Card key={student.id} className="flex flex-col group hover:border-primary/10 transition-all">

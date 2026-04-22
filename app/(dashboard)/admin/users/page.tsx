@@ -13,6 +13,7 @@ import { ActionBar } from "@/components/ui/action-bar";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function UsersPage() {
   const { users, isLoading, error, fetchUsers, addUser, updateUser, deleteUser } = useUserStore();
@@ -208,7 +209,11 @@ export default function UsersPage() {
             </Card>
           ))
         ) : (
-          <div className="col-span-full py-10 text-center text-sm font-medium text-gray-400 italic">User tidak ditemukan.</div>
+          <EmptyState 
+            icon={UserCog}
+            title="Staf tidak ditemukan"
+            description="Belum ada akun operasional yang terdaftar untuk filter ini."
+          />
         )}
       </div>
 
