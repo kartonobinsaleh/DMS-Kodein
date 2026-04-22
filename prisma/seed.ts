@@ -1,21 +1,17 @@
-import { PrismaClient, Role, DeviceStatus } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
+import { PrismaClient, Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import "dotenv/config";
 
-const connectionString = process.env.DATABASE_URL;
-const pool = new pg.Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 async function main() {
   console.log("Seeding started...");
 
-  // Clear existing data
+  // Clear existing data in correct order
+  await prisma.dailyLog.deleteMany();
   await prisma.transaction.deleteMany();
-  await prisma.student.deleteMany();
   await prisma.device.deleteMany();
+  await prisma.student.deleteMany();
   await prisma.user.deleteMany();
 
   // Create Admin
@@ -83,5 +79,4 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
-    await pool.end();
   });

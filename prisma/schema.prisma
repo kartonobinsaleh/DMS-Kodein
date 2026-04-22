@@ -21,6 +21,7 @@ model Student {
   id           String        @id @default(cuid())
   name         String
   class        String
+  statusToken  String        @unique @default(cuid()) // Secure link token
   createdAt    DateTime      @default(now())
   transactions Transaction[]
   
