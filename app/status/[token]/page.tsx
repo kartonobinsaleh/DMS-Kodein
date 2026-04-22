@@ -56,10 +56,10 @@ export default function StudentStatusPage({ params }: { params: Promise<{ token:
   }, [resolvedParams.token]);
 
   if (loading) return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
+    <div className="min-h-screen bg-background flex items-center justify-center text-slate-900">
       <div className="flex flex-col items-center">
         <LoaderPulse />
-        <p className="mt-8 text-xs font-black tracking-[0.3em] opacity-40 uppercase animate-pulse">Initializing Security Sync</p>
+        <p className="mt-8 text-xs font-black tracking-[0.3em] opacity-40 uppercase animate-pulse text-indigo-600">Initializing Security Sync</p>
       </div>
     </div>
   );
@@ -80,27 +80,26 @@ export default function StudentStatusPage({ params }: { params: Promise<{ token:
 
   return (
     <div className={cn(
-      "min-h-screen flex flex-col items-center justify-center p-8 text-center transition-all duration-1000 ease-in-out",
-      isSafe ? "bg-emerald-600" : (noActivity ? "bg-slate-900" : "bg-amber-500")
+      "min-h-screen flex flex-col items-center justify-center p-8 text-center transition-all duration-1000 ease-in-out bg-background",
     )}>
       {/* 1. STUDENT IDENTITY HEADER */}
       <div className="fixed top-10 left-0 right-0 flex flex-col items-center z-10 pointer-events-none">
-        <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-30 text-white mb-1">Student Identity Card</span>
-        <h2 className="text-3xl font-black text-white drop-shadow-md tracking-tighter">{data.name}</h2>
-        <span className="bg-white/20 px-3 py-0.5 rounded-full text-[10px] font-black text-white uppercase tracking-widest mt-1">
+        <span className="text-[10px] font-black uppercase tracking-[0.4em] opacity-30 text-slate-400 mb-2">Student Identity Card</span>
+        <h2 className="text-3xl font-black text-slate-900 tracking-tighter">{data.name}</h2>
+        <span className="bg-slate-100 px-3 py-1 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest mt-2 border border-slate-200">
           Class {data.class}
         </span>
       </div>
 
       {/* 2. MAIN STATUS CORE */}
-      <div className="flex flex-col items-center text-white animate-in zoom-in-90 duration-700">
+      <div className="flex flex-col items-center animate-in zoom-in-90 duration-700">
         <div className="relative mb-8">
            {isSafe ? (
-             <CheckCircle2 size={180} className="drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]" strokeWidth={2.5} />
+             <CheckCircle2 size={180} className="text-emerald-500 shadow-emerald-100 shadow-2xl rounded-full" strokeWidth={2.5} />
            ) : noActivity ? (
-             <Clock size={180} className="opacity-20 drop-shadow-2xl" strokeWidth={2.5} />
+             <Clock size={180} className="text-slate-100" strokeWidth={2.5} />
            ) : (
-             <AlertCircle size={180} className="drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]" strokeWidth={2.5} />
+             <AlertCircle size={180} className="text-amber-500 shadow-amber-100 shadow-2xl rounded-full" strokeWidth={2.5} />
            )}
            {isSyncing && (
              <div className="absolute -top-4 -right-4 bg-white/20 p-2 rounded-full animate-spin">
@@ -109,11 +108,14 @@ export default function StudentStatusPage({ params }: { params: Promise<{ token:
            )}
         </div>
 
-        <h1 className="text-8xl font-black drop-shadow-2xl tracking-tighter mb-4">
+        <h1 className={cn(
+          "text-8xl font-black tracking-tighter mb-4",
+          isSafe ? "text-emerald-600" : (noActivity ? "text-slate-200" : "text-amber-600")
+        )}>
           {isSafe ? "AMAN" : (noActivity ? "STANDBY" : "BELUM AMAN")}
         </h1>
         
-        <p className="text-xl font-bold uppercase tracking-tight opacity-90 max-w-sm leading-snug">
+        <p className="text-xl font-bold uppercase tracking-tight text-slate-400 max-w-sm leading-snug">
           {isSafe 
             ? "Semua perangkat harian sudah berada di kantor." 
             : (noActivity ? "Belum ada aktivitas pengambilan hari ini." : "Segera kembalikan perangkat Anda ke kantor.")}
@@ -129,21 +131,21 @@ export default function StudentStatusPage({ params }: { params: Promise<{ token:
               className={cn(
                 "flex items-center justify-between p-5 rounded-card border-2 backdrop-blur-xl transition-all duration-500",
                 device.isReturned 
-                  ? "bg-white/20 border-white/20 text-white shadow-lg" 
-                  : "bg-black/10 border-white/5 text-white/40"
+                  ? "bg-emerald-50 border-emerald-100 text-emerald-900 shadow-sm" 
+                  : "bg-slate-50 border-slate-100 text-slate-400"
               )}
             >
               <div className="flex items-center gap-4">
                 <div className="p-2 bg-white/10 rounded-xl">
                   {device.type === "LAPTOP" ? <Laptop size={24} /> : <Smartphone size={24} />}
                 </div>
-                <span className="text-lg font-black uppercase tracking-tighter">{device.name}</span>
+                <span className="text-lg font-black uppercase tracking-tighter text-slate-800">{device.name}</span>
               </div>
               <div className="flex items-center">
                 {device.isReturned ? (
-                  <CheckCircle2 size={24} className="text-white fill-white/20" />
+                  <CheckCircle2 size={24} className="text-emerald-500" />
                 ) : (
-                  <AlertCircle size={24} className="text-white/20" />
+                  <AlertCircle size={24} className="text-slate-200" />
                 )}
               </div>
             </div>
@@ -153,12 +155,12 @@ export default function StudentStatusPage({ params }: { params: Promise<{ token:
 
       {/* 4. METADATA FOOTER */}
       <div className="fixed bottom-12 left-0 right-0 flex flex-col items-center gap-2">
-        <div className="flex items-center gap-2 px-6 py-3 bg-black/40 backdrop-blur-md rounded-full text-white/70 font-black uppercase tracking-widest text-[10px] border border-white/5">
-          <Clock size={14} />
+        <div className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-100 rounded-full text-slate-400 font-black uppercase tracking-widest text-[10px] shadow-sm">
+          <Clock size={14} className="text-indigo-400" />
           Batas: {SYSTEM_CONFIG.RETURN_DEADLINE_HOUR}:00 WIB
         </div>
         
-        <div className="mt-2 flex items-center gap-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-white/30">
+        <div className="mt-2 flex items-center gap-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-slate-300">
           <RefreshCcw size={8} className={cn(isSyncing && "animate-spin")} />
           Sync: {new Date(data.lastSync).toLocaleTimeString()}
         </div>
