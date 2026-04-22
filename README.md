@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📱 DMS KODEIN - Device Management System
 
-## Getting Started
+Sistem Manajemen Perangkat terpadu untuk **Kodein School**, dirancang untuk kecepatan tinggi dalam menangani penitipan laptop dan handphone siswa menggunakan teknologi QR Code dan Progressive Web App (PWA).
 
-First, run the development server:
+## 🚀 Fitur Utama
 
+- **PWA Ready**: Dapat diinstal di Android & iOS sebagai aplikasi native untuk penggunaan lapangan yang praktis.
+- **High-Speed Scanner**: Menggunakan teknologi `html5-qrcode` dengan optimasi performa tinggi.
+- **Mode Lightning (Ultra-Speed)**: Alur kerja tanpa klik (zero-interaction). Scan langsung proses, otomatis restart kamera dalam < 1 detik.
+- **Device-Specific Stations**:
+  - **Scan Laptop**: Pos khusus untuk memproses unit Laptop.
+  - **Scan HP**: Pos khusus untuk memproses unit Handphone.
+  - **Dual-Sided Badge Support**: Mendukung identitas siswa dengan QR berbeda di tiap sisi (Laptop/HP).
+- **Live Debug Terminal**: Panel HUD real-time di halaman scan untuk memantau aktivitas sistem tanpa membuka browser console.
+- **RBAC (Role Based Access Control)**: Pemisahan akses antara Admin dan Staff.
+
+## 🛠 Tech Stack
+
+- **Framework**: Next.js 16 (App Router & Turbopack)
+- **Database**: PostgreSQL with Prisma ORM
+- **Auth**: Next-Auth v4
+- **UI/UX**: Vanilla CSS + Tailwind CSS (Shadcn-inspired components)
+- **PWA**: @ducanh2912/next-pwa
+
+## 🏃 Cara Menjalankan
+
+### 1. Instalasi
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Konfigurasi Database
+Pastikan PostgreSQL berjalan dan sesuaikan `.env`:
+```env
+DATABASE_URL="postgresql://user:pass@localhost:5432/dms_kodein?schema=public"
+NEXTAUTH_SECRET="rahasia-anda"
+NEXTAUTH_URL="http://[IP-LOCAL-ANDA]:3000"
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Sync Database & Seeding
+```bash
+npx prisma db push
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Menjalankan untuk Produksi (Mode PWA Aktif)
+Agar fitur PWA dan Offline Mode bisa dites di HP:
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+## 📸 Panduan Operasional
 
-To learn more about Next.js, take a look at the following resources:
+1. **Persiapan QR**: 
+   - Gunakan format `ID_DEVICE` atau `STUDENT_TOKEN` pada kartu siswa.
+   - Contoh ID Tes: `DEVICE_LAPTOP_SITI`, `DEVICE_PHONE_SITI`, `token-siti`.
+2. **Scan Cepat**: 
+   - Masuk ke menu **Scan Laptop** atau **Scan HP**.
+   - Aktifkan **Mode Lightning** (Ikon Petir Oranye).
+   - Pastikan toggle **Penyerahan/Pengembalian** sudah sesuai.
+   - Scan QR, dan biarkan sistem bekerja otomatis.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+© 2026 Developed by Antigravity for **KODEIN SCHOOL**.
