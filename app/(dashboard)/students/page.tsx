@@ -20,7 +20,7 @@ export default function StudentsPage() {
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [formData, setFormData] = useState({ name: "", class: "" });
+  const [formData, setFormData] = useState({ name: "", class: "10" });
   const [activeStudentId, setActiveStudentId] = useState<string | null>(null);
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
   const [studentForQR, setStudentForQR] = useState<any | null>(null);
@@ -41,7 +41,7 @@ export default function StudentsPage() {
     setSubmitLoading(true);
     try {
       await useStudentStore.getState().addStudent(formData);
-      setFormData({ name: "", class: "" });
+      setFormData({ name: "", class: "10" });
       setShowAddModal(false);
       toast.success("Catatan siswa berhasil ditambahkan");
     } catch (error: any) {
@@ -226,14 +226,16 @@ export default function StudentsPage() {
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Kelas</label>
-                <input
-                  type="text"
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Tingkat Kelas</label>
+                <select 
                   value={formData.class}
                   onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                  placeholder="e.g. 10-A"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary outline-none transition-all placeholder:text-gray-400"
-                />
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-primary outline-none transition-all"
+                >
+                  <option value="10">KELAS 10</option>
+                  <option value="11">KELAS 11</option>
+                  <option value="12">KELAS 12</option>
+                </select>
               </div>
               <div className="flex gap-3 pt-2">
                 <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Batal</Button>
@@ -264,14 +266,16 @@ export default function StudentsPage() {
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Kelas</label>
-                <input
-                  type="text"
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Tingkat Kelas</label>
+                <select 
                   value={formData.class}
                   onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                  placeholder="e.g. 10-A"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary outline-none transition-all placeholder:text-gray-400"
-                />
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-primary outline-none transition-all"
+                >
+                  <option value="10">KELAS 10</option>
+                  <option value="11">KELAS 11</option>
+                  <option value="12">KELAS 12</option>
+                </select>
               </div>
               <div className="flex gap-3 pt-2">
                 <Button onClick={() => setShowEditModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Batal</Button>

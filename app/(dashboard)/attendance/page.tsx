@@ -51,6 +51,7 @@ export default function AttendancePage() {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [classFilter, setClassFilter] = useState("");
 
   const fetchData = async () => {
     try {
@@ -71,11 +72,13 @@ export default function AttendancePage() {
   }, []);
 
   const filteredStudents = useMemo(() => {
-    return Array.isArray(students) ? students.filter(s => 
-      s.name.toLowerCase().includes(search.toLowerCase()) ||
-      s.class.toLowerCase().includes(search.toLowerCase())
-    ) : [];
-  }, [students, search]);
+    return Array.isArray(students) ? students.filter(s => {
+      const matchesSearch = s.name.toLowerCase().includes(search.toLowerCase()) ||
+                           s.class.toLowerCase().includes(search.toLowerCase());
+      const matchesClass = classFilter === "" || s.class === classFilter;
+      return matchesSearch && matchesClass;
+    }) : [];
+  }, [students, search, classFilter]);
 
   const stats = useMemo(() => {
     let totalItems = 0;
@@ -153,6 +156,18 @@ export default function AttendancePage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+        </div>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <select 
+            className="h-12 px-4 bg-white border border-gray-200 rounded-xl text-xs font-bold focus:border-primary outline-none shadow-sm"
+            value={classFilter}
+            onChange={(e) => setClassFilter(e.target.value)}
+          >
+            <option value="">SEMUA KELAS</option>
+            <option value="10">KELAS 10</option>
+            <option value="11">KELAS 11</option>
+            <option value="12">KELAS 12</option>
+          </select>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Link href="/attendance/scan?target=LAPTOP" className="flex-1">

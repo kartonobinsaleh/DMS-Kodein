@@ -210,7 +210,7 @@ export default function AdminLogsPage() {
                onChange={(e) => setFilterClass(e.target.value)}
              >
                <option value="">Semua Kelas</option>
-               {["10-A", "10-B", "11-A", "11-B", "12-A", "12-B", "12-C"].map(c => <option key={c} value={c}>{c}</option>)}
+               {["10", "11", "12"].map(c => <option key={c} value={c}>Kelas {c}</option>)}
              </select>
           </div>
         </div>
