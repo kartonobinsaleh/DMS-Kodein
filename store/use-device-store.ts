@@ -15,7 +15,7 @@ interface DeviceState {
   error: string | null;
   fetchDevices: () => Promise<void>;
   addDevice: (data: { name: string; type: string; ownerId?: string }) => Promise<void>;
-  updateDevice: (id: string, name: string) => Promise<void>;
+  updateDevice: (id: string, data: { name: string; type: string; ownerId?: string }) => Promise<void>;
   deleteDevice: (id: string) => Promise<void>;
 }
 
@@ -58,18 +58,18 @@ export const useDeviceStore = create<DeviceState>((set) => ({
     }
   },
 
-  updateDevice: async (id: string, name: string) => {
+  updateDevice: async (id, data) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await fetch(`/api/devices/${id}`, {
-        method: "PUT",
+      const response = await fetch("/api/devices", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ id, ...data }),
       });
       const errorText = await response.text();
       if (!response.ok) throw new Error(errorText || "Failed to update device");
       
-      let updatedData = { name };
+      let updatedData = data;
       try { updatedData = JSON.parse(errorText).data || JSON.parse(errorText); } catch(e) {}
 
       set((state) => ({

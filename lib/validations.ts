@@ -7,6 +7,8 @@ export const studentSchema = z.object({
 
 export const deviceSchema = z.object({
   name: z.string().min(2, "Device name must be at least 2 characters"),
+  type: z.enum(["LAPTOP", "PHONE"]).default("LAPTOP"),
+  ownerId: z.string().optional().nullable(),
   status: z.enum(["AVAILABLE", "BORROWED", "MAINTENANCE"]).optional(),
 });
 

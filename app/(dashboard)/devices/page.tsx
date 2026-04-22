@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useDeviceStore } from "@/store/use-device-store";
 import { useStudentStore } from "@/store/use-student-store";
-import { Plus, Search, Smartphone, Laptop, Trash2, Database, Edit2 } from "lucide-react";
+import { Plus, Search, Smartphone, Laptop, Trash2, Database, Edit2, User, GraduationCap } from "lucide-react";
 import { toast } from "sonner";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
@@ -63,8 +63,14 @@ export default function DevicesPage() {
     if (!newDeviceName.trim() || !activeDeviceId) return;
     setSubmitLoading(true);
     try {
-      await useDeviceStore.getState().updateDevice(activeDeviceId, newDeviceName);
+      await useDeviceStore.getState().updateDevice(activeDeviceId, {
+        name: newDeviceName,
+        type: newDeviceType,
+        ownerId: newDeviceOwner
+      });
       setNewDeviceName("");
+      setNewDeviceType("LAPTOP");
+      setNewDeviceOwner("");
       setActiveDeviceId(null);
       setShowEditModal(false);
       toast.success("Catatan perangkat berhasil diperbarui");
@@ -77,6 +83,8 @@ export default function DevicesPage() {
 
   const openEditModal = (device: any) => {
     setNewDeviceName(device.name);
+    setNewDeviceType(device.type);
+    setNewDeviceOwner(device.ownerId || "");
     setActiveDeviceId(device.id);
     setShowEditModal(true);
   };
@@ -149,7 +157,7 @@ export default function DevicesPage() {
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gray-50 rounded-lg text-gray-400">
-                    {device.name.toLowerCase().includes('laptop') ? <Laptop size={18} /> : <Smartphone size={18} />}
+                    {device.type === 'LAPTOP' ? <Laptop size={18} /> : <Smartphone size={18} />}
                   </div>
                   <div>
                     <h3 className="text-sm font-semibold text-gray-800 leading-none mb-1">{device.name}</h3>
@@ -161,17 +169,17 @@ export default function DevicesPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => openEditModal(device)}
-                    className="p-1 h-auto text-gray-300 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="p-2 h-auto text-gray-400 hover:text-primary hover:bg-primary-light rounded-lg transition-all"
                   >
-                    <Edit2 size={14} />
+                    <Edit2 size={15} />
                   </Button>
                   <Button 
                     variant="ghost"
                     size="sm"
                     onClick={() => setDeviceToDelete(device.id)}
-                    className="p-1 h-auto text-gray-300 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="p-2 h-auto text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={15} />
                   </Button>
                 </div>
               </div>
@@ -218,28 +226,41 @@ export default function DevicesPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Jenis</label>
-                  <select 
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm font-bold focus:border-primary outline-none"
-                    value={newDeviceType}
-                    onChange={(e) => setNewDeviceType(e.target.value as any)}
-                  >
-                    <option value="LAPTOP">LAPTOP</option>
-                    <option value="PHONE">HP / SMARTPHONE</option>
-                  </select>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Jenis Perangkat</label>
+                  <div className="relative group">
+                    {newDeviceType === "LAPTOP" ? (
+                      <Laptop size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary transition-colors" />
+                    ) : (
+                      <Smartphone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-success transition-colors" />
+                    )}
+                    <select 
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm font-bold focus:border-primary focus:bg-white outline-none transition-all appearance-none cursor-pointer"
+                      value={newDeviceType}
+                      onChange={(e) => setNewDeviceType(e.target.value as any)}
+                    >
+                      <option value="LAPTOP">LAPTOP</option>
+                      <option value="PHONE">HP / SMARTPHONE</option>
+                    </select>
+                  </div>
                 </div>
+
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Kepemilikan</label>
-                  <select 
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm font-bold focus:border-primary outline-none"
-                    value={newDeviceOwner}
-                    onChange={(e) => setNewDeviceOwner(e.target.value)}
-                  >
-                    <option value="">TANPA PEMILIK</option>
-                    {students.map(s => <option key={s.id} value={s.id}>{s.class} - {s.name}</option>)}
-                  </select>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Kepemilikan (Siswa)</label>
+                  <div className="relative group">
+                    <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" />
+                    <select 
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm font-bold focus:border-primary focus:bg-white outline-none transition-all appearance-none cursor-pointer"
+                      value={newDeviceOwner}
+                      onChange={(e) => setNewDeviceOwner(e.target.value)}
+                    >
+                      <option value="">TANPA PEMILIK (UNIT SEKOLAH)</option>
+                      {students.map(s => (
+                        <option key={s.id} value={s.id}>Kelas {s.class} - {s.name}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -259,7 +280,7 @@ export default function DevicesPage() {
               <div className="p-1.5 bg-primary-light text-primary rounded-lg"><Edit2 size={16} /></div>
               Perbaiki Data Perangkat
             </h2>
-            <form onSubmit={handleEditDevice} className="space-y-5">
+            <form onSubmit={handleEditDevice} className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nama / Label Unit</label>
                 <input
@@ -271,6 +292,45 @@ export default function DevicesPage() {
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
+
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Jenis Perangkat</label>
+                  <div className="relative group">
+                    {newDeviceType === "LAPTOP" ? (
+                      <Laptop size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary transition-colors" />
+                    ) : (
+                      <Smartphone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-success transition-colors" />
+                    )}
+                    <select 
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm font-bold focus:border-primary focus:bg-white outline-none transition-all appearance-none cursor-pointer"
+                      value={newDeviceType}
+                      onChange={(e) => setNewDeviceType(e.target.value as any)}
+                    >
+                      <option value="LAPTOP">LAPTOP</option>
+                      <option value="PHONE">HP / SMARTPHONE</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Kepemilikan (Siswa)</label>
+                  <div className="relative group">
+                    <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" />
+                    <select 
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm font-bold focus:border-primary focus:bg-white outline-none transition-all appearance-none cursor-pointer"
+                      value={newDeviceOwner}
+                      onChange={(e) => setNewDeviceOwner(e.target.value)}
+                    >
+                      <option value="">TANPA PEMILIK (UNIT SEKOLAH)</option>
+                      {students.map(s => (
+                        <option key={s.id} value={s.id}>Kelas {s.class} - {s.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex gap-3 pt-2">
                 <Button onClick={() => setShowEditModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Batal</Button>
                 <Button type="submit" loading={submitLoading} disabled={!newDeviceName.trim() || submitLoading} className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Simpan Perubahan</Button>
