@@ -1,18 +1,5 @@
 # Development Tasks (AI-Executable)
 
-## Phase 0 - Project Initialization
-
-- Initialize Next.js (App Router, TypeScript)
-- Setup folder structure:
-  - /app
-  - /components
-  - /lib
-  - /store
-  - /prisma
-  - /types
-- Setup environment variables (.env)
-
----
 
 ## Phase 1 - Core Setup
 
@@ -149,22 +136,22 @@ Create API routes:
 
 ---
 
-## Phase 7 - Business Logic Rules
+## Phase 7 - Business Logic Rules [DONE]
 
-- Prevent double borrow
-- Prevent return without borrow
-- Auto mark overdue (based on time limit)
-- Log all activities
+- Prevent double borrow [DONE]
+- Prevent return without borrow [DONE]
+- Auto mark overdue (based on time limit) [DONE]
+- Log all activities [DONE]
 
 ---
 
-## Phase 8 - Testing
+## Phase 8 - Testing [DONE]
 
-- Test borrow flow
-- Test return flow
-- Test invalid scenarios:
-  - borrow unavailable device
-  - return already returned device
+- Test borrow flow [DONE]
+- Test return flow [DONE]
+- Test invalid scenarios: [DONE]
+  - borrow unavailable device [DONE]
+  - return already returned device [DONE]
 
 ---
 

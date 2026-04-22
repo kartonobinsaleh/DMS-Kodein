@@ -2,10 +2,11 @@ import { cn } from "@/lib/utils";
 
 interface BadgeProps {
   status: "AVAILABLE" | "BORROWED" | "MAINTENANCE" | "ACTIVE" | "COMPLETED";
+  children?: React.ReactNode;
   className?: string;
 }
 
-export function StatusBadge({ status, className }: BadgeProps) {
+export function StatusBadge({ status, children, className }: BadgeProps) {
   const styles = {
     AVAILABLE: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
     BORROWED: "bg-amber-500/10 text-amber-500 border-amber-500/20",
@@ -22,7 +23,7 @@ export function StatusBadge({ status, className }: BadgeProps) {
         className
       )}
     >
-      {status.replace("_", " ")}
+      {children || status.charAt(0) + status.slice(1).toLowerCase().replace("_", " ")}
     </span>
   );
 }

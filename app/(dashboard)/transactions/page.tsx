@@ -6,21 +6,22 @@ import { useDeviceStore } from "@/store/use-device-store";
 import { useStudentStore } from "@/store/use-student-store";
 import { 
   ArrowRightLeft, 
-  
   ArrowUpRight, 
   ArrowDownLeft,
   Calendar,
   User,
-  Smartphone
+  Smartphone,
+  Plus,
+  Search
 } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { cn } from "@/lib/utils";
+import { checkIfOverdue } from "@/lib/business-logic";
 
 export default function TransactionsPage() {
   const { transactions, borrowDevice, returnDevice } = useTransactionStore();
   const { devices, fetchDevices } = useDeviceStore();
   const { students, fetchStudents } = useStudentStore();
-  
-  const overdueThreshold = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
   
   const [showBorrowModal, setShowBorrowModal] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
@@ -95,9 +96,7 @@ export default function TransactionsPage() {
         <div className="divide-y divide-border">
           {transactions.length > 0 ? (
             transactions.map((tx) => {
-              const isOverdue =
-                tx.status === "ACTIVE" &&
-                new Date(tx.borrowTime) < overdueThreshold;
+              const isOverdue = checkIfOverdue(tx.borrowTime, tx.status);
 
               return (
                 <div

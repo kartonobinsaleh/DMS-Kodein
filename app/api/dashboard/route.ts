@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { checkIfOverdue } from "@/lib/business-logic";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -10,35 +11,15 @@ export async function GET() {
   }
 
   try {
-    const twoDaysAgo = new Date();
-    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-
-    const [
-      totalDevices,
-      availableDevices,
-      borrowedDevices,
-      activeTransactions,
-      overdueDevices,
-      totalStudents,
-    ] = await Promise.all([
-      prisma.device.count(),
-      prisma.device.count({ where: { status: "AVAILABLE" } }),
-      prisma.device.count({ where: { status: "BORROWED" } }),
-      prisma.transaction.count({ where: { status: "ACTIVE" } }),
-      prisma.transaction.count({
-        where: {
-          status: "ACTIVE",
-          borrowTime: { lt: twoDaysAgo },
-        },
-      }),
-      prisma.student.count(),
-    ]);
+    const overdueDevices = activeTransactions.filter(tx => 
+      checkIfOverdue(tx.borrowTime, tx.status)
+    ).length;
 
     return NextResponse.json({
       totalDevices,
       availableDevices,
       borrowedDevices,
-      activeTransactions,
+      activeTransactions: activeTransactions.length,
       overdueDevices,
       totalStudents,
     });
