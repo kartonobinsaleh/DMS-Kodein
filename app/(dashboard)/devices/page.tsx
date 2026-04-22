@@ -5,7 +5,8 @@ import { useDeviceStore } from "@/store/use-device-store";
 import { Plus, Search, Smartphone, Laptop, Trash2, Smartphone as MobileIcon, LayoutGrid } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
-import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
 
 export default function DevicesPage() {
   const { devices, isLoading, fetchDevices, addDevice, deleteDevice } = useDeviceStore();
@@ -39,23 +40,22 @@ export default function DevicesPage() {
 
   return (
     <div className="p-4 md:p-8 space-y-10 bg-slate-50/50 min-h-screen">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-indigo-600 font-black uppercase tracking-widest text-[10px]">
-            <Smartphone size={14} />
-            <span>Inventaris Perangkat</span>
-          </div>
-          <h1 className="text-4xl font-black tracking-tighter text-slate-900">Devices</h1>
-          <p className="text-sm font-medium text-slate-500">Kelola unit perangkat keras dan status ketersediaan.</p>
-        </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-6 py-4 text-sm font-black text-white shadow-xl shadow-indigo-100 transition-all hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
-        >
-          <Plus size={20} />
-          <span>Tambah Unit</span>
-        </button>
-      </div>
+      <PageHeader
+        title="Perangkat"
+        subtitle="Kelola unit perangkat keras dan status ketersediaan."
+        category="Inventaris Perangkat"
+        icon={<Smartphone size={14} />}
+        action={
+          <Button
+            onClick={() => setShowAddModal(true)}
+            size="xl"
+            leftIcon={<Plus size={20} />}
+            className="w-full md:w-auto"
+          >
+            Tambah Unit
+          </Button>
+        }
+      />
 
       {/* Search & Filter Bar */}
       <div className="relative group max-w-2xl">
@@ -65,7 +65,7 @@ export default function DevicesPage() {
           placeholder="Cari nama perangkat atau ID..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-[2rem] border border-slate-200 bg-white pl-14 pr-6 py-5 text-sm font-bold focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 focus:outline-none outline-none transition-all shadow-sm"
+          className="w-full rounded-container border border-slate-200 bg-white pl-14 pr-6 py-5 text-sm font-bold focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 focus:outline-none outline-none transition-all shadow-sm"
         />
       </div>
 
@@ -73,13 +73,13 @@ export default function DevicesPage() {
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isLoading && devices.length === 0 ? (
           Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-48 animate-pulse rounded-[2rem] bg-slate-100" />
+            <div key={i} className="h-48 animate-pulse rounded-card bg-slate-100" />
           ))
         ) : filteredDevices.length > 0 ? (
           filteredDevices.map((device) => (
             <div
               key={device.id}
-              className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-8 transition-all hover:shadow-2xl hover:border-indigo-100 hover:-translate-y-1"
+              className="group relative overflow-hidden rounded-card border border-slate-200 bg-white p-8 transition-all hover:shadow-2xl hover:border-indigo-100 hover:-translate-y-1"
             >
               <div className="flex items-start justify-between relative z-10">
                 <div className="rounded-2xl bg-indigo-50 p-4 text-indigo-600 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
@@ -111,7 +111,7 @@ export default function DevicesPage() {
             </div>
           ))
         ) : (
-          <div className="col-span-full py-32 flex flex-col items-center justify-center text-slate-200 bg-white border-2 border-dashed border-slate-100 rounded-[3rem]">
+          <div className="col-span-full py-32 flex flex-col items-center justify-center text-slate-200 bg-white border-2 border-dashed border-slate-100 rounded-container">
             <LayoutGrid size={64} className="mb-4 opacity-10" />
             <p className="font-black uppercase tracking-widest text-xs">Belum ada perangkat terdaftar</p>
           </div>
@@ -129,7 +129,7 @@ export default function DevicesPage() {
       {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md scale-in rounded-[2.5rem] border border-slate-100 bg-white p-10 shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-md scale-in rounded-container border border-slate-100 bg-white p-10 shadow-2xl animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Tambah Perangkat</h2>
             <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Daftarkan unit perangkat keras baru.</p>
             
@@ -146,20 +146,22 @@ export default function DevicesPage() {
                 />
               </div>
               <div className="flex gap-4 pt-6">
-                <button
-                  type="button"
+                <Button
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 rounded-2xl border border-slate-200 py-4 text-sm font-black text-slate-400 hover:bg-slate-50 transition-all uppercase tracking-widest"
+                  variant="outline"
+                  size="xl"
+                  className="flex-1 text-slate-400"
                 >
                   Batal
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={!newDeviceName.trim()}
-                  className="flex-1 rounded-2xl bg-indigo-600 py-4 text-sm font-black text-white shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all uppercase tracking-widest active:scale-95 disabled:opacity-50"
+                  size="xl"
+                  className="flex-1"
                 >
                   Simpan Unit
-                </button>
+                </Button>
               </div>
             </form>
           </div>

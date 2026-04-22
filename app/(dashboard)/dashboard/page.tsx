@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
 
 interface Stats {
   totalDevices: number;
@@ -76,22 +78,18 @@ export default function DashboardPage() {
 
   return (
     <div className="p-4 md:p-8 space-y-10 bg-slate-50/30 min-h-screen">
-      <div className="space-y-1">
-        <div className="flex items-center gap-2 text-indigo-600 font-black uppercase tracking-widest text-[10px]">
-          <TrendingUp size={14} />
-          <span>Statistik Real-time</span>
-        </div>
-        <h1 className="text-4xl font-black tracking-tighter text-slate-900">Dashboard</h1>
-        <p className="text-slate-500 font-medium tracking-tight">
-          Pantau kesehatan operasional perangkat DMS hari ini.
-        </p>
-      </div>
+      <PageHeader 
+        title="Dashboard"
+        subtitle="Pantau kesehatan operasional perangkat DMS hari ini."
+        category="Statistik Real-time"
+        icon={<TrendingUp size={14} />}
+      />
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {cards.map((card) => (
           <div
             key={card.name}
-            className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-8 transition-all hover:shadow-2xl hover:border-indigo-100 hover:-translate-y-1"
+            className="group relative overflow-hidden rounded-card border border-slate-200 bg-white p-8 transition-all hover:shadow-2xl hover:border-indigo-100 hover:-translate-y-1"
           >
             <div className="flex items-center justify-between relative z-10">
               <div className={cn("rounded-2xl p-4 transition-transform group-hover:scale-110 duration-500", card.bg, card.color)}>
@@ -118,7 +116,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <div className="rounded-[2.5rem] border border-slate-200 bg-white p-10 shadow-sm">
+        <div className="rounded-container border border-slate-200 bg-white p-10 shadow-sm">
           <div className="flex items-center justify-between mb-8">
              <h3 className="text-2xl font-black tracking-tighter text-slate-900">Aksi Cepat</h3>
              <div className="w-12 h-1 bg-indigo-100 rounded-full" />
@@ -159,18 +157,16 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-[2.5rem] border border-slate-200 bg-indigo-600 p-10 text-white shadow-2xl shadow-indigo-200 overflow-hidden relative">
+        <div className="rounded-container border border-slate-200 bg-indigo-600 p-10 text-white shadow-2xl shadow-indigo-200 overflow-hidden relative">
            <div className="relative z-10 h-full flex flex-col justify-between">
               <div>
                 <h3 className="text-3xl font-black tracking-tighter mb-2">Update Harian</h3>
                 <p className="text-indigo-200 font-medium">Jangan lupa untuk memastikan semua perangkat kembali sebelum jam 17:00 WIB hari ini.</p>
               </div>
-              <Link 
-                href="/logs"
-                className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest bg-white text-indigo-600 px-6 py-3 rounded-xl self-start hover:bg-indigo-50 transition-colors mt-8"
-              >
-                Lihat Log Riwayat
-                <ArrowRight size={16} />
+              <Link href="/logs">
+                <Button variant="outline" size="lg" rightIcon={<ArrowRight size={16} />} className="bg-white border-none text-indigo-600 hover:bg-indigo-50 mt-8">
+                  Lihat Log Riwayat
+                </Button>
               </Link>
            </div>
            <Clock size={240} className="absolute -right-20 -bottom-20 text-indigo-500 opacity-30 rotate-12" />

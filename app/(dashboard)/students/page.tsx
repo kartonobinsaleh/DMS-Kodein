@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useStudentStore } from "@/store/use-student-store";
-import { Plus, Search, Users, Trash2, LayoutGrid, ArrowRight } from "lucide-react";
+import { Plus, Search, Users, Trash2, LayoutGrid } from "lucide-react";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
-import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/ui/page-header";
+import { Button } from "@/components/ui/button";
 
 export default function StudentsPage() {
   const { students, isLoading, fetchStudents, addStudent, deleteStudent } = useStudentStore();
@@ -39,23 +40,22 @@ export default function StudentsPage() {
 
   return (
     <div className="p-4 md:p-8 space-y-10 bg-slate-50/50 min-h-screen">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-indigo-600 font-black uppercase tracking-widest text-[10px]">
-            <Users size={14} />
-            <span>Manajemen Data</span>
-          </div>
-          <h1 className="text-4xl font-black tracking-tighter text-slate-900">Siswa</h1>
-          <p className="text-sm font-medium text-slate-500">Kelola identitas dan kepemilikan perangkat siswa.</p>
-        </div>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-6 py-4 text-sm font-black text-white shadow-xl shadow-indigo-100 transition-all hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
-        >
-          <Plus size={20} />
-          <span>Tambah Siswa</span>
-        </button>
-      </div>
+      <PageHeader
+        title="Siswa"
+        subtitle="Kelola identitas dan kepemilikan perangkat siswa."
+        category="Manajemen Data"
+        icon={<Users size={14} />}
+        action={
+          <Button
+            onClick={() => setShowAddModal(true)}
+            size="xl"
+            leftIcon={<Plus size={20} />}
+            className="w-full md:w-auto"
+          >
+            Tambah Siswa
+          </Button>
+        }
+      />
 
       {/* Search Bar */}
       <div className="relative group max-w-2xl">
@@ -65,12 +65,12 @@ export default function StudentsPage() {
           placeholder="Cari nama atau kelas siswa..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-[2rem] border border-slate-200 bg-white pl-14 pr-6 py-5 text-sm font-bold focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 focus:outline-none outline-none transition-all shadow-sm"
+          className="w-full rounded-container border border-slate-200 bg-white pl-14 pr-6 py-5 text-sm font-bold focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 focus:outline-none outline-none transition-all shadow-sm"
         />
       </div>
 
       {/* List View */}
-      <div className="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-container border border-slate-200 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm border-collapse">
             <thead className="bg-slate-50/50 text-[10px] uppercase font-black text-slate-400 border-b border-slate-100 tracking-[0.2em]">
@@ -145,7 +145,7 @@ export default function StudentsPage() {
       {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-[2.5rem] border border-slate-100 bg-white p-10 shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-md rounded-container border border-slate-100 bg-white p-10 shadow-2xl animate-in zoom-in-95 duration-200">
             <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Registrasi Siswa</h2>
             <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Masukkan identitas lengkap siswa baru.</p>
             
@@ -172,20 +172,22 @@ export default function StudentsPage() {
                 />
               </div>
               <div className="flex gap-4 pt-6">
-                <button
-                  type="button"
+                <Button
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 rounded-2xl border border-slate-200 py-4 text-sm font-black text-slate-400 hover:bg-slate-50 transition-all uppercase tracking-widest"
+                  variant="outline"
+                  size="xl"
+                  className="flex-1 text-slate-400"
                 >
                   Batal
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={!formData.name.trim() || !formData.class.trim()}
-                  className="flex-1 rounded-2xl bg-indigo-600 py-4 text-sm font-black text-white shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all uppercase tracking-widest active:scale-95 disabled:opacity-50"
+                  size="xl"
+                  className="flex-1"
                 >
                   Daftarkan
-                </button>
+                </Button>
               </div>
             </form>
           </div>
