@@ -23,6 +23,7 @@ import { ActionBar } from "@/components/ui/action-bar";
 import { Card } from "@/components/ui/card";
 import { SummaryStrip } from "@/components/ui/summary-strip";
 import { StatCard } from "@/components/ui/stat-card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface DailyLog {
   id: string;
@@ -109,7 +110,52 @@ export default function AdminLogsPage() {
     }
   };
 
-  if (loading) return <div className="p-20 text-center text-xs font-semibold text-gray-400 uppercase tracking-widest animate-pulse">Memuat Catatan Aktivitas...</div>;
+  if (loading) return (
+    <PageContainer>
+      <div className="animate-in fade-in duration-500 space-y-8">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-4 w-96" />
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Skeleton className="h-20 w-full rounded-2xl" />
+          <Skeleton className="h-20 w-full rounded-2xl" />
+          <Skeleton className="h-20 w-full rounded-2xl" />
+          <Skeleton className="h-20 w-full rounded-2xl" />
+        </div>
+        <div className="flex gap-4">
+          <Skeleton className="h-12 flex-1 rounded-xl" />
+          <div className="flex gap-2">
+            <Skeleton className="h-12 w-40 rounded-xl" />
+            <Skeleton className="h-12 w-40 rounded-xl" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Card key={i} className="flex flex-col space-y-4">
+               <div className="px-4 py-3 border-b border-gray-100 flex justify-between">
+                 <div className="flex items-center gap-2">
+                   <Skeleton className="h-8 w-8 rounded-lg" />
+                   <div className="space-y-2">
+                     <Skeleton className="h-3 w-20" />
+                     <Skeleton className="h-2 w-12" />
+                   </div>
+                 </div>
+                 <Skeleton className="h-4 w-12 rounded-full" />
+               </div>
+               <div className="p-3 space-y-3">
+                 <Skeleton className="h-4 w-24" />
+                 <div className="grid grid-cols-2 gap-2">
+                   <Skeleton className="h-8 w-full rounded" />
+                   <Skeleton className="h-8 w-full rounded" />
+                 </div>
+               </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </PageContainer>
+  );
 
   const displayLogs = Array.isArray(logs) ? logs.filter(l => l.student.name.toLowerCase().includes(search.toLowerCase())) : [];
 

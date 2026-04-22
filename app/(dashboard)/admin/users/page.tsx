@@ -12,6 +12,7 @@ import { PageContainer } from "@/components/ui/page-container";
 import { ActionBar } from "@/components/ui/action-bar";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function UsersPage() {
   const { users, isLoading, error, fetchUsers, addUser, updateUser, deleteUser } = useUserStore();
@@ -136,7 +137,23 @@ export default function UsersPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {isLoading && users.length === 0 ? (
           Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-32 animate-pulse rounded-xl bg-white border border-gray-200" />
+            <Card key={i} className="p-0 overflow-hidden">
+               <div className="bg-gray-50/50 p-3 border-b border-gray-100 flex justify-between">
+                 <Skeleton className="h-3 w-16" />
+                 <Skeleton className="h-3 w-10" />
+               </div>
+               <div className="p-4 space-y-4">
+                 <div className="space-y-2">
+                   <Skeleton className="h-4 w-32" />
+                   <Skeleton className="h-3 w-40" />
+                 </div>
+                 <div className="flex justify-end gap-1 pt-2 border-t border-gray-50">
+                    <Skeleton className="h-7 w-7 rounded" />
+                    <Skeleton className="h-7 w-7 rounded" />
+                    <Skeleton className="h-7 w-7 rounded" />
+                 </div>
+               </div>
+            </Card>
           ))
         ) : filteredUsers.length > 0 ? (
           filteredUsers.map((user) => (

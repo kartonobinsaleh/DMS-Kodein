@@ -17,6 +17,7 @@ import { PageContainer } from "@/components/ui/page-container";
 import { Card } from "@/components/ui/card";
 import { SummaryStrip } from "@/components/ui/summary-strip";
 import { StatCard } from "@/components/ui/stat-card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface DailyLog {
   id: string;
@@ -82,7 +83,14 @@ export default function DailyMonitoringPage() {
           { label: "Terlambat", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
           { label: "Belum Kembali", value: stats.missing, icon: XCircle, color: "text-red-600" },
         ].map((s) => (
-          <StatCard key={s.label} label={s.label} value={s.value} icon={s.icon} iconColorClass={s.color} />
+          loading && logs.length === 0 ? (
+            <div key={s.label} className="min-w-[140px] flex-1 p-4 bg-white rounded-2xl border border-gray-100 shadow-sm space-y-2">
+               <Skeleton className="h-3 w-16" />
+               <Skeleton className="h-6 w-10" />
+            </div>
+          ) : (
+            <StatCard key={s.label} label={s.label} value={s.value} icon={s.icon} iconColorClass={s.color} />
+          )
         ))}
       </SummaryStrip>
 
@@ -112,8 +120,24 @@ export default function DailyMonitoringPage() {
       {/* Main List - Mobile Cards */}
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {loading && logs.length === 0 ? (
-          Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-32 animate-pulse bg-gray-100 rounded-xl border border-gray-200" />
+          Array.from({ length: 8 }).map((_, i) => (
+            <Card key={i} className="p-4 space-y-4">
+               <div className="flex justify-between items-start">
+                 <div className="space-y-2">
+                   <Skeleton className="h-4 w-32" />
+                   <Skeleton className="h-3 w-20" />
+                 </div>
+                 <Skeleton className="h-5 w-16 rounded-full" />
+               </div>
+               <div className="py-3 border-y border-gray-50 flex items-center gap-2">
+                 <Skeleton className="h-4 w-4 rounded" />
+                 <Skeleton className="h-3 w-24" />
+               </div>
+               <div className="flex justify-between">
+                 <Skeleton className="h-3 w-10" />
+                 <Skeleton className="h-3 w-10" />
+               </div>
+            </Card>
           ))
         ) : logs.length === 0 ? (
           <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">

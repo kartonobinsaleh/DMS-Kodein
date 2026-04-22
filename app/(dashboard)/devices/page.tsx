@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/ui/page-container";
 import { ActionBar } from "@/components/ui/action-bar";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DevicesPage() {
   const { devices, isLoading, fetchDevices, addDevice, deleteDevice } = useDeviceStore();
@@ -114,7 +115,22 @@ export default function DevicesPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isLoading && devices.length === 0 ? (
           Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-32 animate-pulse rounded-xl bg-white border border-gray-200" />
+            <Card key={i} className="p-4 flex flex-col justify-between">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="h-9 w-9 rounded-lg" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-3 w-16" />
+                  </div>
+                </div>
+                <div className="flex gap-1">
+                  <Skeleton className="h-6 w-6 rounded" />
+                  <Skeleton className="h-6 w-6 rounded" />
+                </div>
+              </div>
+              <Skeleton className="h-5 w-20 rounded-full" />
+            </Card>
           ))
         ) : filteredDevices.length > 0 ? (
           filteredDevices.map((device) => (

@@ -21,6 +21,7 @@ import { ActionBar } from "@/components/ui/action-bar";
 import { Card } from "@/components/ui/card";
 import { SummaryStrip } from "@/components/ui/summary-strip";
 import { StatCard } from "@/components/ui/stat-card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 interface DailyLog {
@@ -92,7 +93,35 @@ export default function AttendancePage() {
     return { totalItems, borrowed, late };
   }, [students]);
 
-  if (loading) return <div className="p-20 text-center text-xs font-semibold text-gray-400 uppercase tracking-widest animate-pulse">Menyiapkan Modul Operasional...</div>;
+  if (loading) return (
+    <PageContainer>
+      <div className="animate-in fade-in duration-500 space-y-8">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-4 w-96" />
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Skeleton className="h-20 w-full rounded-2xl" />
+          <Skeleton className="h-20 w-full rounded-2xl" />
+          <Skeleton className="h-20 w-full rounded-2xl" />
+          <Skeleton className="h-20 w-full rounded-2xl" />
+        </div>
+        <div className="flex gap-4">
+          <Skeleton className="h-12 flex-1 rounded-xl" />
+          <div className="flex gap-2">
+            <Skeleton className="h-12 w-40 rounded-xl" />
+            <Skeleton className="h-12 w-40 rounded-xl" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Skeleton className="h-48 w-full rounded-2xl" />
+          <Skeleton className="h-48 w-full rounded-2xl" />
+          <Skeleton className="h-48 w-full rounded-2xl" />
+          <Skeleton className="h-48 w-full rounded-2xl" />
+        </div>
+      </div>
+    </PageContainer>
+  );
 
   return (
     <PageContainer>
