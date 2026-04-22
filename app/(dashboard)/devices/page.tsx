@@ -99,7 +99,7 @@ export default function DevicesPage() {
             placeholder="Cari perangkat berdasarkan nama..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm transition-all placeholder:text-gray-400"
+            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-primary outline-none shadow-sm transition-all placeholder:text-gray-400"
           />
         </div>
         <Button
@@ -134,7 +134,7 @@ export default function DevicesPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => openEditModal(device)}
-                    className="p-1 h-auto text-gray-300 hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="p-1 h-auto text-gray-300 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <Edit2 size={14} />
                   </Button>
@@ -171,7 +171,7 @@ export default function DevicesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
           <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in-95 duration-150">
              <h2 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><Database size={16} /></div>
+              <div className="p-1.5 bg-primary-light text-primary rounded-lg"><Database size={16} /></div>
               Registrasi Perangkat Baru
             </h2>
             <form onSubmit={handleAddDevice} className="space-y-5">
@@ -183,7 +183,7 @@ export default function DevicesPage() {
                   value={newDeviceName}
                   onChange={(e) => setNewDeviceName(e.target.value)}
                   placeholder="e.g. Laptop 05"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
               <div className="flex gap-3 pt-2">
@@ -199,7 +199,7 @@ export default function DevicesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
           <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in-95 duration-150">
              <h2 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><Edit2 size={16} /></div>
+              <div className="p-1.5 bg-primary-light text-primary rounded-lg"><Edit2 size={16} /></div>
               Perbaiki Data Perangkat
             </h2>
             <form onSubmit={handleEditDevice} className="space-y-5">
@@ -211,7 +211,7 @@ export default function DevicesPage() {
                   value={newDeviceName}
                   onChange={(e) => setNewDeviceName(e.target.value)}
                   placeholder="e.g. Laptop 05"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
               <div className="flex gap-3 pt-2">

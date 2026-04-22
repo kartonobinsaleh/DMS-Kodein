@@ -118,7 +118,7 @@ export default function UsersPage() {
             placeholder="Cari asisten operasional atau email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm transition-all placeholder:text-gray-400"
+            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-primary outline-none shadow-sm transition-all placeholder:text-gray-400"
           />
         </div>
         <Button
@@ -144,7 +144,7 @@ export default function UsersPage() {
              {/* Security Role Strip */}
              <div className="bg-gray-50/50 p-3 flex justify-between items-center border-b border-gray-100">
                <span className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-widest text-gray-400">
-                 {user.role === 'ADMIN' ? <ShieldCheck size={14} className="text-indigo-600" /> : <UserCog size={14} />}
+                 {user.role === 'ADMIN' ? <ShieldCheck size={14} className="text-primary" /> : <UserCog size={14} />}
                  {user.role}
                </span>
                <div className={`px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-widest ${user.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
@@ -173,7 +173,7 @@ export default function UsersPage() {
                     variant="ghost"
                     size="sm"
                     onClick={() => openEditModal(user)}
-                    className="p-1 h-auto text-gray-400 hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="p-1 h-auto text-gray-400 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <Edit2 size={14} />
                   </Button>
@@ -207,7 +207,7 @@ export default function UsersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
           <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in-95 duration-150">
              <h2 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><UserCog size={16} /></div>
+              <div className="p-1.5 bg-primary-light text-primary rounded-lg"><UserCog size={16} /></div>
               Registrasi Akses Baru
             </h2>
             <form onSubmit={handleAddUser} className="space-y-4">
@@ -219,7 +219,7 @@ export default function UsersPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g. Bp. Ahmad"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-primary outline-none transition-all"
                 />
               </div>
               <div className="space-y-1">
@@ -229,7 +229,7 @@ export default function UsersPage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="staff@dms.com"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-primary outline-none transition-all"
                 />
               </div>
               <div className="space-y-1">
@@ -239,7 +239,7 @@ export default function UsersPage() {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="Minimal 6 karakter"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-primary outline-none transition-all"
                 />
               </div>
               <div className="space-y-1">
@@ -247,7 +247,7 @@ export default function UsersPage() {
                 <select 
                    value={formData.role} 
                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all font-bold"
+                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-primary outline-none transition-all font-bold"
                 >
                   <option value="STAFF">STAFF / OPERATOR</option>
                   <option value="ADMIN">ADMIN / PENGENDALI</option>
@@ -267,7 +267,7 @@ export default function UsersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
           <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in-95 duration-150">
              <h2 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><Edit2 size={16} /></div>
+              <div className="p-1.5 bg-primary-light text-primary rounded-lg"><Edit2 size={16} /></div>
               Ubah Data Staf
             </h2>
             <form onSubmit={handleEditUser} className="space-y-4">
@@ -278,7 +278,7 @@ export default function UsersPage() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-primary outline-none transition-all"
                 />
               </div>
               <div className="space-y-1">
@@ -287,7 +287,7 @@ export default function UsersPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-primary outline-none transition-all"
                 />
               </div>
               <div className="space-y-1">
@@ -306,7 +306,7 @@ export default function UsersPage() {
                    value={formData.role} 
                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                    disabled={activeUserId === session?.user?.id}
-                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all font-bold disabled:opacity-50"
+                   className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:border-primary outline-none transition-all font-bold disabled:opacity-50"
                 >
                   <option value="STAFF">STAFF / OPERATOR</option>
                   <option value="ADMIN">ADMIN / PENGENDALI</option>

@@ -59,7 +59,7 @@ export default function StudentStatusPage({ params }: { params: Promise<{ token:
     <div className="min-h-screen bg-background flex items-center justify-center text-slate-900">
       <div className="flex flex-col items-center">
         <LoaderPulse />
-        <p className="mt-8 text-xs font-black tracking-[0.3em] opacity-40 uppercase animate-pulse text-indigo-600">Initializing Security Sync</p>
+        <p className="mt-8 text-xs font-black tracking-[0.3em] opacity-40 uppercase animate-pulse text-primary">Initializing Security Sync</p>
       </div>
     </div>
   );

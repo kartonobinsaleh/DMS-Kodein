@@ -125,7 +125,7 @@ export default function DailyMonitoringPage() {
             <Card key={log.id} className="p-4 flex flex-col justify-between hover:border-indigo-200 transition-colors group">
               <div className="flex justify-between items-start mb-3">
                 <div>
-                  <h3 className="text-sm font-bold text-gray-900 leading-none mb-1 group-hover:text-indigo-600 transition-colors">{log.student.name}</h3>
+                  <h3 className="text-sm font-bold text-gray-900 leading-none mb-1 group-hover:text-primary transition-colors">{log.student.name}</h3>
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">{log.student.class}</p>
                 </div>
                 <StatusBadge status={log.dailyStatus} className="scale-90 origin-right" />
@@ -148,7 +148,7 @@ export default function DailyMonitoringPage() {
                 </div>
                 <div className="flex flex-col text-right">
                   <span className="text-gray-300 uppercase font-bold tracking-tighter">Kembali</span>
-                  <span className={log.checkInTime ? "text-indigo-600 font-bold" : "text-amber-500 font-bold"}>
+                  <span className={log.checkInTime ? "text-primary font-bold" : "text-amber-500 font-bold"}>
                     {log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }) : "BELUM KEMBALI"}
                   </span>
                 </div>

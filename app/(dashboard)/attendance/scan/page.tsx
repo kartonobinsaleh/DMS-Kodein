@@ -218,13 +218,13 @@ function ScannerContent() {
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Scanner Body */}
         {!studentData && (
-          <Card className="overflow-hidden border-2 border-indigo-100 bg-white">
+          <Card className="overflow-hidden border-2 border-primary/10 bg-white">
             <div id="reader" className="w-full bg-slate-900 aspect-square flex items-center justify-center text-white text-xs" />
             <div className="p-8 text-center">
               {!isScanning ? (
                 <Button 
                   onClick={startScanner} 
-                  className="w-full h-16 rounded-2xl text-md font-black uppercase tracking-widest shadow-xl shadow-indigo-100"
+                  className="w-full h-16 rounded-2xl text-md font-black uppercase tracking-widest shadow-xl shadow-primary/10"
                   leftIcon={<Camera size={24} />}
                 >
                   Nyalakan Kamera & Scan
@@ -257,7 +257,7 @@ function ScannerContent() {
           <div className="animate-in slide-in-from-bottom-5 duration-300 space-y-4">
             <Card className="p-6">
                <div className="flex items-center gap-4 mb-6">
-                 <div className="h-16 w-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-2xl font-black">
+                 <div className="h-16 w-16 bg-primary rounded-2xl flex items-center justify-center text-white text-2xl font-black">
                    {studentData.name[0]}
                  </div>
                  <div>
@@ -267,7 +267,7 @@ function ScannerContent() {
                </div>
 
                {studentData.ownedDevices?.length > 1 && (
-                 <div className="mb-6 p-4 bg-indigo-600 rounded-2xl text-white flex items-center justify-between">
+                 <div className="mb-6 p-4 bg-primary rounded-2xl text-white flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Zap size={20} className="text-amber-400" fill="currentColor" />
                       <p className="text-xs font-bold uppercase tracking-tight">Proses {studentData.ownedDevices.length} Unit Sekaligus</p>
@@ -275,7 +275,7 @@ function ScannerContent() {
                     <Button 
                       onClick={handleBatchProcess}
                       disabled={isProcessingBatch}
-                      className="bg-white text-indigo-600 h-10 px-4 rounded-xl text-[10px] font-black uppercase"
+                      className="bg-white text-primary h-10 px-4 rounded-xl text-[10px] font-black uppercase"
                       leftIcon={isProcessingBatch ? <Loader2 size={14} className="animate-spin" /> : null}
                     >
                       Eksekusi

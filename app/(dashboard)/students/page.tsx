@@ -101,7 +101,7 @@ export default function StudentsPage() {
             placeholder="Cari nama atau kelas..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm placeholder:text-gray-400 transition-all"
+            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-primary outline-none shadow-sm placeholder:text-gray-400 transition-all"
           />
         </div>
         <Button
@@ -122,7 +122,7 @@ export default function StudentsPage() {
           filteredStudents.map((student) => (
             <Card key={student.id} className="p-4 flex items-center justify-between group hover:border-indigo-200 transition-colors">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center text-indigo-600 group-hover:bg-indigo-50 transition-colors">
+                <div className="h-10 w-10 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary-light transition-colors">
                   <User size={20} />
                 </div>
                 <div>
@@ -147,7 +147,7 @@ export default function StudentsPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => openEditModal(student)}
-                  className="h-10 w-10 p-0 text-gray-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                  className="h-10 w-10 p-0 text-gray-300 hover:text-primary hover:bg-primary-light rounded-xl transition-all"
                 >
                   <Edit2 size={16} />
                 </Button>
@@ -182,7 +182,7 @@ export default function StudentsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
           <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-2xl border border-gray-200 animate-in zoom-in-95 duration-150">
             <h2 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><Plus size={16} /></div>
+              <div className="p-1.5 bg-primary-light text-primary rounded-lg"><Plus size={16} /></div>
               Registrasi Siswa Baru
             </h2>
             <form onSubmit={handleAddStudent} className="space-y-5">
@@ -194,7 +194,7 @@ export default function StudentsPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g. John Doe"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
               <div className="space-y-1.5">
@@ -204,7 +204,7 @@ export default function StudentsPage() {
                   value={formData.class}
                   onChange={(e) => setFormData({ ...formData, class: e.target.value })}
                   placeholder="e.g. 10-A"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
               <div className="flex gap-3 pt-2">
@@ -220,7 +220,7 @@ export default function StudentsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
           <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-2xl border border-gray-200 animate-in zoom-in-95 duration-150">
             <h2 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><Edit2 size={16} /></div>
+              <div className="p-1.5 bg-primary-light text-primary rounded-lg"><Edit2 size={16} /></div>
               Perbaiki Data Siswa
             </h2>
             <form onSubmit={handleEditStudent} className="space-y-5">
@@ -232,7 +232,7 @@ export default function StudentsPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="e.g. John Doe"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
               <div className="space-y-1.5">
@@ -242,7 +242,7 @@ export default function StudentsPage() {
                   value={formData.class}
                   onChange={(e) => setFormData({ ...formData, class: e.target.value })}
                   placeholder="e.g. 10-A"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
               <div className="flex gap-3 pt-2">

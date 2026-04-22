@@ -25,12 +25,12 @@ export function DeviceCard({
 }: DeviceCardProps) {
   return (
     <div className={cn(
-      "p-6 bg-white border border-slate-100 rounded-card shadow-card hover:border-indigo-100 transition-all duration-300",
+      "p-6 bg-white border border-slate-100 rounded-card shadow-card hover:border-primary/10 transition-all duration-300",
       className
     )}>
       <div className="flex justify-between items-start mb-6">
         <div className="flex items-center gap-4">
-          <div className="p-3.5 bg-slate-50 text-slate-400 rounded-2xl group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+          <div className="p-3.5 bg-slate-50 text-slate-400 rounded-2xl group-hover:bg-primary-light group-hover:text-primary transition-colors">
             {deviceType.toUpperCase() === "LAPTOP" ? <Laptop size={20} /> : <Smartphone size={20} />}
           </div>
           <div>

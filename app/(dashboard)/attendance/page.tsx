@@ -105,7 +105,7 @@ export default function AttendancePage() {
        <SummaryStrip>
         {[
           { label: "Total Unit", value: stats.totalItems, icon: Laptop, color: "text-gray-400" },
-          { label: "Unit Keluar", value: stats.borrowed, icon: LogOut, color: "text-indigo-600" },
+          { label: "Unit Keluar", value: stats.borrowed, icon: LogOut, color: "text-primary" },
           { label: "Terlambat", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
           { label: "Unit Masuk", value: stats.totalItems - stats.borrowed, icon: CheckCircle, color: "text-green-600" },
         ].map((s) => (
@@ -119,7 +119,7 @@ export default function AttendancePage() {
           <input
             type="text"
             placeholder="Cari nama siswa atau kelas..."
-            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm transition-all"
+            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-primary outline-none shadow-sm transition-all"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -127,16 +127,18 @@ export default function AttendancePage() {
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Link href="/attendance/scan?mode=checkout" className="flex-1">
             <Button
-              className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-sm bg-indigo-600 hover:bg-indigo-700"
+              className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em]"
               leftIcon={<QrCode size={16} />}
+              variant="primary"
             >
               SCAN CHECK-OUT
             </Button>
           </Link>
           <Link href="/attendance/scan?mode=checkin" className="flex-1">
             <Button
-              className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-sm bg-emerald-600 hover:bg-emerald-700"
+              className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em]"
               leftIcon={<QrCode size={16} />}
+              variant="success"
             >
               SCAN CHECK-IN
             </Button>
@@ -152,14 +154,14 @@ export default function AttendancePage() {
           </div>
         ) : (
           filteredStudents.map((student) => (
-            <Card key={student.id} className="flex flex-col group hover:border-indigo-100 transition-all">
-              <div className="px-5 py-3 bg-gray-50/50 border-b border-gray-200 flex justify-between items-center group-hover:bg-indigo-50/10 transition-colors">
+            <Card key={student.id} className="flex flex-col group hover:border-primary/10 transition-all">
+              <div className="px-5 py-3 bg-gray-50/50 border-b border-gray-200 flex justify-between items-center group-hover:bg-primary-light/10 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 bg-white border border-gray-200 rounded-xl flex items-center justify-center text-indigo-600 font-bold text-sm shadow-sm">
+                  <div className="h-10 w-10 bg-white border border-gray-200 rounded-xl flex items-center justify-center text-primary font-bold text-sm shadow-sm">
                     {student.name[0]}
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-gray-800 leading-none mb-1 group-hover:text-indigo-600 transition-colors">
+                    <h3 className="text-sm font-bold text-gray-800 leading-none mb-1 group-hover:text-primary transition-colors">
                       {student.name}
                     </h3>
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{student.class}</p>

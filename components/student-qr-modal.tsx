@@ -68,7 +68,7 @@ export function StudentQRModal({ isOpen, onClose, student }: StudentQRModalProps
 
           <div className="space-y-1 mb-8">
             <h2 className="text-2xl font-black text-slate-900 tracking-tighter">{student.name}</h2>
-            <p className="text-xs font-bold text-indigo-600 uppercase tracking-[0.2em]">{student.class}</p>
+            <p className="text-xs font-bold text-primary uppercase tracking-[0.2em]">{student.class}</p>
             <p className="text-[10px] font-mono text-gray-300 mt-2">ID: {student.id}</p>
           </div>
 

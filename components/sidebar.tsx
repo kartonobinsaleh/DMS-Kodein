@@ -67,13 +67,13 @@ export function Sidebar() {
               className={cn(
                 "flex items-center gap-3 px-3 py-2 text-sm font-medium transition-all rounded-lg",
                 isActive
-                  ? "bg-indigo-50 text-indigo-600 shadow-sm border border-indigo-100/50"
+                  ? "bg-primary-light text-primary shadow-sm border border-primary/10/50"
                   : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
               )}
             >
               <item.icon
                 size={18}
-                className={cn(isActive ? "text-indigo-600" : "text-gray-400")}
+                className={cn(isActive ? "text-primary" : "text-gray-400")}
               />
               {item.name}
             </Link>

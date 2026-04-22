@@ -66,11 +66,11 @@ export default function LoginPage() {
         </div>
 
         {/* Background Accent */}
-        <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-50 rounded-full blur-3xl opacity-50" />
-        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-50 rounded-full blur-3xl opacity-50" />
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary-light rounded-full blur-3xl opacity-50" />
+        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-primary-light rounded-full blur-3xl opacity-50" />
 
         <div className="px-10 pb-8 pt-6 text-center relative z-10">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">
             Device Management System
           </p>
         </div>
@@ -92,7 +92,7 @@ export default function LoginPage() {
                 {...register("email")}
                 type="email"
                 className={cn(
-                  "block w-full rounded-2xl border border-slate-200 bg-background px-6 py-4 text-sm font-bold placeholder-slate-300 focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all",
+                  "block w-full rounded-2xl border border-slate-200 bg-background px-6 py-4 text-sm font-bold placeholder-slate-300 focus:ring-8 focus:ring-primary/5 focus:border-primary outline-none transition-all",
                   errors.email && "border-rose-300 focus:border-rose-400"
                 )}
                 placeholder="admin@dms.com"
@@ -111,7 +111,7 @@ export default function LoginPage() {
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
                   className={cn(
-                    "block w-full rounded-2xl border border-slate-200 bg-background px-6 py-4 text-sm font-bold placeholder-slate-300 focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all",
+                    "block w-full rounded-2xl border border-slate-200 bg-background px-6 py-4 text-sm font-bold placeholder-slate-300 focus:ring-8 focus:ring-primary/5 focus:border-primary outline-none transition-all",
                     errors.password && "border-rose-300 focus:border-rose-400"
                   )}
                   placeholder="••••••••"

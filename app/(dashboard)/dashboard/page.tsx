@@ -42,7 +42,7 @@ export default function DashboardPage() {
   const cards = [
     { name: "Total Perangkat", value: stats?.totalDevices || 0, icon: Laptop, color: "text-gray-400" },
     { name: "Unit Masuk", value: stats?.availableDevices || 0, icon: CheckCircle, color: "text-green-600" },
-    { name: "Unit Keluar", value: stats?.borrowedDevices || 0, icon: Clock, color: "text-indigo-600" },
+    { name: "Unit Keluar", value: stats?.borrowedDevices || 0, icon: Clock, color: "text-primary" },
     { name: "Terlambat Kembali", value: stats?.overdueDevices || 0, icon: AlertTriangle, color: "text-amber-500" },
     { name: "Total Siswa", value: stats?.totalStudents || 0, icon: Users, color: "text-gray-400" },
   ];
@@ -78,11 +78,11 @@ export default function DashboardPage() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="flex items-center justify-between p-3 rounded-lg border border-gray-200 bg-gray-50 hover:bg-indigo-50 hover:border-indigo-200 transition-all group"
+                className="flex items-center justify-between p-3 rounded-lg border border-gray-200 bg-gray-50 hover:bg-primary-light hover:border-indigo-200 transition-all group"
               >
                 <div className="flex items-center gap-3">
-                  <link.icon size={18} className="text-gray-400 group-hover:text-indigo-600" />
-                  <span className="text-sm font-semibold text-gray-700 group-hover:text-indigo-700">{link.label}</span>
+                  <link.icon size={18} className="text-gray-400 group-hover:text-primary" />
+                  <span className="text-sm font-semibold text-gray-700 group-hover:text-primary-dark">{link.label}</span>
                 </div>
                 <ArrowRight size={16} className="text-gray-300 group-hover:text-indigo-400" />
               </Link>

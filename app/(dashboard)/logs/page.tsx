@@ -139,7 +139,7 @@ export default function AdminLogsPage() {
           <input
             type="text"
             placeholder="Cari nama siswa..."
-            className="w-full pl-9 pr-4 py-3 rounded-xl border border-gray-200 bg-white shadow-sm text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+            className="w-full pl-9 pr-4 py-3 rounded-xl border border-gray-200 bg-white shadow-sm text-sm focus:border-primary outline-none transition-all placeholder:text-gray-400"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -177,14 +177,14 @@ export default function AdminLogsPage() {
           </div>
         ) : (
           displayLogs.map((log) => (
-            <Card key={log.id} className="flex flex-col group hover:border-indigo-100 transition-all">
-              <div className="px-4 py-3 bg-gray-50/50 border-b border-gray-200 flex justify-between items-center group-hover:bg-indigo-50/10 transition-colors">
+            <Card key={log.id} className="flex flex-col group hover:border-primary/10 transition-all">
+              <div className="px-4 py-3 bg-gray-50/50 border-b border-gray-200 flex justify-between items-center group-hover:bg-primary-light/10 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-xs shadow-sm">
+                  <div className="h-8 w-8 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-primary font-bold text-xs shadow-sm">
                     {log.student.name[0]}
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-gray-800 leading-none mb-1 group-hover:text-indigo-600 transition-colors">
+                    <h3 className="text-xs font-bold text-gray-800 leading-none mb-1 group-hover:text-primary transition-colors">
                       {log.student.name}
                     </h3>
                     <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none">{log.student.class}</p>
@@ -207,7 +207,7 @@ export default function AdminLogsPage() {
                     </div>
                     <div className="flex flex-col text-right">
                       <span className="text-[9px] text-gray-300 uppercase font-bold tracking-tighter">Kembali</span>
-                      <span className={log.checkInTime ? "text-indigo-600 font-bold text-[10px] font-mono" : "text-amber-500 font-bold text-[10px] font-mono"}>
+                      <span className={log.checkInTime ? "text-primary font-bold text-[10px] font-mono" : "text-amber-500 font-bold text-[10px] font-mono"}>
                         {log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }) : "---"}
                       </span>
                     </div>
@@ -228,7 +228,7 @@ export default function AdminLogsPage() {
                         setOverrideStatus(log.dailyStatus);
                         setOverrideReason(log.reason || "");
                       }}
-                      className="h-8 w-8 p-0 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 border border-transparent hover:border-indigo-100 rounded-lg transition-all"
+                      className="h-8 w-8 p-0 text-gray-400 hover:text-primary hover:bg-primary-light border border-transparent hover:border-primary/10 rounded-lg transition-all"
                     >
                       <Edit2 size={14} />
                     </Button>
@@ -256,7 +256,7 @@ export default function AdminLogsPage() {
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Status Operasional</label>
                     <select 
-                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-3 text-sm font-bold focus:border-indigo-600 outline-none cursor-pointer"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-3 text-sm font-bold focus:border-primary outline-none cursor-pointer"
                       value={overrideStatus}
                       onChange={(e) => setOverrideStatus(e.target.value)}
                     >
@@ -270,7 +270,7 @@ export default function AdminLogsPage() {
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Catatan Operasional</label>
                     <textarea 
                       placeholder="Alasan melakukan perbaikan data..."
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm focus:border-indigo-600 outline-none resize-none min-h-[100px]"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm focus:border-primary outline-none resize-none min-h-[100px]"
                       value={overrideReason}
                       onChange={(e) => setOverrideReason(e.target.value)}
                     />
