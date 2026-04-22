@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "success" | "danger" | "ghost";
+  variant?: "primary" | "success" | "danger" | "ghost" | "dark" | "indigo";
   size?: "sm" | "md";
   loading?: boolean;
   leftIcon?: ReactNode;
@@ -28,6 +28,8 @@ export function Button({
     success: "bg-green-600 text-white hover:bg-green-700 shadow-sm",
     danger: "bg-red-600 text-white hover:bg-red-700 shadow-sm",
     ghost: "bg-transparent text-gray-600 hover:bg-gray-100",
+    dark: "bg-[#002f9e] text-white hover:bg-[#00257a] shadow-lg border-[#002f9e]",
+    indigo: "bg-[#0ea5e9] text-white hover:bg-[#0284c7] shadow-lg border-[#0ea5e9]",
   };
 
   const sizes = {

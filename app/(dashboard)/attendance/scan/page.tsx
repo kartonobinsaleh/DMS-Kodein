@@ -34,12 +34,7 @@ function ScannerContent() {
   const [isScanning, setIsScanning] = useState(false);
   const [isAutoPilot, setIsAutoPilot] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [logs, setLogs] = useState<{msg: string, type: 'info' | 'success' | 'error'}[]>([]);
   const [lastProcessedId, setLastProcessedId] = useState<string | null>(null);
-  
-  const addLog = (msg: string, type: 'info' | 'success' | 'error' = 'info') => {
-    setLogs(prev => [{ msg, type }, ...prev].slice(0, 5));
-  };
   
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
 
@@ -51,7 +46,6 @@ function ScannerContent() {
       }
       
       setIsScanning(true);
-      addLog("Kamera diaktifkan", "info");
       await html5QrCodeRef.current.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 250, height: 250 } },
@@ -123,14 +117,12 @@ function ScannerContent() {
         if (json.success) {
           const found = json.data.find((s: any) => s.id === id || s.statusToken === id);
           if (found) {
-            addLog(`Siswa: ${found.name}`, 'success');
             if (isAutoPilot) {
               await executeAutoProcess(found);
             } else {
               setStudentData(found);
             }
           } else {
-            addLog(`ID Siswa tidak dikenal: ${id}`, 'error');
             resetScanner();
             setTimeout(startScanner, 1000);
           }
@@ -169,7 +161,7 @@ function ScannerContent() {
           if (procJson.success) {
             const deviceLabel = device.type === 'LAPTOP' ? 'LAPTOP' : 'HP';
             toast.success(`${deviceLabel} SUKSES!`, { duration: 1000 });
-            addLog(`${device.name} Sukses!`, 'success');
+
             
             if (isAutoPilot) {
                // In Lightning mode, don't show info card, just go back to camera
@@ -180,13 +172,13 @@ function ScannerContent() {
             }
           }
         } else {
-          addLog(`Device tidak terdaftar`, 'error');
+
           resetScanner();
           setTimeout(startScanner, 1000);
         }
       }
     } catch (error) {
-      addLog("Gagal Sinkronisasi Server", 'error');
+
       resetScanner();
     } finally {
       setIsLoading(false);
@@ -212,7 +204,7 @@ function ScannerContent() {
       : student.ownedDevices.filter((d: any) => d.type === targetType);
 
     if (devices.length === 0) {
-      addLog(`Siswa tidak punya unit ${targetType}`, 'error');
+
       toast.error(`Siswa ini tidak memiliki unit ${targetType}`);
       setTimeout(() => {
         startScanner();
@@ -237,7 +229,7 @@ function ScannerContent() {
       const allSuccess = results.every(r => r.success);
       if (allSuccess) {
         toast.success(`${student.name}: ${actionLabel} Berhasil`, { duration: 1500 });
-        addLog(`${student.name}: ${actionLabel} Berhasil`, 'success');
+
         logger.info(`Batch process success for ${student.name}`);
         setLastProcessedId(student.id);
         if (isAutoPilot) {
@@ -251,13 +243,13 @@ function ScannerContent() {
       } else {
         logger.warn(`Batch process partial failure for ${student.name}`);
         toast.error("Gagal memproses perangkat.");
-        addLog("Gagal memproses perangkat", 'error');
+
         setTimeout(resetScanner, 3000);
       }
     } catch (error) {
       logger.error("System error during batch process", error);
       toast.error("Error Sistem.");
-      addLog("Error Sistem", 'error');
+
       setTimeout(() => {
         startScanner();
         resetScanner();
@@ -454,32 +446,6 @@ function ScannerContent() {
           </div>
         )}
 
-        {/* Live Debug Panel */}
-        <div className="mt-8 rounded-2xl bg-gray-950 p-4 border-2 border-gray-900 shadow-2xl">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Live Terminal Debug</span>
-            </div>
-            <div className="text-[10px] font-mono text-gray-700">DMS_VER: 1.0.0-PRO</div>
-          </div>
-          <div className="space-y-2 font-mono text-[11px]">
-            {logs.length === 0 && (
-              <div className="text-gray-800 italic">Menunggu aktivitas pemindaian...</div>
-            )}
-            {logs.map((log, i) => (
-              <div key={i} className={cn(
-                "flex gap-2 border-l-2 pl-2 transition-all animate-in slide-in-from-left-2 duration-300",
-                log.type === 'success' ? "border-emerald-500 text-emerald-400" :
-                log.type === 'error' ? "border-rose-500 text-rose-400" :
-                "border-primary text-primary-light"
-              )}>
-                <span className="opacity-30 whitespace-nowrap">[{new Date().toLocaleTimeString([], { hour12: false })}]</span>
-                <span className="font-bold">{log.msg}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </PageContainer>
   );

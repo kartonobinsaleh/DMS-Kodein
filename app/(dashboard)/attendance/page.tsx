@@ -178,7 +178,7 @@ export default function AttendancePage() {
             <Button
               className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-sm"
               leftIcon={<Laptop size={16} />}
-              variant="primary"
+              variant="dark"
             >
               SCAN LAPTOP
             </Button>
@@ -187,7 +187,7 @@ export default function AttendancePage() {
             <Button
               className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-sm"
               leftIcon={<Smartphone size={16} />}
-              variant="success"
+              variant="indigo"
             >
               SCAN HP
             </Button>
