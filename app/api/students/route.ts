@@ -11,11 +11,30 @@ export async function GET() {
   }
 
   try {
+    const now = new Date();
+    const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+
     const students = await prisma.student.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { name: "asc" },
+      include: {
+        ownedDevices: {
+          include: {
+            dailyLogs: {
+              where: {
+                date: today
+              }
+            }
+          }
+        }
+      }
     });
-    return NextResponse.json(students);
-  } catch (_error) {
+
+    return NextResponse.json({
+      success: true,
+      data: students
+    });
+  } catch (error) {
+    console.error("GET Students API Error:", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

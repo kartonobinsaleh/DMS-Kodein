@@ -48,7 +48,7 @@ export default function AdminLogsPage() {
         date: filterDate,
         ...(filterClass && { class: filterClass })
       });
-      const res = await fetch(`/api/logs?${params.toString()}`);
+      const res = await fetch(`/api/daily-logs?${params.toString()}`);
       const data = await res.json();
       setLogs(data);
     } catch (error) {

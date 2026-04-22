@@ -11,9 +11,10 @@ interface DailyLogActionsProps {
   onSuccess?: () => void;
   variant?: "primary" | "success";
   className?: string;
+  disabled?: boolean;
 }
 
-export function CheckOutButton({ studentId, deviceId, onSuccess, className }: DailyLogActionsProps) {
+export function CheckOutButton({ studentId, deviceId, onSuccess, className, disabled }: DailyLogActionsProps) {
   const [loading, setLoading] = useState(false);
 
   const handleCheckOut = async () => {
@@ -45,7 +46,7 @@ export function CheckOutButton({ studentId, deviceId, onSuccess, className }: Da
   return (
     <button
       onClick={handleCheckOut}
-      disabled={loading}
+      disabled={loading || disabled}
       className={cn(
         "flex w-full items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 active:scale-95 disabled:opacity-50 transition-all font-bold text-sm shadow-md shadow-indigo-200",
         className
@@ -57,7 +58,7 @@ export function CheckOutButton({ studentId, deviceId, onSuccess, className }: Da
   );
 }
 
-export function CheckInButton({ studentId, deviceId, onSuccess, className }: DailyLogActionsProps) {
+export function CheckInButton({ studentId, deviceId, onSuccess, className, disabled }: DailyLogActionsProps) {
   const [loading, setLoading] = useState(false);
 
   const handleCheckIn = async () => {
@@ -89,7 +90,7 @@ export function CheckInButton({ studentId, deviceId, onSuccess, className }: Dai
   return (
     <button
       onClick={handleCheckIn}
-      disabled={loading}
+      disabled={loading || disabled}
       className={cn(
         "flex w-full items-center justify-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 active:scale-95 disabled:opacity-50 transition-all font-bold text-sm shadow-md shadow-emerald-200",
         className
