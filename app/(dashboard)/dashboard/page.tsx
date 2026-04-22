@@ -37,17 +37,17 @@ export default function DashboardPage() {
   }, []);
 
   const cards = [
-    { name: "Total Inventaris", value: stats?.totalDevices || 0, icon: Laptop, color: "text-gray-400" },
-    { name: "Perangkat Tersedia", value: stats?.availableDevices || 0, icon: CheckCircle, color: "text-green-600" },
-    { name: "Sedang Digunakan", value: stats?.borrowedDevices || 0, icon: Clock, color: "text-indigo-600" },
-    { name: "Kejadian Terlambat", value: stats?.overdueDevices || 0, icon: AlertTriangle, color: "text-amber-500" },
+    { name: "Total Perangkat", value: stats?.totalDevices || 0, icon: Laptop, color: "text-gray-400" },
+    { name: "Unit Masuk", value: stats?.availableDevices || 0, icon: CheckCircle, color: "text-green-600" },
+    { name: "Unit Keluar", value: stats?.borrowedDevices || 0, icon: Clock, color: "text-indigo-600" },
+    { name: "Terlambat Kembali", value: stats?.overdueDevices || 0, icon: AlertTriangle, color: "text-amber-500" },
     { name: "Total Siswa", value: stats?.totalStudents || 0, icon: Users, color: "text-gray-400" },
   ];
 
   return (
     <div className="space-y-4 page-fade-in">
       <PageHeader 
-        title="Ringkasan Dashboard"
+        title="Beranda Operasional"
         subtitle="Metrik operasional untuk inventaris dan aktivitas siswa."
       />
 

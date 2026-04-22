@@ -25,12 +25,13 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
 
   const getLabel = (status: string) => {
     switch (status.toUpperCase()) {
-      case "AVAILABLE": return "Ready";
-      case "BORROWED": return "In Use";
-      case "ON_TIME": return "On Time";
-      case "LATE": return "Late";
-      case "RETURNED": return "Returned";
-      case "NOT_RETURNED": return "Missing";
+      case "AVAILABLE": return "MASUK";
+      case "BORROWED": return "KELUAR";
+      case "ON_TIME": return "TEPAT WAKTU";
+      case "LATE": return "TERLAMBAT";
+      case "RETURNED": return "MASUK";
+      case "NOT_RETURNED": return "KELUAR";
+      case "MAINTENANCE": return "DI PERBAIKI";
       default: return status;
     }
   };

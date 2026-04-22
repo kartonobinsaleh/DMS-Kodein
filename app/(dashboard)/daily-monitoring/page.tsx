@@ -67,7 +67,7 @@ export default function DailyMonitoringPage() {
   return (
     <div className="space-y-4 page-fade-in pb-20">
       <PageHeader
-        title="Daily Monitoring"
+        title="Monitoring Harian"
         subtitle="Status aktivitas harian perangkat siswa secara real-time."
       />
 

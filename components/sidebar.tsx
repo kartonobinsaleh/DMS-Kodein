@@ -20,12 +20,12 @@ import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { Button } from "@/components/ui/button";
 
 const navigation = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Check-In / Out", href: "/attendance", icon: Activity },
-  { name: "Daily Monitoring", href: "/daily-monitoring", icon: ShieldAlert },
-  { name: "Device Management", href: "/devices", icon: Smartphone },
-  { name: "Student Management", href: "/students", icon: Users },
-  { name: "Daily Logs", href: "/logs", icon: History },
+  { name: "Beranda", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Keluar / Masuk", href: "/attendance", icon: Activity },
+  { name: "Monitoring Harian", href: "/daily-monitoring", icon: ShieldAlert },
+  { name: "Data Perangkat", href: "/devices", icon: Smartphone },
+  { name: "Data Siswa", href: "/students", icon: Users },
+  { name: "Riwayat Aktivitas", href: "/logs", icon: History },
 ];
 
 export function Sidebar() {
@@ -71,7 +71,7 @@ export function Sidebar() {
           <div className="h-8 w-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 text-xs font-bold uppercase">
              {session?.user?.name?.[0] || 'A'}
           </div>
-          <p className="text-xs font-semibold text-gray-700 truncate flex-1">{session?.user?.name || "Staff"}</p>
+          <p className="text-xs font-semibold text-gray-700 truncate flex-1">{session?.user?.name || "Staf"}</p>
         </div>
         <Button
           onClick={() => setShowLogoutModal(true)}
@@ -80,7 +80,7 @@ export function Sidebar() {
           className="w-full justify-start text-red-600 hover:bg-red-50 hover:text-red-700"
           leftIcon={<LogOut size={16} />}
         >
-          Logout
+          Keluar Aplikasi
         </Button>
       </div>
     </div>
@@ -121,9 +121,9 @@ export function Sidebar() {
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}
         onConfirm={() => signOut({ callbackUrl: "/login" })}
-        title="Confirm Logout"
-        description="Are you sure you want to exit the operational system?"
-        confirmText="Logout"
+        title="Konfirmasi Keluar"
+        description="Apakah Anda yakin ingin keluar dari sistem operasional?"
+        confirmText="Keluar"
       />
     </>
   );

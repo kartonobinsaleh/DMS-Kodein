@@ -115,7 +115,7 @@ export default function AdminLogsPage() {
   return (
     <div className="space-y-4 page-fade-in pb-20">
       <PageHeader 
-        title="Daily Logs"
+        title="Riwayat Aktivitas"
         subtitle="Database aktivitas harian perangkat siswa."
       />
 

@@ -92,17 +92,17 @@ export default function AttendancePage() {
   return (
     <div className="space-y-4 page-fade-in pb-20">
       <PageHeader
-        title="Check-In / Out"
+        title="Keluar / Masuk Perangkat"
         subtitle="Kelola aktivitas harian perangkat siswa."
       />
 
        {/* Summary Strip - Mobile Horizontal Scroll */}
        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
         {[
-          { label: "Total Perangkat", value: stats.totalItems, icon: Activity, color: "text-gray-400" },
-          { label: "Dipinjam", value: stats.borrowed, icon: LogOut, color: "text-indigo-600" },
+          { label: "Total Unit", value: stats.totalItems, icon: Activity, color: "text-gray-400" },
+          { label: "Unit Keluar", value: stats.borrowed, icon: LogOut, color: "text-indigo-600" },
           { label: "Terlambat", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
-          { label: "Tersedia", value: stats.totalItems - stats.borrowed, icon: CheckCircle, color: "text-green-600" },
+          { label: "Unit Masuk", value: stats.totalItems - stats.borrowed, icon: CheckCircle, color: "text-green-600" },
         ].map((s) => (
           <div key={s.label} className="flex-shrink-0 bg-white border border-gray-200 rounded-xl p-3 min-w-[110px] shadow-sm">
             <div className="flex items-center justify-between mb-1">
