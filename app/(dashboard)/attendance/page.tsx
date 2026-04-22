@@ -124,14 +124,24 @@ export default function AttendancePage() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <Link href="/attendance/scan">
-          <Button
-            className="w-full sm:w-auto h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-md bg-indigo-600 hover:bg-indigo-700"
-            leftIcon={<QrCode size={16} />}
-          >
-            Scan Digital Pass
-          </Button>
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <Link href="/attendance/scan?mode=checkout" className="flex-1">
+            <Button
+              className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-sm bg-indigo-600 hover:bg-indigo-700"
+              leftIcon={<QrCode size={16} />}
+            >
+              SCAN CHECK-OUT
+            </Button>
+          </Link>
+          <Link href="/attendance/scan?mode=checkin" className="flex-1">
+            <Button
+              className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-sm bg-emerald-600 hover:bg-emerald-700"
+              leftIcon={<QrCode size={16} />}
+            >
+              SCAN CHECK-IN
+            </Button>
+          </Link>
+        </div>
       </ActionBar>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
