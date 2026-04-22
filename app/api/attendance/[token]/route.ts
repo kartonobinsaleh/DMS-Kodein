@@ -72,8 +72,8 @@ export async function GET(
       };
     });
 
-    const hasActivity = devices.some(d => d.status !== "NOT_STARTED");
-    const allReturned = devices.length > 0 && devices.every(d => d.isReturned);
+    const hasActivity = devices.some((d: any) => d.status !== "NOT_STARTED");
+    const allReturned = devices.length > 0 && devices.every((d: any) => d.isReturned);
     const overallStatus = allReturned ? "RETURNED" : (hasActivity ? "NOT_SAFE" : "NO_ACTIVITY");
 
     return NextResponse.json({
