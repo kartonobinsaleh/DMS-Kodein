@@ -36,9 +36,19 @@ export function Sidebar() {
 
   const SidebarContent = () => (
     <div className="flex h-full w-full flex-col bg-white border-r border-gray-200">
-      <div className="p-6 border-b border-gray-200 flex items-center gap-3">
-        <div className="h-7 w-7 bg-indigo-600 rounded-lg" />
-        <h1 className="text-sm font-bold text-gray-800 tracking-tight">DMS System</h1>
+      <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="h-7 w-7 bg-indigo-600 rounded-lg shadow-sm" />
+          <h1 className="text-sm font-bold text-gray-800 tracking-tight">DMS System</h1>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="lg:hidden h-8 w-8 p-0 text-gray-400"
+          onClick={() => setIsOpen(false)}
+        >
+          <X size={18} />
+        </Button>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
@@ -88,15 +98,25 @@ export function Sidebar() {
 
   return (
     <>
-      <div className="lg:hidden fixed top-4 left-4 z-40">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="bg-white/80 backdrop-blur border border-gray-200"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X size={18} /> : <Menu size={18} />}
-        </Button>
+      {/* Mobile Top Bar - Standardized & Integrated */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-white/80 backdrop-blur-md border-b border-gray-200 z-40 flex items-center justify-between px-4">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-10 w-10 p-0 hover:bg-gray-50 border border-transparent active:border-gray-100"
+            onClick={() => setIsOpen(true)}
+          >
+            <Menu size={20} className="text-gray-600" />
+          </Button>
+          <div className="flex items-center gap-2">
+            <div className="h-6 w-6 bg-indigo-600 rounded-md shadow-sm" />
+            <span className="text-sm font-bold text-gray-800 tracking-tight">DMS System</span>
+          </div>
+        </div>
+        <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-400 border border-gray-200">
+           {session?.user?.name?.[0] || 'A'}
+        </div>
       </div>
 
       <aside className="hidden lg:flex h-full w-56 flex-col shrink-0 overflow-y-auto">
