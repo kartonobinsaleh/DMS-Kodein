@@ -41,7 +41,7 @@ export default function StudentsPage() {
   return (
     <div className="space-y-4 page-fade-in pb-20">
       <PageHeader
-        title="Manajemen Siswa"
+        title="Data Siswa"
         subtitle="Basis data operasional siswa terdaftar untuk aktivitas perangkat harian."
       />
 
@@ -50,7 +50,7 @@ export default function StudentsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
             type="text"
-            placeholder="Cari nama atau grup kelas..."
+            placeholder="Cari nama atau kelas..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm placeholder:text-gray-400 transition-all"
@@ -131,7 +131,7 @@ export default function StudentsPage() {
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Grup Kelas</label>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Kelas</label>
                 <input
                   type="text"
                   value={formData.class}

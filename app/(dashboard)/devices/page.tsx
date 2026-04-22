@@ -41,8 +41,8 @@ export default function DevicesPage() {
   return (
     <div className="space-y-4 page-fade-in pb-10">
       <PageHeader
-        title="Manajemen Perangkat"
-        subtitle="Kelola inventaris perangkat siswa dan status operasional harian."
+        title="Data Perangkat"
+        subtitle="Daftar seluruh unit perangkat dalam sistem dan status siaganya."
       />
 
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -61,7 +61,7 @@ export default function DevicesPage() {
           size="sm"
           leftIcon={<Plus size={14} />}
         >
-          Tambah Perangkat
+          Registrasi Perangkat Baru
         </Button>
       </div>
 
@@ -120,7 +120,7 @@ export default function DevicesPage() {
             </h2>
             <form onSubmit={handleAddDevice} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500 ml-1">Label Perangkat</label>
+                <label className="text-xs font-medium text-gray-500 ml-1">Nama / Label Unit</label>
                 <input
                   autoFocus
                   type="text"
