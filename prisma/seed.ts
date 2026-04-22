@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { prisma } from "../lib/prisma";
+import bcrypt from "bcryptjs";
 
 async function main() {
   console.log("🚀 STARTING PRODUCTION-READY SEED...");
@@ -12,7 +13,7 @@ async function main() {
   await prisma.user.deleteMany();
 
   // 2. USERS (Audit Trails)
-  const hashedPass = "$2a$10$8.N67BgM.K.9G8BgM.K.9Oe8BgM.K.9G8BgM.K.9G8BgM.K.9G8"; 
+  const hashedPass = bcrypt.hashSync("password123", 10);
   const admin = await prisma.user.create({
     data: { name: "System Admin", email: "admin@dms.com", password: hashedPass, role: "ADMIN" }
   });

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { LogOut, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 
 interface DailyLogActionsProps {
   studentId: string;
@@ -15,12 +16,9 @@ interface DailyLogActionsProps {
 
 export function CheckOutButton({ studentId, deviceId, onSuccess, className, disabled }: DailyLogActionsProps) {
   const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleCheckOut = async () => {
-    if (!studentId || !deviceId) {
-      toast.error("Pilih siswa dan perangkat terlebih dahulu");
-      return;
-    }
     setLoading(true);
     try {
       const res = await fetch("/api/check-out", {
@@ -39,32 +37,43 @@ export function CheckOutButton({ studentId, deviceId, onSuccess, className, disa
       toast.error("Gagal melakukan check-out");
     } finally {
       setLoading(false);
+      setShowConfirm(false);
     }
   };
 
   return (
-    <Button
-      onClick={handleCheckOut}
-      loading={loading}
-      disabled={disabled}
-      variant="primary"
-      size="md"
-      leftIcon={<LogOut size={18} />}
-      className={className}
-    >
-      CHECK-OUT DEVICE
-    </Button>
+    <>
+      <Button
+        onClick={() => setShowConfirm(true)}
+        loading={loading}
+        disabled={disabled}
+        variant="primary"
+        size="md"
+        leftIcon={<LogOut size={18} />}
+        className={className}
+      >
+        CHECK-OUT
+      </Button>
+
+      <ConfirmationModal 
+        isOpen={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        onConfirm={handleCheckOut}
+        variant="info"
+        title="Konfirmasi Check-Out"
+        description="Apakah Anda yakin ingin memproses pengeluaran perangkat untuk siswa ini?"
+        confirmText="Ya, Keluarkan"
+        cancelText="Batal"
+      />
+    </>
   );
 }
 
 export function CheckInButton({ studentId, deviceId, onSuccess, className, disabled }: DailyLogActionsProps) {
   const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleCheckIn = async () => {
-    if (!studentId || !deviceId) {
-      toast.error("Pilih siswa dan perangkat terlebih dahulu");
-      return;
-    }
     setLoading(true);
     try {
       const res = await fetch("/api/check-in", {
@@ -83,20 +92,34 @@ export function CheckInButton({ studentId, deviceId, onSuccess, className, disab
       toast.error("Gagal melakukan check-in");
     } finally {
       setLoading(false);
+      setShowConfirm(false);
     }
   };
 
   return (
-    <Button
-      onClick={handleCheckIn}
-      loading={loading}
-      disabled={disabled}
-      variant="success"
-      size="md"
-      leftIcon={<LogIn size={18} />}
-      className={className}
-    >
-      CHECK-IN DEVICE
-    </Button>
+    <>
+      <Button
+        onClick={() => setShowConfirm(true)}
+        loading={loading}
+        disabled={disabled}
+        variant="success"
+        size="md"
+        leftIcon={<LogIn size={18} />}
+        className={className}
+      >
+        CHECK-IN
+      </Button>
+
+      <ConfirmationModal 
+        isOpen={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        onConfirm={handleCheckIn}
+        variant="info"
+        title="Konfirmasi Check-In"
+        description="Apakah Anda yakin perangkat sudah kembali dalam kondisi baik?"
+        confirmText="Ya, Sudah Kembali"
+        cancelText="Batal"
+      />
+    </>
   );
 }

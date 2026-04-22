@@ -36,18 +36,17 @@ export class DailyLogService {
     if (!device) throw new Error("DEVICE_NOT_FOUND");
     if (device.ownerId !== studentId) throw new Error("OWNERSHIP_MISMATCH");
 
-    // 2. Cegah Double Checkout (CRITICAL)
-    const existingLog = await prisma.dailyLog.findUnique({
+    // 2. Cegah Double Checkout (Hanya jika ada sesi yang belum selesai)
+    const activeLog = await prisma.dailyLog.findFirst({
       where: {
-        studentId_deviceId_date: {
-          studentId,
-          deviceId,
-          date: today,
-        },
+        studentId,
+        deviceId,
+        date: today,
+        checkInTime: null, // Sesi aktif
       },
     });
 
-    if (existingLog && !existingLog.checkInTime) {
+    if (activeLog) {
       throw new Error("DEVICE_ALREADY_CHECKED_OUT");
     }
 
@@ -78,19 +77,18 @@ export class DailyLogService {
     const now = new Date();
     const deadline = this.getDeadline();
 
-    // 1. Cari log peminjaman hari ini (Date Filtering)
-    const log = await prisma.dailyLog.findUnique({
+    // 1. Cari log peminjaman hari ini yang belum kembali (Latest Active Session)
+    const log = await prisma.dailyLog.findFirst({
       where: {
-        studentId_deviceId_date: {
-          studentId,
-          deviceId,
-          date: today,
-        },
+        studentId,
+        deviceId,
+        date: today,
+        checkInTime: null,
       },
+      orderBy: { createdAt: "desc" },
     });
 
     if (!log) throw new Error("NO_ACTIVE_LOG_FOR_TODAY");
-    if (log.checkInTime) throw new Error("DEVICE_ALREADY_RETURNED");
 
     // 2. Deteksi Terlambat (Late Detection rule)
     // Jika waktu sekarang > limit 17:00

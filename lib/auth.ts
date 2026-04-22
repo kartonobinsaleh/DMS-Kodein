@@ -50,6 +50,11 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
+          if (!user.isActive) {
+            console.log("Auth Failed: User account is inactive ->", credentials.email);
+            throw new Error("Akun Anda telah dinonaktifkan.");
+          }
+
           const isPasswordValid = await bcrypt.compare(
             credentials.password,
             user.password

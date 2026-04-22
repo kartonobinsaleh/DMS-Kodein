@@ -12,6 +12,7 @@ model User {
   email     String   @unique
   password  String
   role      Role     @default(STAFF)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   dailyLogs DailyLog[]
@@ -63,7 +64,7 @@ model DailyLog {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  @@unique([studentId, deviceId, date])
+  @@index([studentId, deviceId, date])
 }
 
 enum Role {

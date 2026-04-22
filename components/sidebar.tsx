@@ -20,12 +20,13 @@ import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { Button } from "@/components/ui/button";
 
 const navigation = [
-  { name: "Beranda", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Keluar / Masuk", href: "/attendance", icon: Activity },
-  { name: "Monitoring Harian", href: "/daily-monitoring", icon: ShieldAlert },
-  { name: "Data Perangkat", href: "/devices", icon: Smartphone },
-  { name: "Data Siswa", href: "/students", icon: Users },
-  { name: "Riwayat Aktivitas", href: "/logs", icon: History },
+  { name: "Beranda", href: "/dashboard", icon: LayoutDashboard, roles: ["ADMIN", "STAFF"] },
+  { name: "Keluar / Masuk", href: "/attendance", icon: Activity, roles: ["ADMIN", "STAFF"] },
+  { name: "Monitoring Harian", href: "/daily-monitoring", icon: ShieldAlert, roles: ["ADMIN", "STAFF"] },
+  { name: "Data Perangkat", href: "/devices", icon: Smartphone, roles: ["ADMIN", "STAFF"] },
+  { name: "Data Siswa", href: "/students", icon: Users, roles: ["ADMIN", "STAFF"] },
+  { name: "Riwayat Aktivitas", href: "/logs", icon: History, roles: ["ADMIN", "STAFF"] },
+  { name: "Manajemen Staf", href: "/admin/users", icon: Users, roles: ["ADMIN"] },
 ];
 
 export function Sidebar() {
@@ -53,7 +54,9 @@ export function Sidebar() {
 
       <nav className="flex-1 px-3 py-4 space-y-1">
         {navigation.map((item) => {
-          const isActive = pathname === item.href;
+          if (item.roles && session?.user?.role && !item.roles.includes(session.user.role)) return null;
+          
+          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
             <Link
               key={item.name}
