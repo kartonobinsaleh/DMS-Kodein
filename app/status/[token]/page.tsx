@@ -24,24 +24,24 @@ export default function StudentStatusPage({ params }: { params: { token: string 
   const [data, setData] = useState<StudentStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  const fetchStatus = async (isSilent = false) => {
-    if (!isSilent) setLoading(true);
-    else setIsRefreshing(true);
+  const fetchStatus = async (silent = false) => {
+    if (!silent) setLoading(true);
+    else setIsSyncing(true);
 
     try {
-      // Use the token parameter from the URL
       const res = await fetch(`/api/attendance/${params.token}`);
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error("Sync failed");
       const json = await res.json();
       setData(json);
       setError(false);
     } catch (err) {
-      setError(true);
+      if (!silent) setError(true);
+      console.warn("Background sync failed, keeping stale data.");
     } finally {
       setLoading(false);
-      setIsRefreshing(false);
+      setIsSyncing(false);
     }
   };
 
@@ -99,7 +99,7 @@ export default function StudentStatusPage({ params }: { params: { token: string 
            ) : (
              <AlertCircle size={180} className="drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]" strokeWidth={2.5} />
            )}
-           {isRefreshing && (
+           {isSyncing && (
              <div className="absolute -top-4 -right-4 bg-white/20 p-2 rounded-full animate-spin">
                <RefreshCcw size={16} />
              </div>
@@ -156,7 +156,7 @@ export default function StudentStatusPage({ params }: { params: { token: string 
         </div>
         
         <div className="mt-2 flex items-center gap-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-white/30">
-          <RefreshCcw size={8} className={cn(isRefreshing && "animate-spin")} />
+          <RefreshCcw size={8} className={cn(isSyncing && "animate-spin")} />
           Sync: {new Date(data.lastSync).toLocaleTimeString()}
         </div>
       </div>
