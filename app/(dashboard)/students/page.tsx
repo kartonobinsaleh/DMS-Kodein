@@ -65,7 +65,7 @@ export default function StudentsPage() {
         </Button>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isLoading && students.length === 0 ? (
           Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="h-24 animate-pulse bg-white rounded-xl border border-gray-200" />
