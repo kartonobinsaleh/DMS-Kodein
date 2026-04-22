@@ -17,6 +17,7 @@ import {
 import { StatusBadge } from "@/components/ui/status-badge";
 import { cn } from "@/lib/utils";
 import { checkIfOverdue } from "@/lib/business-logic";
+import { CheckOutButton, CheckInButton } from "@/components/daily-log-actions";
 
 export default function TransactionsPage() {
   const { transactions, borrowDevice, returnDevice } = useTransactionStore();
@@ -85,6 +86,72 @@ export default function TransactionsPage() {
             <ArrowUpRight size={18} />
             <span>Borrow Device</span>
           </button>
+        </div>
+      </div>
+
+      {/* Daily Operations Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-blue-50/50 border border-blue-100 rounded-2xl">
+        <div className="space-y-2">
+          <h2 className="text-lg font-bold text-blue-900">Daily Check-Out</h2>
+          <p className="text-xs text-blue-700/70 mb-4">Assign device for today's session.</p>
+          <div className="flex flex-wrap gap-4 items-end">
+             <div className="flex-1 min-w-[200px]">
+                <label className="block text-[10px] font-bold uppercase mb-1 text-blue-900/50">Student & Device</label>
+                <div className="flex gap-2">
+                  <select 
+                    className="flex-1 rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    onChange={(e) => setBorrowData({ ...borrowData, studentId: e.target.value })}
+                  >
+                    <option value="">Select Student...</option>
+                    {students.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  </select>
+                  <select 
+                    className="flex-1 rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    onChange={(e) => setBorrowData({ ...borrowData, deviceId: e.target.value })}
+                  >
+                    <option value="">Select Device...</option>
+                    {availableDevices.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                  </select>
+                  <CheckOutButton 
+                    studentId={borrowData.studentId} 
+                    deviceId={borrowData.deviceId} 
+                    onSuccess={() => fetchDevices()} 
+                  />
+                </div>
+             </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <h2 className="text-lg font-bold text-green-900">Daily Check-In</h2>
+          <p className="text-xs text-green-700/70 mb-4">Complete today's session.</p>
+          <div className="flex flex-wrap gap-4 items-end">
+             <div className="flex-1 min-w-[200px]">
+                <label className="block text-[10px] font-bold uppercase mb-1 text-green-900/50">Student & Device</label>
+                <div className="flex gap-2">
+                  {/* For simplicity we reuse borrow fields to select student/device for return */}
+                  <select 
+                    className="flex-1 rounded-lg border border-green-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                    onChange={(e) => setBorrowData({ ...borrowData, studentId: e.target.value })}
+                  >
+                    <option value="">Select Student...</option>
+                    {students.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                  </select>
+                  <select 
+                    className="flex-1 rounded-lg border border-green-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                    onChange={(e) => setBorrowData({ ...borrowData, deviceId: e.target.value })}
+                  >
+                    <option value="">Select Device...</option>
+                    {devices.filter(d => d.status === "BORROWED").map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                  </select>
+                  <CheckInButton 
+                    studentId={borrowData.studentId} 
+                    deviceId={borrowData.deviceId} 
+                    onSuccess={() => fetchDevices()} 
+                  />
+                </div>
+             </div>
+          </div>
         </div>
       </div>
 
