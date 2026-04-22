@@ -11,33 +11,33 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
       case "AVAILABLE":
       case "ON_TIME":
       case "RETURNED":
-        return "bg-emerald-100 text-emerald-700 border-emerald-200";
+        return "bg-green-600 text-white";
       case "BORROWED":
       case "NOT_RETURNED":
-        return "bg-rose-100 text-rose-700 border-rose-200";
+        return "bg-red-600 text-white";
       case "LATE":
       case "MAINTENANCE":
-        return "bg-amber-100 text-amber-700 border-amber-200";
+        return "bg-amber-500 text-white";
       default:
-        return "bg-slate-100 text-slate-700 border-slate-200";
+        return "bg-gray-100 text-gray-600";
     }
   };
 
   const getLabel = (status: string) => {
     switch (status.toUpperCase()) {
-      case "AVAILABLE": return "Tersedia";
-      case "BORROWED": return "Dipakai";
-      case "ON_TIME": return "Tepat Waktu";
-      case "LATE": return "Terlambat";
-      case "RETURNED": return "Kembali";
-      case "NOT_RETURNED": return "Belum Kembali";
+      case "AVAILABLE": return "Ready";
+      case "BORROWED": return "In Use";
+      case "ON_TIME": return "On Time";
+      case "LATE": return "Late";
+      case "RETURNED": return "Returned";
+      case "NOT_RETURNED": return "Missing";
       default: return status;
     }
   };
 
   return (
     <span className={cn(
-      "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border uppercase tracking-wider",
+      "inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-tight whitespace-nowrap shadow-sm",
       getStatusStyles(status),
       className
     )}>

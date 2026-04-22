@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDeviceStore } from "@/store/use-device-store";
-import { Plus, Search, Smartphone, Laptop, Trash2, Smartphone as MobileIcon, LayoutGrid } from "lucide-react";
+import { Plus, Search, Smartphone, Laptop, Trash2, Database } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { PageHeader } from "@/components/ui/page-header";
@@ -39,76 +39,67 @@ export default function DevicesPage() {
   };
 
   return (
-    <div className="space-y-12 page-fade-in pb-32">
+    <div className="space-y-4 page-fade-in pb-10">
       <PageHeader
-        title="Perangkat"
-        subtitle="Kelola inventaris dan unit perangkat DMS."
+        title="Device Management"
+        subtitle="Manage daily student device inventory and operational status."
       />
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="relative group w-full max-w-lg">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="relative w-full max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
           <input
             type="text"
-            placeholder="Cari perangkat..."
+            placeholder="Search assets by name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-6 py-4 text-sm font-semibold focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all shadow-sm"
+            className="w-full bg-gray-50 border border-gray-100 rounded-lg pl-9 pr-4 py-2 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
           />
         </div>
         <Button
           onClick={() => setShowAddModal(true)}
-          size="lg"
-          leftIcon={<Plus size={20} />}
-          className="w-full md:w-auto"
+          size="sm"
+          leftIcon={<Plus size={14} />}
         >
-          Tambah Perangkat
+          Add Asset
         </Button>
       </div>
 
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isLoading && devices.length === 0 ? (
           Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-48 animate-pulse rounded-card bg-white border border-slate-50" />
+            <div key={i} className="h-32 animate-pulse rounded-xl bg-white border border-gray-100" />
           ))
         ) : filteredDevices.length > 0 ? (
           filteredDevices.map((device) => (
-            <div
-              key={device.id}
-              className="group relative rounded-card border border-slate-100 bg-white p-8 shadow-card hover:border-indigo-100 transition-all duration-300"
-            >
-              <div className="flex items-start justify-between">
-                <div className="rounded-2xl bg-slate-50 p-4 text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors duration-300">
-                  {device.name.toLowerCase().includes('laptop') || device.name.toLowerCase().includes('book') ? <Laptop size={24} /> : <MobileIcon size={24} />}
+            <div key={device.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-gray-50 rounded-lg text-gray-400">
+                    {device.name.toLowerCase().includes('laptop') ? <Laptop size={18} /> : <Smartphone size={18} />}
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-800 leading-none mb-1">{device.name}</h3>
+                    <p className="text-[10px] text-gray-400 font-medium">ID: {device.id.slice(-6).toUpperCase()}</p>
+                  </div>
                 </div>
                 <Button 
                   variant="ghost"
                   size="sm"
                   onClick={() => setDeviceToDelete(device.id)}
-                  className="text-slate-100 hover:text-rose-500 hover:bg-rose-50"
+                  className="p-1 h-auto text-gray-300 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  <Trash2 size={18} />
+                  <Trash2 size={14} />
                 </Button>
               </div>
 
-              <div className="mt-8">
-                <h3 className="text-xl font-bold text-slate-900 tracking-tight leading-none mb-2">{device.name}</h3>
-                <p className="text-[10px] text-slate-300 font-black uppercase tracking-widest">ID: {device.id}</p>
-              </div>
-
-              <div className="mt-8 flex items-center justify-between pt-6 border-t border-slate-50">
-                <StatusBadge status={device.status} className="scale-90 origin-left" />
-                <span className="text-[9px] font-black text-slate-200 uppercase tracking-widest">
-                  {new Date(device.createdAt).toLocaleDateString()}
-                </span>
+              <div className="flex items-center justify-between mt-auto">
+                <StatusBadge status={device.status} />
               </div>
             </div>
           ))
         ) : (
-          <div className="col-span-full py-40 flex flex-col items-center justify-center text-slate-200 bg-white border border-slate-100 rounded-container">
-            <LayoutGrid size={64} className="mb-4 opacity-50" />
-            <p className="font-bold uppercase tracking-widest text-xs">Belum ada perangkat</p>
-          </div>
+          <div className="col-span-full py-10 text-center text-sm text-gray-400 italic">No assets found.</div>
         )}
       </div>
 
@@ -116,43 +107,32 @@ export default function DevicesPage() {
         isOpen={!!deviceToDelete}
         onClose={() => setDeviceToDelete(null)}
         onConfirm={handleDelete}
-        title="Hapus Perangkat"
-        description="Aksi ini akan menghapus perangkat dari sistem inventaris."
+        title="Retire Asset"
+        description="Permanently remove this hardware from system records."
       />
 
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/10 backdrop-blur-md p-4">
-          <div className="w-full max-w-md rounded-container border border-slate-100 bg-white p-10 shadow-2xl animate-in zoom-in-95 duration-200">
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight leading-none mb-2">Perangkat Baru</h2>
-            <p className="text-sm text-slate-400 font-medium mb-10">Masukkan nama perangkat untuk didaftarkan.</p>
-            
-            <form onSubmit={handleAddDevice} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Nama Perangkat</label>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-100 animate-in zoom-in-95 duration-150">
+             <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <Database size={16} className="text-indigo-600" />
+              Register New Asset
+            </h2>
+            <form onSubmit={handleAddDevice} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-500 ml-1">Asset Label</label>
                 <input
                   autoFocus
                   type="text"
                   value={newDeviceName}
                   onChange={(e) => setNewDeviceName(e.target.value)}
-                  placeholder="Contoh: Laptop 01"
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-5 py-4 text-sm font-semibold focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                  placeholder="e.g. Laptop 05"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
                 />
               </div>
-              <div className="flex gap-4 pt-6">
-                <Button
-                  onClick={() => setShowAddModal(false)}
-                  variant="ghost"
-                  className="flex-1 text-slate-400"
-                >
-                  Batal
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={!newDeviceName.trim()}
-                  className="flex-1"
-                >
-                  Simpan
-                </Button>
+              <div className="flex gap-2 pt-2">
+                <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1">Cancel</Button>
+                <Button type="submit" disabled={!newDeviceName.trim()} className="flex-1">Save Asset</Button>
               </div>
             </form>
           </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useStudentStore } from "@/store/use-student-store";
-import { Plus, Search, Users, Trash2, LayoutGrid } from "lucide-react";
+import { Plus, Search, Trash2, User } from "lucide-react";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
@@ -39,92 +39,69 @@ export default function StudentsPage() {
   };
 
   return (
-    <div className="space-y-12 page-fade-in pb-32">
+    <div className="space-y-4 page-fade-in pb-10">
       <PageHeader
-        title="Data Siswa"
-        subtitle="Kelola identitas dan kepemilikan perangkat siswa."
+        title="Student Management"
+        subtitle="Operational database of registered students for daily device activity."
       />
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="relative group w-full max-w-lg">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={18} />
+      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="relative w-full max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
           <input
             type="text"
-            placeholder="Cari nama atau kelas siswa..."
+            placeholder="Search by name or class..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-2xl border border-slate-200 bg-white pl-12 pr-6 py-4 text-sm font-semibold focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all shadow-sm"
+            className="w-full bg-gray-50 border border-gray-100 rounded-lg pl-9 pr-4 py-2 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
           />
         </div>
         <Button
           onClick={() => setShowAddModal(true)}
-          size="lg"
-          variant="primary"
-          leftIcon={<Plus size={20} />}
-          className="w-full md:w-auto shadow-indigo-100"
+          size="sm"
+          leftIcon={<Plus size={14} />}
         >
-          Daftarkan Siswa
+          Add Student
         </Button>
       </div>
 
-      <div className="rounded-container border border-slate-100 bg-white shadow-card overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm border-collapse">
-            <thead className="bg-slate-50/50 text-[10px] font-black uppercase text-slate-400 border-b border-slate-100 tracking-widest">
-              <tr>
-                <th className="px-10 py-6">Profil Siswa</th>
-                <th className="px-10 py-6 text-center">Kelas</th>
-                <th className="px-10 py-6 text-right">Aksi</th>
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50/50 border-b border-gray-100">
+                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight">Name</th>
+                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight">Class</th>
+                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-tight text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-gray-50 italic-table-empty">
               {isLoading && students.length === 0 ? (
                 Array.from({ length: 5 }).map((_, i) => (
-                  <tr key={i}>
-                    <td colSpan={3} className="px-10 py-10">
-                      <div className="h-6 animate-pulse rounded-lg bg-slate-50 w-full" />
-                    </td>
+                  <tr key={i} className="animate-pulse">
+                    <td colSpan={3} className="px-6 py-4"><div className="h-5 bg-gray-50 rounded" /></td>
                   </tr>
                 ))
               ) : filteredStudents.length > 0 ? (
                 filteredStudents.map((student) => (
-                  <tr key={student.id} className="group hover:bg-slate-50 transition-colors">
-                    <td className="px-10 py-8">
-                      <div className="flex items-center gap-6">
-                        <div className="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold text-lg">
-                          {student.name[0]}
-                        </div>
-                        <div>
-                          <p className="font-bold text-slate-900 text-lg leading-none mb-1.5">{student.name}</p>
-                          <p className="text-[10px] text-slate-300 font-black uppercase tracking-widest leading-none">ID: {student.id.slice(-8)}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-10 py-8 text-center">
-                      <span className="rounded-full bg-slate-100 px-4 py-1.5 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                        {student.class}
-                      </span>
-                    </td>
-                    <td className="px-10 py-8 text-right">
+                  <tr key={student.id} className="hover:bg-gray-50/50 transition-colors">
+                    <td className="px-6 py-4 text-sm font-medium text-gray-800">{student.name}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600 font-medium">{student.class}</td>
+                    <td className="px-6 py-4 text-right">
                       <Button 
                         variant="ghost"
                         size="sm"
                         onClick={() => setStudentToDelete(student.id)}
-                        className="text-slate-200 hover:text-rose-500 hover:bg-rose-50"
+                        className="text-gray-400 hover:text-red-600"
                       >
-                        <Trash2 size={18} />
+                        <Trash2 size={16} />
                       </Button>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="px-10 py-40 text-center">
-                    <div className="flex flex-col items-center justify-center opacity-30">
-                      <LayoutGrid size={64} className="mb-4" />
-                      <p className="font-bold uppercase tracking-widest text-xs leading-none">Daftar siswa kosong</p>
-                    </div>
-                  </td>
+                  <td colSpan={3} className="px-6 py-10 text-center text-sm text-gray-400 italic">No records found.</td>
                 </tr>
               )}
             </tbody>
@@ -136,53 +113,42 @@ export default function StudentsPage() {
         isOpen={!!studentToDelete}
         onClose={() => setStudentToDelete(null)}
         onConfirm={handleDelete}
-        title="Hapus Data Siswa"
-        description="Aksi ini akan menghapus data siswa secara permanen dari sistem."
+        title="Delete Record"
+        description="Permanently remove this student record from the system."
       />
 
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/10 backdrop-blur-md p-4 animate-in fade-in duration-300">
-          <div className="w-full max-w-md rounded-container border border-slate-100 bg-white p-10 shadow-2xl animate-in zoom-in-95 duration-200">
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight leading-none mb-2">Siswa Baru</h2>
-            <p className="text-sm text-slate-400 font-medium mb-10">Daftarkan identitas siswa baru ke dalam sistem.</p>
-            
-            <form onSubmit={handleAddStudent} className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Nama Lengkap</label>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-100 animate-in zoom-in-95 duration-150">
+            <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <User size={16} className="text-indigo-600" />
+              Register New Student
+            </h2>
+            <form onSubmit={handleAddStudent} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-500 ml-1">Full Name</label>
                 <input
                   autoFocus
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Nama Lengkap"
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-5 py-4 text-sm font-semibold focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                  placeholder="e.g. John Doe"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Kelas</label>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-500 ml-1">Class Group</label>
                 <input
                   type="text"
                   value={formData.class}
                   onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                  placeholder="Contoh: 10-A"
-                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-5 py-4 text-sm font-semibold focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                  placeholder="e.g. 10-A"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
                 />
               </div>
-              <div className="flex gap-4 pt-6">
-                <Button
-                  onClick={() => setShowAddModal(false)}
-                  variant="ghost"
-                  className="flex-1 text-slate-400"
-                >
-                  Batal
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={!formData.name.trim() || !formData.class.trim()}
-                  className="flex-1 py-4"
-                >
-                  Daftarkan
-                </Button>
+              <div className="flex gap-2 pt-2">
+                <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1">Cancel</Button>
+                <Button type="submit" disabled={!formData.name.trim() || !formData.class.trim()} className="flex-1">Save Student</Button>
               </div>
             </form>
           </div>

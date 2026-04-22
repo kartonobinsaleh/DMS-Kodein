@@ -6,15 +6,13 @@ import {
   Users, 
   CheckCircle2,
   Clock, 
-  TrendingUp,
   AlertCircle,
   ArrowRight,
-  ArrowRightLeft
+  ShieldCheck,
+  Activity
 } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/ui/page-header";
-import { Button } from "@/components/ui/button";
 
 interface Stats {
   totalDevices: number;
@@ -39,122 +37,69 @@ export default function DashboardPage() {
   }, []);
 
   const cards = [
-    {
-      name: "Total Perangkat",
-      value: stats?.totalDevices || 0,
-      icon: Smartphone,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
-    },
-    {
-      name: "Tersedia",
-      value: stats?.availableDevices || 0,
-      icon: CheckCircle2,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50",
-    },
-    {
-      name: "Dipakai",
-      value: stats?.borrowedDevices || 0,
-      icon: Clock,
-      color: "text-amber-600",
-      bg: "bg-amber-50",
-    },
-    {
-      name: "Total Siswa",
-      value: stats?.totalStudents || 0,
-      icon: Users,
-      color: "text-indigo-600",
-      bg: "bg-indigo-50",
-    },
-    {
-      name: "Terlambat",
-      value: stats?.overdueDevices || 0,
-      icon: AlertCircle,
-      color: "text-rose-600",
-      bg: "bg-rose-50",
-    },
+    { name: "Total Inventory", value: stats?.totalDevices || 0, icon: Smartphone, color: "text-gray-400" },
+    { name: "Available Assets", value: stats?.availableDevices || 0, icon: CheckCircle2, color: "text-green-600" },
+    { name: "Currently In-Use", value: stats?.borrowedDevices || 0, icon: Clock, color: "text-indigo-600" },
+    { name: "Overdue Items", value: stats?.overdueDevices || 0, icon: AlertCircle, color: "text-red-600" },
+    { name: "Total Students", value: stats?.totalStudents || 0, icon: Users, color: "text-gray-400" },
   ];
 
   return (
-    <div className="space-y-12 page-fade-in pb-32">
+    <div className="space-y-4 page-fade-in">
       <PageHeader 
-        title="Ringkasan Hari Ini"
-        subtitle="Pantau ketersediaan dan status pengambilan perangkat siswa."
+        title="Dashboard Overview"
+        subtitle="Operational metrics for inventory and student activity."
       />
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {cards.map((card) => (
-          <div
-            key={card.name}
-            className="flex flex-col rounded-card bg-white border border-slate-100 p-6 shadow-card hover:border-indigo-100 transition-all"
-          >
-            <div className={cn("inline-flex w-fit rounded-xl p-3 mb-4", card.bg, card.color)}>
-              <card.icon size={22} />
+          <div key={card.name} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-tight">{card.name}</span>
+              <card.icon size={16} className={card.color} />
             </div>
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-              {card.name}
-            </p>
-            <h3 className="text-3xl font-bold text-slate-900 mt-1 tracking-tight">
+            <p className="text-lg font-semibold text-gray-800">
               {loading ? "..." : card.value}
-            </h3>
+            </p>
           </div>
         ))}
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2">
-        <section className="space-y-6">
-          <h3 className="text-lg font-bold text-slate-900 tracking-tight ml-1">Menu Cepat</h3>
-          
-          <div className="grid gap-4">
-            <Link href="/attendance">
-              <div className="group flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-6 hover:bg-slate-50 transition-all shadow-sm">
-                <div className="flex items-center gap-5">
-                  <div className="rounded-2xl bg-indigo-600 p-4 text-white shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform">
-                    <ArrowRightLeft size={20} />
-                  </div>
-                  <div>
-                    <p className="text-base font-bold text-slate-900">Check In / Out</p>
-                    <p className="text-xs text-slate-500 font-medium mt-1">Kelola pengambilan harian siswa</p>
-                  </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+          <h2 className="text-sm font-medium text-gray-600 mb-4">Operational Shortcuts</h2>
+          <div className="space-y-2">
+            {[
+              { label: "Asset Attendance", href: "/attendance", icon: Activity },
+              { label: "Live Monitoring", href: "/daily-monitoring", icon: ShieldCheck },
+            ].map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="flex items-center justify-between p-3 rounded-lg border border-gray-50 bg-gray-50/50 hover:bg-gray-50 transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <link.icon size={16} className="text-gray-400 group-hover:text-indigo-600" />
+                  <span className="text-sm font-medium text-gray-700">{link.label}</span>
                 </div>
-                <ArrowRight size={18} className="text-slate-300 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Link>
-
-            <Link href="/daily-monitoring">
-              <div className="group flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-6 hover:bg-slate-50 transition-all shadow-sm">
-                <div className="flex items-center gap-5">
-                  <div className="rounded-2xl bg-emerald-600 p-4 text-white shadow-lg shadow-emerald-100 group-hover:scale-105 transition-transform">
-                    <TrendingUp size={20} />
-                  </div>
-                  <div>
-                    <p className="text-base font-bold text-slate-900">Status Siswa</p>
-                    <p className="text-xs text-slate-500 font-medium mt-1">Lihat kepatuhan pengembalian hari ini</p>
-                  </div>
-                </div>
-                <ArrowRight size={18} className="text-slate-300 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Link>
-          </div>
-        </section>
-
-        <section className="bg-indigo-600 rounded-container p-10 text-white relative overflow-hidden flex flex-col justify-center">
-            <div className="relative z-10 space-y-6">
-              <div>
-                <h3 className="text-2xl font-bold tracking-tight mb-2">Ingatkan Orang Tua</h3>
-                <p className="text-indigo-100 text-sm max-w-[280px] leading-relaxed">
-                  Pastikan semua perangkat kembali sebelum jam 17:00 WIB untuk menghindari status terlambat.
-                </p>
-              </div>
-              <Link href="/logs">
-                <button className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-2.5 rounded-xl text-sm font-bold transition-all inline-flex items-center gap-2">
-                  Lihat Riwayat <ArrowRight size={16} />
-                </button>
+                <ArrowRight size={14} className="text-gray-300 group-hover:text-gray-500" />
               </Link>
-            </div>
-            <Clock size={180} className="absolute -right-10 -bottom-10 text-white/10 rotate-12" />
-        </section>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
+          <div>
+            <h2 className="text-sm font-medium text-gray-600 mb-2">Security Note</h2>
+            <p className="text-xs text-gray-500 leading-relaxed">
+              Ensure all device check-ins are verified and logged before the shift ends at 17:00 WIB. Discrepancies must be reported to the supervisor.
+            </p>
+          </div>
+          <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
+            <span className="text-xs font-medium text-gray-400">System Version 2.0.4</span>
+            <span className="h-2 w-2 rounded-full bg-green-500 shadow-sm shadow-green-100" />
+          </div>
+        </div>
       </div>
     </div>
   );

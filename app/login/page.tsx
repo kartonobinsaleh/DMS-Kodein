@@ -133,8 +133,8 @@ export default function LoginPage() {
           <Button
             type="submit"
             loading={isLoading}
-            size="xl"
-            className="w-full shadow-2xl shadow-indigo-100 mt-4"
+            size="md"
+            className="w-full mt-4"
           >
             SIGN IN ACCESS
           </Button>

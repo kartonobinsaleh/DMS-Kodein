@@ -48,11 +48,11 @@ export function CheckOutButton({ studentId, deviceId, onSuccess, className, disa
       loading={loading}
       disabled={disabled}
       variant="primary"
-      size="lg"
+      size="md"
       leftIcon={<LogOut size={18} />}
       className={className}
     >
-      CHECK OUT
+      CHECK-OUT DEVICE
     </Button>
   );
 }
@@ -92,11 +92,11 @@ export function CheckInButton({ studentId, deviceId, onSuccess, className, disab
       loading={loading}
       disabled={disabled}
       variant="success"
-      size="lg"
+      size="md"
       leftIcon={<LogIn size={18} />}
       className={className}
     >
-      CHECK IN
+      CHECK-IN DEVICE
     </Button>
   );
 }
