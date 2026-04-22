@@ -5,17 +5,16 @@ import {
   Search, 
   Smartphone, 
   Laptop, 
-  CheckCircle2, 
-  Clock, 
   AlertCircle,
-  Loader2
+  LayoutGrid
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { CheckOutButton, CheckInButton } from "@/components/daily-log-actions";
 
 interface DailyLog {
   id: string;
-  dailyStatus: "PENDING" | "RETURNED_ON_TIME" | "RETURNED_LATE" | "VIOLATION";
+  dailyStatus: "ON_TIME" | "LATE" | "NOT_RETURNED";
   checkOutTime: string | null;
   checkInTime: string | null;
 }
@@ -25,30 +24,30 @@ interface Device {
   name: string;
   type: "LAPTOP" | "PHONE";
   status: "AVAILABLE" | "BORROWED" | "MAINTENANCE";
-  todayLog: DailyLog | null;
+  dailyLogs: DailyLog[]; // Matches the expected new API return
 }
 
 interface Student {
   id: string;
   name: string;
   class: string;
-  devices: Device[];
+  ownedDevices: Device[];
 }
 
 export default function AttendancePage() {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [processingId, setProcessingId] = useState<string | null>(null);
 
-  // Fetch initial data
   const fetchData = async () => {
     try {
-      const res = await fetch("/api/attendance");
-      const data = await res.json();
-      setStudents(data);
+      const res = await fetch("/api/students"); // Use standard students listing
+      const json = await res.json();
+      if (json.success) {
+        setStudents(json.data);
+      }
     } catch (error) {
-      toast.error("Failed to fetch attendance data");
+      console.error("Failed to fetch student data");
     } finally {
       setLoading(false);
     }
@@ -58,7 +57,6 @@ export default function AttendancePage() {
     fetchData();
   }, []);
 
-  // Filter logic
   const filteredStudents = useMemo(() => {
     return students.filter(s => 
       s.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -66,157 +64,102 @@ export default function AttendancePage() {
     );
   }, [students, search]);
 
-  // Overall Status Logic
-  const getOverallStatus = (devices: Device[]) => {
-    if (devices.length === 0) return { label: "NO DEVICES", color: "bg-slate-100 text-slate-500", icon: AlertCircle };
-    
-    const isAnyPending = devices.some(d => d.todayLog?.dailyStatus === "PENDING" || d.status === "BORROWED");
-    if (isAnyPending) return { label: "PENDING", color: "bg-amber-100 text-amber-700", icon: Clock };
-
-    const isAnyLate = devices.some(d => d.todayLog?.dailyStatus === "RETURNED_LATE" || d.todayLog?.dailyStatus === "VIOLATION");
-    if (isAnyLate) return { label: "RETURNED LATE", color: "bg-rose-100 text-rose-700", icon: AlertCircle };
-
-    const allReturned = devices.every(d => d.todayLog?.dailyStatus === "RETURNED_ON_TIME");
-    if (allReturned) return { label: "RETURNED", color: "bg-emerald-100 text-emerald-700", icon: CheckCircle2 };
-
-    return { label: "NOT STARTED", color: "bg-slate-100 text-slate-500", icon: Clock };
-  };
-
-  // Action Handlers
-  const handleAction = async (studentId: string, deviceId: string, type: "check-out" | "check-in") => {
-    setProcessingId(deviceId);
-    try {
-      const res = await fetch(`/api/logs/${type}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ studentId, deviceId })
-      });
-
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.message || "Action failed");
-
-      toast.success(`${type === 'check-out' ? 'Check-out' : 'Check-in'} successful!`);
-      await fetchData(); // Refresh data
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setProcessingId(null);
-    }
-  };
-
   if (loading) {
     return (
-      <div className="space-y-6 max-w-2xl mx-auto">
-        <div className="h-10 w-48 bg-muted animate-pulse rounded-lg mb-8" />
-        <div className="h-12 w-full bg-muted animate-pulse rounded-xl" />
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-40 w-full bg-muted animate-pulse rounded-2xl" />
+      <div className="space-y-6 max-w-2xl mx-auto p-4 md:p-8">
+        <div className="h-10 w-48 bg-slate-200 animate-pulse rounded-lg" />
+        <div className="h-14 w-full bg-slate-200 animate-pulse rounded-2xl" />
+        {[1, 2].map((i) => (
+          <div key={i} className="h-44 w-full bg-slate-200 animate-pulse rounded-3xl" />
         ))}
       </div>
     );
   }
 
-  if (students.length === 0 && !loading && !search) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
-        <div className="p-4 bg-muted rounded-full mb-4">
-          <Smartphone size={48} className="text-muted-foreground" />
-        </div>
-        <h2 className="text-xl font-bold">No Students Registered</h2>
-        <p className="text-muted-foreground max-w-xs mx-auto mt-2">
-          Start by adding students and devices in the management pages.
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6 max-w-2xl mx-auto pb-20">
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur pt-2 pb-4">
-        <h1 className="text-2xl font-bold mb-4">Daily Attendance</h1>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+    <div className="space-y-6 max-w-2xl mx-auto p-4 md:p-8 pb-32">
+      <div className="space-y-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-indigo-600 font-black uppercase tracking-widest text-[10px]">
+            <AlertCircle size={14} />
+            <span>Operasional Harian</span>
+          </div>
+          <h1 className="text-3xl font-black tracking-tighter text-slate-900">
+            Check-In / Out
+          </h1>
+        </div>
+
+        <div className="relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
           <input
             type="text"
-            placeholder="Search student or class..."
-            className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-card focus:ring-2 focus:ring-primary outline-none transition-all shadow-sm"
+            placeholder="Cari nama siswa atau kelas..."
+            className="w-full pl-12 pr-4 py-4 rounded-2xl border border-slate-200 bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all shadow-sm font-medium"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         {filteredStudents.length === 0 ? (
-          <div className="text-center py-12 bg-muted/30 rounded-2xl border border-dashed flex flex-col items-center">
-            <Search size={32} className="text-muted-foreground mb-2" />
-            <p className="text-muted-foreground">No students match your search.</p>
+          <div className="text-center py-20 bg-white rounded-[2rem] border border-dashed border-slate-200 flex flex-col items-center">
+            <LayoutGrid size={48} className="text-slate-200 mb-4" />
+            <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Siswa tidak ditemukan</p>
           </div>
         ) : (
-          filteredStudents.map((student) => {
-            const status = getOverallStatus(student.devices);
-            return (
-              <div key={student.id} className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden transition-all hover:shadow-md">
-                <div className="p-4 border-b border-border bg-muted/5 flex justify-between items-center">
-                  <div>
-                    <h3 className="font-bold text-lg leading-tight">{student.name}</h3>
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mt-0.5">{student.class}</p>
-                  </div>
-                  <div className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tight", status.color)}>
-                    <status.icon size={12} />
-                    {status.label}
-                  </div>
-                </div>
-
-                <div className="p-2 space-y-1.5">
-                  {student.devices.length === 0 ? (
-                    <p className="text-xs text-center py-6 text-muted-foreground italic">No devices assigned to this student</p>
-                  ) : (
-                    student.devices.map((device) => {
-                      const isBorrowed = device.status === "BORROWED";
-                      const isProcessing = processingId === device.id;
-                      
-                      return (
-                        <div key={device.id} className="flex items-center justify-between p-3 rounded-xl bg-muted/20 border border-transparent hover:border-border transition-colors">
-                          <div className="flex items-center gap-3">
-                            <div className="p-2.5 bg-background rounded-lg text-muted-foreground shadow-sm border border-border">
-                              {device.type === "LAPTOP" ? <Laptop size={20} /> : <Smartphone size={20} />}
-                            </div>
-                            <div>
-                              <p className="text-sm font-bold">{device.name}</p>
-                              {device.todayLog?.checkOutTime && (
-                                <p className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
-                                  <Clock size={10} />
-                                  Check-out at {new Date(device.todayLog.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-
-                          <button
-                            disabled={isProcessing || device.status === "MAINTENANCE"}
-                            onClick={() => handleAction(student.id, device.id, isBorrowed ? "check-in" : "check-out")}
-                            className={cn(
-                              "relative h-10 min-w-28 inline-flex items-center justify-center px-4 py-2 text-xs font-black uppercase tracking-tighter transition-all rounded-lg active:scale-95 disabled:opacity-50 shadow-sm",
-                              isBorrowed 
-                                ? "bg-emerald-500 text-white hover:bg-emerald-600 shadow-emerald-500/20" 
-                                : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/20"
-                            )}
-                          >
-                            {isProcessing ? (
-                              <Loader2 className="animate-spin" size={18} />
-                            ) : (
-                              isBorrowed ? "CHECK-IN" : "CHECK-OUT"
-                            )}
-                          </button>
-                        </div>
-                      );
-                    })
-                  )}
+          filteredStudents.map((student) => (
+            <div key={student.id} className="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden transition-all hover:shadow-xl hover:border-indigo-100">
+              <div className="p-6 border-b border-slate-50 bg-slate-50/30 flex justify-between items-start">
+                <div>
+                  <h3 className="font-bold text-xl text-slate-900 leading-tight">{student.name}</h3>
+                  <p className="text-[10px] text-slate-400 uppercase font-black tracking-[0.2em] mt-1">{student.class}</p>
                 </div>
               </div>
-            );
-          })
+
+              <div className="p-4 space-y-3">
+                {student.ownedDevices.length === 0 ? (
+                  <p className="text-xs text-center py-6 text-slate-400 italic">Tidak ada perangkat terdaftar</p>
+                ) : (
+                  student.ownedDevices.map((device) => {
+                    const isBorrowed = device.status === "BORROWED";
+                    return (
+                      <div key={device.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-50/50 border border-transparent hover:border-slate-100 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className="p-3 bg-white rounded-xl text-slate-400 shadow-sm border border-slate-100">
+                            {device.type === "LAPTOP" ? <Laptop size={20} /> : <Smartphone size={20} />}
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-slate-800">{device.name}</p>
+                            <StatusBadge status={device.status} className="mt-1" />
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                           {isBorrowed ? (
+                              <CheckInButton 
+                                studentId={student.id} 
+                                deviceId={device.id} 
+                                onSuccess={fetchData}
+                                className="sm:w-32"
+                              />
+                           ) : (
+                              <CheckOutButton 
+                                studentId={student.id} 
+                                deviceId={device.id} 
+                                onSuccess={fetchData}
+                                className="sm:w-32"
+                                disabled={device.status === "MAINTENANCE"}
+                              />
+                           )}
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          ))
         )}
       </div>
     </div>

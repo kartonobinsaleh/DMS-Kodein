@@ -1,29 +1,47 @@
 import { cn } from "@/lib/utils";
 
-interface BadgeProps {
-  status: "AVAILABLE" | "BORROWED" | "MAINTENANCE" | "ACTIVE" | "COMPLETED";
-  children?: React.ReactNode;
+interface StatusBadgeProps {
+  status: "AVAILABLE" | "BORROWED" | "MAINTENANCE" | "ON_TIME" | "LATE" | "NOT_RETURNED" | "RETURNED" | string;
   className?: string;
 }
 
-export function StatusBadge({ status, children, className }: BadgeProps) {
-  const styles = {
-    AVAILABLE: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
-    BORROWED: "bg-amber-500/10 text-amber-500 border-amber-500/20",
-    MAINTENANCE: "bg-rose-500/10 text-rose-500 border-rose-500/20",
-    ACTIVE: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-    COMPLETED: "bg-slate-500/10 text-slate-500 border-slate-500/20",
+export function StatusBadge({ status, className }: StatusBadgeProps) {
+  const getStatusStyles = (status: string) => {
+    switch (status.toUpperCase()) {
+      case "AVAILABLE":
+      case "ON_TIME":
+      case "RETURNED":
+        return "bg-emerald-100 text-emerald-700 border-emerald-200";
+      case "BORROWED":
+      case "NOT_RETURNED":
+        return "bg-rose-100 text-rose-700 border-rose-200";
+      case "LATE":
+      case "MAINTENANCE":
+        return "bg-amber-100 text-amber-700 border-amber-200";
+      default:
+        return "bg-slate-100 text-slate-700 border-slate-200";
+    }
+  };
+
+  const getLabel = (status: string) => {
+    switch (status.toUpperCase()) {
+      case "AVAILABLE": return "Tersedia";
+      case "BORROWED": return "Dipakai";
+      case "ON_TIME": return "Tepat Waktu";
+      case "LATE": return "Terlambat";
+      case "RETURNED": return "Kembali";
+      case "NOT_RETURNED": return "Belum Kembali";
+      default: return status;
+    }
   };
 
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium shadow-sm transition-colors",
-        styles[status],
-        className
-      )}
-    >
-      {children || status.charAt(0) + status.slice(1).toLowerCase().replace("_", " ")}
+    <span className={cn(
+      "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border uppercase tracking-wider",
+      getStatusStyles(status),
+      className
+    )}>
+      {getLabel(status)}
     </span>
   );
 }

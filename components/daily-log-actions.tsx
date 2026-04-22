@@ -2,18 +2,25 @@
 
 import { useState } from "react";
 import { LogOut, LogIn, Loader2 } from "lucide-react";
-import { toast } from "sonner"; // Assuming sonner is used based on typical premium setup, if not we fall back to alert
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface DailyLogActionsProps {
   studentId: string;
   deviceId: string;
   onSuccess?: () => void;
+  variant?: "primary" | "success";
+  className?: string;
 }
 
-export function CheckOutButton({ studentId, deviceId, onSuccess }: DailyLogActionsProps) {
+export function CheckOutButton({ studentId, deviceId, onSuccess, className }: DailyLogActionsProps) {
   const [loading, setLoading] = useState(false);
 
   const handleCheckOut = async () => {
+    if (!studentId || !deviceId) {
+      toast.error("Pilih siswa dan perangkat terlebih dahulu");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/check-out", {
@@ -23,13 +30,13 @@ export function CheckOutButton({ studentId, deviceId, onSuccess }: DailyLogActio
       const json = await res.json();
       
       if (json.success) {
-        toast?.success?.("Device checked out successfully") || alert("Success: Device checked out");
+        toast.success("Check-out berhasil");
         onSuccess?.();
       } else {
-        toast?.error?.(json.message) || alert(`Error: ${json.message}`);
+        toast.error(json.message);
       }
     } catch (error) {
-      toast?.error?.("System error during check-out") || alert("Failed to check out");
+      toast.error("Gagal melakukan check-out");
     } finally {
       setLoading(false);
     }
@@ -39,18 +46,25 @@ export function CheckOutButton({ studentId, deviceId, onSuccess }: DailyLogActio
     <button
       onClick={handleCheckOut}
       disabled={loading}
-      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all font-medium text-sm shadow-sm"
+      className={cn(
+        "flex w-full items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 active:scale-95 disabled:opacity-50 transition-all font-bold text-sm shadow-md shadow-indigo-200",
+        className
+      )}
     >
-      {loading ? <Loader2 size={16} className="animate-spin" /> : <LogOut size={16} />}
-      Check Out Device
+      {loading ? <Loader2 size={18} className="animate-spin" /> : <LogOut size={18} />}
+      CHECK OUT
     </button>
   );
 }
 
-export function CheckInButton({ studentId, deviceId, onSuccess }: DailyLogActionsProps) {
+export function CheckInButton({ studentId, deviceId, onSuccess, className }: DailyLogActionsProps) {
   const [loading, setLoading] = useState(false);
 
   const handleCheckIn = async () => {
+    if (!studentId || !deviceId) {
+      toast.error("Pilih siswa dan perangkat terlebih dahulu");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/check-in", {
@@ -60,13 +74,13 @@ export function CheckInButton({ studentId, deviceId, onSuccess }: DailyLogAction
       const json = await res.json();
       
       if (json.success) {
-        toast?.success?.("Device checked in successfully") || alert("Success: Device checked in");
+        toast.success("Check-in berhasil");
         onSuccess?.();
       } else {
-        toast?.error?.(json.message) || alert(`Error: ${json.message}`);
+        toast.error(json.message);
       }
     } catch (error) {
-      toast?.error?.("System error during check-in") || alert("Failed to check in");
+      toast.error("Gagal melakukan check-in");
     } finally {
       setLoading(false);
     }
@@ -76,10 +90,13 @@ export function CheckInButton({ studentId, deviceId, onSuccess }: DailyLogAction
     <button
       onClick={handleCheckIn}
       disabled={loading}
-      className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-all font-medium text-sm shadow-sm"
+      className={cn(
+        "flex w-full items-center justify-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 active:scale-95 disabled:opacity-50 transition-all font-bold text-sm shadow-md shadow-emerald-200",
+        className
+      )}
     >
-      {loading ? <Loader2 size={16} className="animate-spin" /> : <LogIn size={16} />}
-      Check In Device
+      {loading ? <Loader2 size={18} className="animate-spin" /> : <LogIn size={18} />}
+      CHECK IN
     </button>
   );
 }
