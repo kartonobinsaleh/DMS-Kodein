@@ -409,9 +409,11 @@ function ScannerContent() {
                  </div>
                )}
 
-               <div className="space-y-3 pt-6 border-t border-gray-100">
-                 {studentData.ownedDevices.map((device: any) => {
-                   const isBorrowed = device.status === 'BORROWED';
+                <div className="space-y-3 pt-6 border-t border-gray-100">
+                  {studentData.ownedDevices
+                    .filter((d: any) => targetType === "DEVICE" || d.type === targetType)
+                    .map((device: any) => {
+                      const isBorrowed = device.status === 'BORROWED';
                    return (
                      <div key={device.id} className="p-4 border border-gray-100 rounded-xl flex items-center justify-between bg-gray-50/50">
                         <div className="flex items-center gap-3">

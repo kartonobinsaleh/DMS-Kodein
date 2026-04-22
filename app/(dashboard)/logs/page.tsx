@@ -12,7 +12,8 @@ import {
   Laptop,
   CheckCircle,
   AlertTriangle,
-  XCircle
+  XCircle,
+  GraduationCap
 } from "lucide-react";
 import { toast } from "sonner";
 import { StatusBadge } from "@/components/ui/status-badge";

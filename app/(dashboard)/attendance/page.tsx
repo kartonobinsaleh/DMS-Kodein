@@ -9,7 +9,8 @@ import {
   CheckCircle,
   AlertTriangle,
   Clock,
-  QrCode
+  QrCode,
+  GraduationCap
 } from "lucide-react";
 import Link from "next/link";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -158,10 +159,10 @@ export default function AttendancePage() {
           />
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-          <div className="relative group flex-1 sm:flex-initial">
-            <GraduationCap size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" />
+          <div className="flex-1 sm:flex-initial min-w-[160px] flex items-center gap-2 bg-white border border-gray-200 shadow-sm px-3 py-3 rounded-xl text-gray-400 group-focus-within:border-primary transition-all">
+            <GraduationCap size={16} className="shrink-0 group-focus-within:text-primary transition-colors" />
             <select 
-              className="h-12 pl-10 pr-8 bg-white border border-gray-200 rounded-xl text-xs font-bold focus:border-primary outline-none shadow-sm appearance-none cursor-pointer transition-all"
+              className="bg-transparent text-[11px] font-bold outline-none cursor-pointer w-full text-gray-900"
               value={classFilter}
               onChange={(e) => setClassFilter(e.target.value)}
             >
