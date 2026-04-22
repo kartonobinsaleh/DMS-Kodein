@@ -13,6 +13,7 @@ interface DeviceState {
   error: string | null;
   fetchDevices: () => Promise<void>;
   addDevice: (name: string) => Promise<void>;
+  updateDevice: (id: string, name: string) => Promise<void>;
   deleteDevice: (id: string) => Promise<void>;
 }
 
@@ -55,19 +56,45 @@ export const useDeviceStore = create<DeviceState>((set) => ({
     }
   },
 
+  updateDevice: async (id: string, name: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`/api/devices/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      const errorText = await response.text();
+      if (!response.ok) throw new Error(errorText || "Failed to update device");
+      
+      let updatedData = { name };
+      try { updatedData = JSON.parse(errorText).data || JSON.parse(errorText); } catch(e) {}
+
+      set((state) => ({
+        devices: state.devices.map(d => d.id === id ? { ...d, ...updatedData } : d),
+        isLoading: false,
+      }));
+    } catch (error) {
+      set({ error: (error as Error).message, isLoading: false });
+      throw error;
+    }
+  },
+
   deleteDevice: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
       const response = await fetch(`/api/devices?id=${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Failed to delete device");
+      const errorText = await response.text();
+      if (!response.ok) throw new Error(errorText || "Failed to delete device");
       set((state) => ({
         devices: state.devices.filter((d) => d.id !== id),
         isLoading: false,
       }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
+      throw error;
     }
   },
 }));

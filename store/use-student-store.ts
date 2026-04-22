@@ -13,6 +13,7 @@ interface StudentState {
   error: string | null;
   fetchStudents: () => Promise<void>;
   addStudent: (data: { name: string; class: string }) => Promise<void>;
+  updateStudent: (id: string, data: { name: string; class: string }) => Promise<void>;
   deleteStudent: (id: string) => Promise<void>;
 }
 
@@ -55,19 +56,46 @@ export const useStudentStore = create<StudentState>((set) => ({
     }
   },
 
+  updateStudent: async (id: string, data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`/api/students/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      
+      const errorText = await response.text();
+      if (!response.ok) throw new Error(errorText || "Failed to update student");
+      
+      let updatedData = null;
+      try { updatedData = JSON.parse(errorText).data || JSON.parse(errorText); } catch(e) { updatedData = data; }
+
+      set((state) => ({
+        students: state.students.map(s => s.id === id ? { ...s, ...updatedData } : s),
+        isLoading: false,
+      }));
+    } catch (error) {
+      set({ error: (error as Error).message, isLoading: false });
+      throw error;
+    }
+  },
+
   deleteStudent: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
       const response = await fetch(`/api/students?id=${id}`, {
         method: "DELETE",
       });
-      if (!response.ok) throw new Error("Failed to delete student");
+      const errorText = await response.text();
+      if (!response.ok) throw new Error(errorText || "Failed to delete student");
       set((state) => ({
         students: state.students.filter((s) => s.id !== id),
         isLoading: false,
       }));
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
+      throw error;
     }
   },
 }));

@@ -71,7 +71,10 @@ export async function DELETE(req: Request) {
     });
 
     return new NextResponse(null, { status: 204 });
-  } catch (error) {
+  } catch (error: any) {
+    if (error.code === 'P2003') {
+      return new NextResponse("Perangkat tidak dapat dihapus karena memiliki riwayat operasional aktif.", { status: 400 });
+    }
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

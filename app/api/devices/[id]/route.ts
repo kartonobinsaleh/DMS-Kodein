@@ -1,0 +1,32 @@
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import z from "zod";
+
+const updateSchema = z.object({
+  name: z.string().min(2),
+});
+
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const session = await getServerSession(authOptions);
+  if (!session) return new NextResponse("Unauthorized", { status: 401 });
+
+  try {
+    const { id } = await params;
+    const json = await req.json();
+    const body = updateSchema.parse(json);
+
+    const device = await prisma.device.update({
+      where: { id },
+      data: {
+        name: body.name,
+      },
+    });
+
+    return NextResponse.json({ success: true, data: device });
+  } catch (error) {
+    if (error instanceof z.ZodError) return new NextResponse(error.message, { status: 400 });
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}

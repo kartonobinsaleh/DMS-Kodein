@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useStudentStore } from "@/store/use-student-store";
-import { Plus, Search, Trash2, User, GraduationCap } from "lucide-react";
+import { Plus, Search, Trash2, User, GraduationCap, Edit2 } from "lucide-react";
+import { toast } from "sonner";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
@@ -14,8 +15,11 @@ export default function StudentsPage() {
   const { students, isLoading, fetchStudents, addStudent, deleteStudent } = useStudentStore();
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [formData, setFormData] = useState({ name: "", class: "" });
+  const [activeStudentId, setActiveStudentId] = useState<string | null>(null);
   const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   useEffect(() => {
     fetchStudents();
@@ -29,15 +33,54 @@ export default function StudentsPage() {
   const handleAddStudent = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.class.trim()) return;
-    await addStudent(formData);
-    setFormData({ name: "", class: "" });
-    setShowAddModal(false);
+    setSubmitLoading(true);
+    try {
+      await useStudentStore.getState().addStudent(formData);
+      setFormData({ name: "", class: "" });
+      setShowAddModal(false);
+      toast.success("Catatan siswa berhasil ditambahkan");
+    } catch (error: any) {
+      toast.error(error.message || "Gagal menambahkan data");
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const handleEditStudent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name.trim() || !formData.class.trim() || !activeStudentId) return;
+    setSubmitLoading(true);
+    try {
+      await useStudentStore.getState().updateStudent(activeStudentId, formData);
+      setFormData({ name: "", class: "" });
+      setActiveStudentId(null);
+      setShowEditModal(false);
+      toast.success("Catatan siswa berhasil diperbarui");
+    } catch (error: any) {
+      toast.error(error.message || "Gagal memperbarui data");
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const openEditModal = (student: any) => {
+    setFormData({ name: student.name, class: student.class });
+    setActiveStudentId(student.id);
+    setShowEditModal(true);
   };
 
   const handleDelete = async () => {
     if (studentToDelete) {
-      await deleteStudent(studentToDelete);
-      setStudentToDelete(null);
+      setSubmitLoading(true);
+      try {
+        await useStudentStore.getState().deleteStudent(studentToDelete);
+        toast.success("Siswa berhasil dihapus");
+      } catch (error: any) {
+        toast.error(error.message || "Gagal menghapus siswa");
+      } finally {
+        setSubmitLoading(false);
+        setStudentToDelete(null);
+      }
     }
   };
 
@@ -88,14 +131,24 @@ export default function StudentsPage() {
                   </div>
                 </div>
               </div>
-              <Button 
-                variant="ghost"
-                size="sm"
-                onClick={() => setStudentToDelete(student.id)}
-                className="h-10 w-10 p-0 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
-              >
-                <Trash2 size={18} />
-              </Button>
+              <div className="flex gap-1 shrink-0">
+                <Button 
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => openEditModal(student)}
+                  className="h-10 w-10 p-0 text-gray-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                >
+                  <Edit2 size={16} />
+                </Button>
+                <Button 
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setStudentToDelete(student.id)}
+                  className="h-10 w-10 p-0 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                >
+                  <Trash2 size={18} />
+                </Button>
+              </div>
             </Card>
           ))
         ) : (
@@ -145,7 +198,45 @@ export default function StudentsPage() {
               </div>
               <div className="flex gap-3 pt-2">
                 <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Batal</Button>
-                <Button type="submit" disabled={!formData.name.trim() || !formData.class.trim()} className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Simpan Catatan</Button>
+                <Button type="submit" loading={submitLoading} disabled={!formData.name.trim() || !formData.class.trim() || submitLoading} className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Simpan Catatan</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-2xl border border-gray-200 animate-in zoom-in-95 duration-150">
+            <h2 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><Edit2 size={16} /></div>
+              Perbaiki Data Siswa
+            </h2>
+            <form onSubmit={handleEditStudent} className="space-y-5">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nama Lengkap Siswa</label>
+                <input
+                  autoFocus
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="e.g. John Doe"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Kelas</label>
+                <input
+                  type="text"
+                  value={formData.class}
+                  onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                  placeholder="e.g. 10-A"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <Button onClick={() => setShowEditModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Batal</Button>
+                <Button type="submit" loading={submitLoading} disabled={!formData.name.trim() || !formData.class.trim() || submitLoading} className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Simpan Perubahan</Button>
               </div>
             </form>
           </div>

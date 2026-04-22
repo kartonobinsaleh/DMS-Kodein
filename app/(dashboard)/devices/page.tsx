@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useDeviceStore } from "@/store/use-device-store";
-import { Plus, Search, Smartphone, Laptop, Trash2, Database } from "lucide-react";
+import { Plus, Search, Smartphone, Laptop, Trash2, Database, Edit2 } from "lucide-react";
+import { toast } from "sonner";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { PageHeader } from "@/components/ui/page-header";
@@ -15,8 +16,11 @@ export default function DevicesPage() {
   const { devices, isLoading, fetchDevices, addDevice, deleteDevice } = useDeviceStore();
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [newDeviceName, setNewDeviceName] = useState("");
+  const [activeDeviceId, setActiveDeviceId] = useState<string | null>(null);
   const [deviceToDelete, setDeviceToDelete] = useState<string | null>(null);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   useEffect(() => {
     fetchDevices();
@@ -29,15 +33,54 @@ export default function DevicesPage() {
   const handleAddDevice = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newDeviceName.trim()) return;
-    await addDevice(newDeviceName);
-    setNewDeviceName("");
-    setShowAddModal(false);
+    setSubmitLoading(true);
+    try {
+      await useDeviceStore.getState().addDevice(newDeviceName);
+      setNewDeviceName("");
+      setShowAddModal(false);
+      toast.success("Catatan perangkat berhasil ditambahkan");
+    } catch (error: any) {
+      toast.error(error.message || "Gagal menambahkan perangkat");
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const handleEditDevice = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newDeviceName.trim() || !activeDeviceId) return;
+    setSubmitLoading(true);
+    try {
+      await useDeviceStore.getState().updateDevice(activeDeviceId, newDeviceName);
+      setNewDeviceName("");
+      setActiveDeviceId(null);
+      setShowEditModal(false);
+      toast.success("Catatan perangkat berhasil diperbarui");
+    } catch (error: any) {
+      toast.error(error.message || "Gagal memperbarui perangkat");
+    } finally {
+      setSubmitLoading(false);
+    }
+  };
+
+  const openEditModal = (device: any) => {
+    setNewDeviceName(device.name);
+    setActiveDeviceId(device.id);
+    setShowEditModal(true);
   };
 
   const handleDelete = async () => {
     if (deviceToDelete) {
-      await deleteDevice(deviceToDelete);
-      setDeviceToDelete(null);
+      setSubmitLoading(true);
+      try {
+        await useDeviceStore.getState().deleteDevice(deviceToDelete);
+        toast.success("Perangkat berhasil dihapus");
+      } catch (error: any) {
+        toast.error(error.message || "Gagal menghapus perangkat");
+      } finally {
+        setSubmitLoading(false);
+        setDeviceToDelete(null);
+      }
     }
   };
 
@@ -86,14 +129,24 @@ export default function DevicesPage() {
                     <p className="text-[10px] text-gray-400 font-medium">ID: {device.id.slice(-6).toUpperCase()}</p>
                   </div>
                 </div>
-                <Button 
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setDeviceToDelete(device.id)}
-                  className="p-1 h-auto text-gray-300 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <Trash2 size={14} />
-                </Button>
+                <div className="flex gap-1 shrink-0">
+                  <Button 
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => openEditModal(device)}
+                    className="p-1 h-auto text-gray-300 hover:text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Edit2 size={14} />
+                  </Button>
+                  <Button 
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setDeviceToDelete(device.id)}
+                    className="p-1 h-auto text-gray-300 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Trash2 size={14} />
+                  </Button>
+                </div>
               </div>
 
               <div className="flex items-center justify-between mt-auto">
@@ -135,7 +188,35 @@ export default function DevicesPage() {
               </div>
               <div className="flex gap-2 pt-2">
                 <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1">Batal</Button>
-                <Button type="submit" disabled={!newDeviceName.trim()} className="flex-1">Simpan Perangkat</Button>
+                <Button type="submit" loading={submitLoading} disabled={!newDeviceName.trim() || submitLoading} className="flex-1">Simpan Perangkat</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in-95 duration-150">
+             <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <Edit2 size={16} className="text-indigo-600" />
+              Perbaiki Data Perangkat
+            </h2>
+            <form onSubmit={handleEditDevice} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-500 ml-1">Nama / Label Unit</label>
+                <input
+                  autoFocus
+                  type="text"
+                  value={newDeviceName}
+                  onChange={(e) => setNewDeviceName(e.target.value)}
+                  placeholder="e.g. Laptop 05"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
+                />
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Button onClick={() => setShowEditModal(false)} variant="ghost" className="flex-1">Batal</Button>
+                <Button type="submit" loading={submitLoading} disabled={!newDeviceName.trim() || submitLoading} className="flex-1">Simpan Perubahan</Button>
               </div>
             </form>
           </div>
