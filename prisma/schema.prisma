@@ -23,7 +23,6 @@ model Student {
   class        String
   statusToken  String        @unique @default(cuid()) // Secure link token
   createdAt    DateTime      @default(now())
-  transactions Transaction[]
   
   // V2: Ownership & Daily Logs
   ownedDevices Device[]      @relation("DeviceOwner")
@@ -36,9 +35,6 @@ model Device {
   type         DeviceType    @default(LAPTOP)
   status       DeviceStatus  @default(AVAILABLE)
   createdAt    DateTime      @default(now())
-  
-  // V1 Relations
-  transactions Transaction[]
   
   // V2 Relations
   ownerId      String?
@@ -70,19 +66,6 @@ model DailyLog {
   @@unique([studentId, deviceId, date])
 }
 
-model Transaction {
-  id         String            @id @default(cuid())
-  studentId  String
-  deviceId   String
-  borrowTime DateTime          @default(now())
-  returnTime DateTime?
-  status     TransactionStatus @default(ACTIVE)
-  condition  String?
-  createdAt  DateTime          @default(now())
-  device     Device            @relation(fields: [deviceId], references: [id])
-  student    Student           @relation(fields: [studentId], references: [id])
-}
-
 enum Role {
   ADMIN
   STAFF
@@ -103,9 +86,4 @@ enum LogStatus {
   ON_TIME
   LATE
   NOT_RETURNED
-}
-
-enum TransactionStatus {
-  ACTIVE
-  COMPLETED
 }
