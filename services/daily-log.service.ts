@@ -125,12 +125,26 @@ export class DailyLogService {
       queryDate = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
     }
 
+    const whereClause: any = {
+      ...(filters.studentId && { studentId: filters.studentId }),
+      ...(filters.status && { dailyStatus: filters.status }),
+    };
+
+    // Jika filter tanggal spesifik (Audit/Logs view)
+    if (filters.date) {
+      const d = new Date(filters.date);
+      whereClause.date = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+    } else {
+      // Jika Monitoring Harian (Operational view):
+      // Tampilkan data HARI INI + Semua data yang BELUM KEMBALI dari hari sebelumnya
+      whereClause.OR = [
+        { date: queryDate }, // Hari ini
+        { checkInTime: null }, // Semua yang masih dipinjam (Overdue & Active)
+      ];
+    }
+
     return await prisma.dailyLog.findMany({
-      where: {
-        date: queryDate,
-        ...(filters.studentId && { studentId: filters.studentId }),
-        ...(filters.status && { dailyStatus: filters.status }),
-      },
+      where: whereClause,
       include: {
         student: { select: { name: true, class: true } },
         device: { select: { name: true, type: true } },

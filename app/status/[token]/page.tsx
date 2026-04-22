@@ -162,7 +162,7 @@ export default function StudentStatusPage({ params }: { params: Promise<{ token:
         
         <div className="mt-2 flex items-center gap-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-slate-300">
           <RefreshCcw size={8} className={cn(isSyncing && "animate-spin")} />
-          Sync: {new Date(data.lastSync).toLocaleTimeString()}
+          Sync: {new Date(data.lastSync).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })}
         </div>
       </div>
     </div>

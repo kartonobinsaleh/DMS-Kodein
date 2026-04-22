@@ -144,12 +144,12 @@ export default function DailyMonitoringPage() {
               <div className="flex items-center justify-between mt-2 pt-1 font-mono text-[10px]">
                 <div className="flex flex-col">
                   <span className="text-gray-300 uppercase font-bold tracking-tighter">Keluar</span>
-                  <span className="text-gray-600 font-bold">{log.checkOutTime ? new Date(log.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"}</span>
+                  <span className="text-gray-600 font-bold">{log.checkOutTime ? new Date(log.checkOutTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }) : "--:--"}</span>
                 </div>
                 <div className="flex flex-col text-right">
                   <span className="text-gray-300 uppercase font-bold tracking-tighter">Kembali</span>
                   <span className={log.checkInTime ? "text-indigo-600 font-bold" : "text-amber-500 font-bold"}>
-                    {log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "BELUM KEMBALI"}
+                    {log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }) : "BELUM KEMBALI"}
                   </span>
                 </div>
               </div>

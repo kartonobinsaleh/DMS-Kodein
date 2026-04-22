@@ -203,12 +203,12 @@ export default function AdminLogsPage() {
                   <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-50">
                     <div className="flex flex-col">
                       <span className="text-[9px] text-gray-300 uppercase font-bold tracking-tighter">Keluar</span>
-                      <span className="text-[10px] text-gray-600 font-bold font-mono">{new Date(log.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                      <span className="text-[10px] text-gray-600 font-bold font-mono">{new Date(log.checkOutTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
                     </div>
                     <div className="flex flex-col text-right">
                       <span className="text-[9px] text-gray-300 uppercase font-bold tracking-tighter">Kembali</span>
                       <span className={log.checkInTime ? "text-indigo-600 font-bold text-[10px] font-mono" : "text-amber-500 font-bold text-[10px] font-mono"}>
-                        {log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "---"}
+                        {log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }) : "---"}
                       </span>
                     </div>
                   </div>

@@ -49,11 +49,11 @@ export function DeviceCard({
         <div className="pt-4 border-t border-slate-50 flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400">
           <div className="flex items-center gap-2">
             <Clock size={12} className="text-slate-200" />
-            <span>Keluar: {checkOutTime ? new Date(checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"}</span>
+            <span>Keluar: {checkOutTime ? new Date(checkOutTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }) : "--:--"}</span>
           </div>
           <div className="flex items-center gap-2">
             <Clock size={12} className="text-slate-200" />
-            <span>Masuk: {checkInTime ? new Date(checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"}</span>
+            <span>Masuk: {checkInTime ? new Date(checkInTime).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }) : "--:--"}</span>
           </div>
         </div>
       </div>
