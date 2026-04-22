@@ -6,12 +6,13 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { LogIn, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { LogIn, AlertCircle, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string().email("Alamat email tidak valid"),
+  password: z.string().min(6, "Password minimal 6 karakter"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -42,62 +43,66 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError("Invalid email or password");
+        setError("Email atau password tidak valid");
       } else {
         router.push("/dashboard");
         router.refresh();
       }
     } catch (_err) {
-      setError("An unexpected error occurred");
+      setError("Terjadi kesalahan yang tidak terduga");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 px-4">
-      <div className="w-full max-w-md space-y-8 rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
-        <div className="text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/20 text-white">
-            <LogIn size={32} />
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+      <div className="w-full max-w-md space-y-10 rounded-container border border-slate-200 bg-white p-12 shadow-2xl relative overflow-hidden">
+        {/* Background Accent */}
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-50 rounded-full blur-3xl opacity-50" />
+        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-50 rounded-full blur-3xl opacity-50" />
+
+        <div className="text-center relative z-10">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-card bg-indigo-600 text-white shadow-xl shadow-indigo-100 mb-8">
+            <ShieldCheck size={40} />
           </div>
-          <h2 className="mt-6 text-3xl font-bold tracking-tight text-white">
-            Welcome Back
+          <h2 className="text-4xl font-black tracking-tighter text-slate-900 leading-none">
+            DMS Login
           </h2>
-          <p className="mt-2 text-sm text-white/80">
-            DMS Kodein - Device Management System
+          <p className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+            Device Management System
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+        <form className="mt-10 space-y-8 relative z-10" onSubmit={handleSubmit(onSubmit)}>
           {error && (
-            <div className="flex items-center gap-2 rounded-lg bg-red-500/20 p-3 text-sm text-red-100 border border-red-500/50">
-              <AlertCircle size={18} />
+            <div className="flex items-center gap-3 rounded-2xl bg-rose-50 p-4 text-sm font-bold text-rose-600 border border-rose-100 animate-in shake duration-300">
+              <AlertCircle size={20} />
               <span>{error}</span>
             </div>
           )}
 
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-white/90">
-                Email Address
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">
+                Alamat Email
               </label>
               <input
                 {...register("email")}
                 type="email"
                 className={cn(
-                  "mt-1 block w-full rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white placeholder-white/40 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all",
-                  errors.email && "border-red-400 focus:border-red-400"
+                  "block w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-sm font-bold placeholder-slate-300 focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all",
+                  errors.email && "border-rose-300 focus:border-rose-400"
                 )}
                 placeholder="admin@dms.com"
               />
               {errors.email && (
-                <p className="mt-1 text-xs text-red-200">{errors.email.message}</p>
+                <p className="mt-1.5 text-[10px] font-black text-rose-500 uppercase tracking-tight ml-1">{errors.email.message}</p>
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-white/90">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">
                 Password
               </label>
               <div className="relative">
@@ -105,40 +110,38 @@ export default function LoginPage() {
                   {...register("password")}
                   type={showPassword ? "text" : "password"}
                   className={cn(
-                    "mt-1 block w-full rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white placeholder-white/40 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all",
-                    errors.password && "border-red-400 focus:border-red-400"
+                    "block w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-6 py-4 text-sm font-bold placeholder-slate-300 focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all",
+                    errors.password && "border-rose-300 focus:border-rose-400"
                   )}
                   placeholder="••••••••"
                 />
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 p-2 hover:bg-transparent"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
+                </Button>
               </div>
               {errors.password && (
-                <p className="mt-1 text-xs text-red-200">{errors.password.message}</p>
+                <p className="mt-1.5 text-[10px] font-black text-rose-500 uppercase tracking-tight ml-1">{errors.password.message}</p>
               )}
             </div>
           </div>
 
-          <button
+          <Button
             type="submit"
-            disabled={isLoading}
-            className="group relative flex w-full justify-center rounded-lg bg-white px-4 py-3 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/20 disabled:opacity-70 transition-all active:scale-[0.98]"
+            loading={isLoading}
+            size="xl"
+            className="w-full shadow-2xl shadow-indigo-100 mt-4"
           >
-            {isLoading ? (
-              <Loader2 className="animate-spin" size={20} />
-            ) : (
-              "Sign In"
-            )}
-          </button>
+            SIGN IN ACCESS
+          </Button>
         </form>
 
-        <div className="text-center text-xs text-white/60">
-          &copy; 2026 DMS Kodein. All rights reserved.
+        <div className="text-center text-[10px] font-black text-slate-300 uppercase tracking-widest relative z-10 pt-4">
+          &copy; 2026 DMS Kodein. Secured Access Only.
         </div>
       </div>
     </div>

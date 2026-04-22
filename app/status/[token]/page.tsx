@@ -127,7 +127,7 @@ export default function StudentStatusPage({ params }: { params: Promise<{ token:
             <div 
               key={`${device.id}-${idx}`} 
               className={cn(
-                "flex items-center justify-between p-5 rounded-[2rem] border-2 backdrop-blur-xl transition-all duration-500",
+                "flex items-center justify-between p-5 rounded-card border-2 backdrop-blur-xl transition-all duration-500",
                 device.isReturned 
                   ? "bg-white/20 border-white/20 text-white shadow-lg" 
                   : "bg-black/10 border-white/5 text-white/40"

@@ -85,12 +85,14 @@ export default function DevicesPage() {
                 <div className="rounded-2xl bg-indigo-50 p-4 text-indigo-600 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
                   {device.name.toLowerCase().includes('laptop') || device.name.toLowerCase().includes('book') ? <Laptop size={24} /> : <MobileIcon size={24} />}
                 </div>
-                <button 
+                <Button 
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setDeviceToDelete(device.id)}
-                  className="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                  className="text-slate-300 hover:text-rose-500 hover:bg-rose-50"
                 >
                   <Trash2 size={18} />
-                </button>
+                </Button>
               </div>
 
               <div className="mt-8 relative z-10">

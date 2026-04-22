@@ -109,12 +109,14 @@ export default function StudentsPage() {
                       </span>
                     </td>
                     <td className="px-10 py-6 text-right">
-                      <button 
+                      <Button 
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setStudentToDelete(student.id)}
-                        className="p-3 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                        className="text-slate-300 hover:text-rose-500 hover:bg-rose-50"
                       >
                         <Trash2 size={20} />
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 ))
