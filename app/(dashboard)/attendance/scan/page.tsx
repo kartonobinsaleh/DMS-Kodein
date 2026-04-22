@@ -48,7 +48,14 @@ function ScannerContent() {
       setIsScanning(true);
       await html5QrCodeRef.current.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
+        { 
+          fps: 15, 
+          qrbox: (viewfinderWidth, viewfinderHeight) => {
+             const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+             const size = Math.floor(minEdge * 0.7);
+             return { width: size, height: size };
+          }
+        },
         (decodedText) => {
           if (isProcessing) return;
           
@@ -71,7 +78,6 @@ function ScannerContent() {
     } catch (err) {
       logger.error("Camera start failed", err);
       toast.error("Gagal menyalakan kamera. Pastikan izin kamera diberikan.");
-      addLog("Gagal menyalakan kamera", "error");
       setIsScanning(false);
     }
   };
@@ -129,7 +135,6 @@ function ScannerContent() {
         }
       } else {
         // DEVICE SPECIFIC SCAN
-        addLog(`Memproses Unit: ${id}`, 'info');
         const res = await fetch(`/api/students`);
         const json = await res.json();
         const student = json.data.find((s: any) => s.ownedDevices.some((d: any) => d.id === id));
@@ -140,7 +145,6 @@ function ScannerContent() {
           // STRICT FILTER: Check if device type matches the station target
           if (targetType !== "DEVICE" && device.type !== targetType) {
              const targetLabel = device.type === 'LAPTOP' ? 'LAPTOP' : 'HP';
-             addLog(`Salah Jenis! Khusus ${targetLabel}`, 'error');
              toast.error(`KHUSUS ${targetLabel}!`, {
                description: `Pindah ke Station ${targetLabel}`,
                duration: 2000
@@ -337,7 +341,11 @@ function ScannerContent() {
         {/* Scanner Body */}
         {!studentData && (
           <Card className="overflow-hidden border-2 border-primary/10 bg-white">
-            <div id="reader" className="w-full bg-slate-900 aspect-square flex items-center justify-center text-white text-xs" />
+            <div 
+              id="reader" 
+              className="w-full bg-slate-900 flex items-center justify-center text-white text-xs" 
+              style={{ aspectRatio: '1/1' }}
+            />
             <div className="p-8 text-center">
               {!isScanning ? (
                 <Button 
