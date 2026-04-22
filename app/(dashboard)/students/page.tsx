@@ -41,8 +41,8 @@ export default function StudentsPage() {
   return (
     <div className="space-y-4 page-fade-in pb-20">
       <PageHeader
-        title="Student Management"
-        subtitle="Operational database of registered students for daily device activity."
+        title="Manajemen Siswa"
+        subtitle="Basis data operasional siswa terdaftar untuk aktivitas perangkat harian."
       />
 
       <div className="sticky top-0 z-10 space-y-3 bg-gray-50/80 backdrop-blur-md pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
@@ -50,7 +50,7 @@ export default function StudentsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
             type="text"
-            placeholder="Search name or class group..."
+            placeholder="Cari nama atau grup kelas..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm placeholder:text-gray-400 transition-all"
@@ -61,7 +61,7 @@ export default function StudentsPage() {
           className="w-full h-12 rounded-xl text-xs font-bold uppercase tracking-widest"
           leftIcon={<Plus size={16} />}
         >
-          Register New Student
+          Registrasi Siswa Baru
         </Button>
       </div>
 
@@ -98,7 +98,7 @@ export default function StudentsPage() {
         ) : (
           <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">
              <User size={32} className="mx-auto mb-2 text-gray-200" />
-             <p className="text-xs font-medium text-gray-400 italic">No matching students found.</p>
+             <p className="text-xs font-medium text-gray-400 italic">Siswa tidak ditemukan.</p>
           </div>
         )}
       </div>
@@ -107,8 +107,8 @@ export default function StudentsPage() {
         isOpen={!!studentToDelete}
         onClose={() => setStudentToDelete(null)}
         onConfirm={handleDelete}
-        title="Delete Record"
-        description="Permanently remove this student record from the operational system."
+        title="Hapus Catatan"
+        description="Hapus permanen catatan siswa ini dari sistem operasional."
       />
 
       {showAddModal && (
@@ -116,11 +116,11 @@ export default function StudentsPage() {
           <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-2xl border border-gray-200 animate-in zoom-in-95 duration-150">
             <h2 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
               <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><Plus size={16} /></div>
-              Register New Student
+              Registrasi Siswa Baru
             </h2>
             <form onSubmit={handleAddStudent} className="space-y-5">
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Student Full Name</label>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nama Lengkap Siswa</label>
                 <input
                   autoFocus
                   type="text"
@@ -131,7 +131,7 @@ export default function StudentsPage() {
                 />
               </div>
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Class Group</label>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Grup Kelas</label>
                 <input
                   type="text"
                   value={formData.class}
@@ -141,8 +141,8 @@ export default function StudentsPage() {
                 />
               </div>
               <div className="flex gap-3 pt-2">
-                <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Cancel</Button>
-                <Button type="submit" disabled={!formData.name.trim() || !formData.class.trim()} className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Save Record</Button>
+                <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Batal</Button>
+                <Button type="submit" disabled={!formData.name.trim() || !formData.class.trim()} className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Simpan Catatan</Button>
               </div>
             </form>
           </div>

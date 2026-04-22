@@ -68,16 +68,16 @@ export default function DailyMonitoringPage() {
     <div className="space-y-4 page-fade-in pb-20">
       <PageHeader
         title="Daily Monitoring"
-        subtitle="Real-time status of daily student device activity."
+        subtitle="Status aktivitas harian perangkat siswa secara real-time."
       />
 
       {/* Summary Strip - Mobile Horizontal Scroll */}
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
         {[
           { label: "Total", value: stats.total, icon: Activity, color: "text-gray-400" },
-          { label: "On Time", value: stats.onTime, icon: CheckCircle, color: "text-green-600" },
-          { label: "Late", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
-          { label: "Missing", value: stats.missing, icon: XCircle, color: "text-red-600" },
+          { label: "Tepat Waktu", value: stats.onTime, icon: CheckCircle, color: "text-green-600" },
+          { label: "Terlambat", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
+          { label: "Belum Kembali", value: stats.missing, icon: XCircle, color: "text-red-600" },
         ].map((s) => (
           <div key={s.label} className="flex-shrink-0 bg-white border border-gray-200 rounded-xl p-3 min-w-[110px] shadow-sm">
             <div className="flex items-center justify-between mb-1">
@@ -92,7 +92,7 @@ export default function DailyMonitoringPage() {
       <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-200 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-600 animate-pulse" />
-          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">Live Active Operations</span>
+          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">Operasional Sedang Berjalan</span>
         </div>
         <Button
           onClick={fetchLogs}
@@ -102,7 +102,7 @@ export default function DailyMonitoringPage() {
           className="bg-gray-50"
           leftIcon={<RefreshCcw size={14} />}
         >
-          Sync
+          Perbarui
         </Button>
       </div>
 
@@ -121,7 +121,7 @@ export default function DailyMonitoringPage() {
         ) : logs.length === 0 ? (
           <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">
              <Clock size={32} className="mx-auto mb-2 text-gray-200" />
-             <p className="text-xs font-medium text-gray-400 italic">No activity detected for today.</p>
+             <p className="text-xs font-medium text-gray-400 italic">Belum ada aktivitas hari ini.</p>
           </div>
         ) : (
           logs.map((log) => (
@@ -146,13 +146,13 @@ export default function DailyMonitoringPage() {
 
               <div className="flex items-center justify-between mt-2 pt-1 font-mono text-[10px]">
                 <div className="flex flex-col">
-                  <span className="text-gray-300 uppercase font-bold tracking-tighter">Check-Out</span>
+                  <span className="text-gray-300 uppercase font-bold tracking-tighter">Keluar</span>
                   <span className="text-gray-600 font-bold">{log.checkOutTime ? new Date(log.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "--:--"}</span>
                 </div>
                 <div className="flex flex-col text-right">
-                  <span className="text-gray-300 uppercase font-bold tracking-tighter">Check-In</span>
+                  <span className="text-gray-300 uppercase font-bold tracking-tighter">Kembali</span>
                   <span className={log.checkInTime ? "text-indigo-600 font-bold" : "text-amber-500 font-bold"}>
-                    {log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "PENDING"}
+                    {log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "BELUM KEMBALI"}
                   </span>
                 </div>
               </div>

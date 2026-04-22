@@ -41,8 +41,8 @@ export default function DevicesPage() {
   return (
     <div className="space-y-4 page-fade-in pb-10">
       <PageHeader
-        title="Device Management"
-        subtitle="Manage daily student device inventory and operational status."
+        title="Manajemen Perangkat"
+        subtitle="Kelola inventaris perangkat siswa dan status operasional harian."
       />
 
       <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -50,7 +50,7 @@ export default function DevicesPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
           <input
             type="text"
-            placeholder="Search assets by name..."
+            placeholder="Cari perangkat berdasarkan nama..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-4 py-2 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
@@ -61,7 +61,7 @@ export default function DevicesPage() {
           size="sm"
           leftIcon={<Plus size={14} />}
         >
-          Add Asset
+          Tambah Perangkat
         </Button>
       </div>
 
@@ -99,7 +99,7 @@ export default function DevicesPage() {
             </div>
           ))
         ) : (
-          <div className="col-span-full py-10 text-center text-sm text-gray-400 italic">No assets found.</div>
+          <div className="col-span-full py-10 text-center text-sm text-gray-400 italic">Perangkat tidak ditemukan.</div>
         )}
       </div>
 
@@ -107,8 +107,8 @@ export default function DevicesPage() {
         isOpen={!!deviceToDelete}
         onClose={() => setDeviceToDelete(null)}
         onConfirm={handleDelete}
-        title="Retire Asset"
-        description="Permanently remove this hardware from system records."
+        title="Hapus Perangkat"
+        description="Hapus permanen perangkat ini dari catatan sistem."
       />
 
       {showAddModal && (
@@ -116,11 +116,11 @@ export default function DevicesPage() {
           <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in-95 duration-150">
              <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <Database size={16} className="text-indigo-600" />
-              Register New Asset
+              Registrasi Perangkat Baru
             </h2>
             <form onSubmit={handleAddDevice} className="space-y-4">
               <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500 ml-1">Asset Label</label>
+                <label className="text-xs font-medium text-gray-500 ml-1">Label Perangkat</label>
                 <input
                   autoFocus
                   type="text"
@@ -131,8 +131,8 @@ export default function DevicesPage() {
                 />
               </div>
               <div className="flex gap-2 pt-2">
-                <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1">Cancel</Button>
-                <Button type="submit" disabled={!newDeviceName.trim()} className="flex-1">Save Asset</Button>
+                <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1">Batal</Button>
+                <Button type="submit" disabled={!newDeviceName.trim()} className="flex-1">Simpan Perangkat</Button>
               </div>
             </form>
           </div>

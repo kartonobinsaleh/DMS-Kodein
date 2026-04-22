@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { 
   Search, 
   Edit2,
@@ -11,7 +11,12 @@ import {
   Clock,
   User,
   Smartphone,
-  Laptop
+  Laptop,
+  Activity,
+  CheckCircle,
+  AlertTriangle,
+  XCircle,
+  LogOut
 } from "lucide-react";
 import { toast } from "sonner";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -56,7 +61,7 @@ export default function AdminLogsPage() {
         setLogs([]);
       }
     } catch (error) {
-      toast.error("Sync failed.");
+      toast.error("Gagal memuat data.");
       setLogs([]);
     } finally {
       setLoading(false);
@@ -67,9 +72,18 @@ export default function AdminLogsPage() {
     fetchData();
   }, [filterDate, filterClass]);
 
+  const stats = useMemo(() => {
+    return {
+      total: logs.length,
+      onTime: logs.filter(l => l.dailyStatus === "ON_TIME").length,
+      late: logs.filter(l => l.dailyStatus === "LATE").length,
+      missing: logs.filter(l => l.dailyStatus === "NOT_RETURNED").length,
+    };
+  }, [logs]);
+
   const handleOverride = async () => {
     if (!editingLog) return;
-    if (overrideReason.length < 5) return toast.error("Note too short.");
+    if (overrideReason.length < 5) return toast.error("Catatan terlalu pendek.");
 
     setIsSaving(true);
     try {
@@ -82,28 +96,46 @@ export default function AdminLogsPage() {
         })
       });
 
-      if (!res.ok) throw new Error("Correction failed");
+      if (!res.ok) throw new Error("Gagal menyimpan perbaikan");
       
-      toast.success("Corrected.");
+      toast.success("Catatan berhasil diperbaiki.");
       setEditingLog(null);
       fetchData();
     } catch (error) {
-      toast.error("Sync error.");
+      toast.error("Gagal memperbarui catatan.");
     } finally {
       setIsSaving(false);
     }
   };
 
-  if (loading) return <div className="p-20 text-center text-xs font-semibold text-gray-400 uppercase tracking-widest animate-pulse">Syncing Daily Activity Logs...</div>;
+  if (loading) return <div className="p-20 text-center text-xs font-semibold text-gray-400 uppercase tracking-widest animate-pulse">Memuat Catatan Aktivitas...</div>;
 
   const displayLogs = Array.isArray(logs) ? logs.filter(l => l.student.name.toLowerCase().includes(search.toLowerCase())) : [];
 
   return (
     <div className="space-y-4 page-fade-in pb-20">
       <PageHeader 
-        title="Daily Activity Logs"
-        subtitle="Comprehensive database of daily student device activity."
+        title="Daily Logs"
+        subtitle="Database aktivitas harian perangkat siswa."
       />
+
+       {/* Summary Strip - Unified Visual System */}
+       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+        {[
+          { label: "Total Log", value: stats.total, icon: Activity, color: "text-gray-400" },
+          { label: "Tepat Waktu", value: stats.onTime, icon: CheckCircle, color: "text-green-600" },
+          { label: "Terlambat", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
+          { label: "Belum Kembali", value: stats.missing, icon: XCircle, color: "text-red-600" },
+        ].map((s) => (
+          <div key={s.label} className="flex-shrink-0 bg-white border border-gray-200 rounded-xl p-3 min-w-[110px] shadow-sm">
+            <div className="flex items-center justify-between mb-1">
+               <s.icon size={14} className={s.color} />
+               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{s.label}</span>
+            </div>
+            <p className="text-lg font-bold text-gray-900">{s.value}</p>
+          </div>
+        ))}
+      </div>
 
       {/* Sticky Combined Filter Controls */}
       <div className="bg-white border border-gray-200 rounded-xl p-3 flex flex-col gap-3 shadow-sm sticky top-0 z-10 transition-shadow">
@@ -111,7 +143,7 @@ export default function AdminLogsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
           <input
             type="text"
-            placeholder="Search student name..."
+            placeholder="Cari nama siswa..."
             className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -135,69 +167,77 @@ export default function AdminLogsPage() {
                value={filterClass}
                onChange={(e) => setFilterClass(e.target.value)}
              >
-               <option value="">All Classes</option>
+               <option value="">Semua Kelas</option>
                {["10-A", "10-B", "11-A", "11-B", "12-A", "12-B", "12-C"].map(c => <option key={c} value={c}>{c}</option>)}
              </select>
           </div>
         </div>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {displayLogs.length === 0 ? (
           <div className="col-span-full py-20 text-center bg-white rounded-xl border border-dashed border-gray-200">
              <ClipboardList size={32} className="mx-auto mb-2 text-gray-200" />
-             <p className="text-xs font-medium text-gray-400 italic">No historical records for this date.</p>
+             <p className="text-xs font-medium text-gray-400 italic">Tidak ada catatan untuk tanggal ini.</p>
           </div>
         ) : (
           displayLogs.map((log) => (
-            <div key={log.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col hover:border-indigo-200 transition-colors">
-              <div className="flex justify-between items-start mb-4">
+            <div key={log.id} className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col overflow-hidden group hover:border-indigo-100 transition-all">
+              <div className="px-4 py-3 bg-gray-50/50 border-b border-gray-200 flex justify-between items-center group-hover:bg-indigo-50/10 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
-                    <User size={20} />
+                  <div className="h-8 w-8 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-xs shadow-sm">
+                    {log.student.name[0]}
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-gray-900 leading-none mb-1">{log.student.name}</h3>
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">{log.student.class}</p>
+                    <h3 className="text-xs font-bold text-gray-800 leading-none mb-1 group-hover:text-indigo-600 transition-colors">
+                      {log.student.name}
+                    </h3>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none">{log.student.class}</p>
                   </div>
                 </div>
-                <StatusBadge status={log.dailyStatus} className="scale-90" />
+                <StatusBadge status={log.dailyStatus} className="scale-75 origin-right" />
               </div>
 
-              <div className="space-y-3 bg-gray-50/50 p-3 rounded-lg border border-gray-100 mb-4">
-                <div className="flex items-center gap-2">
-                  {log.device.type === "LAPTOP" ? <Laptop size={14} className="text-gray-400" /> : <Smartphone size={14} className="text-gray-400" />}
-                  <span className="text-xs font-bold text-gray-700">{log.device.name}</span>
-                </div>
-                <div className="flex justify-between text-[11px] font-mono">
-                  <div className="flex items-center gap-1.5 text-gray-500">
-                    <Clock size={12} className="text-gray-300" />
-                    <span>In: {new Date(log.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              <div className="p-3 flex-1 flex flex-col justify-between">
+                <div className="space-y-2 mb-4">
+                  <div className="flex items-center gap-2">
+                    {log.device.type === "LAPTOP" ? <Laptop size={14} className="text-gray-400" /> : <Smartphone size={14} className="text-gray-400" />}
+                    <span className="text-[11px] font-bold text-gray-700">{log.device.name}</span>
                   </div>
-                  <div className="text-indigo-600 font-bold">
-                    Out: {log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "PENDING"}
+                  
+                  <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-50">
+                    <div className="flex flex-col">
+                      <span className="text-[9px] text-gray-300 uppercase font-bold tracking-tighter">Keluar</span>
+                      <span className="text-[10px] text-gray-600 font-bold font-mono">{new Date(log.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                    <div className="flex flex-col text-right">
+                      <span className="text-[9px] text-gray-300 uppercase font-bold tracking-tighter">Kembali</span>
+                      <span className={log.checkInTime ? "text-indigo-600 font-bold text-[10px] font-mono" : "text-amber-500 font-bold text-[10px] font-mono"}>
+                        {log.checkInTime ? new Date(log.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "---"}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between mt-auto pt-2">
-                 <div className="flex-1">
-                    {log.reason && (
-                       <p className="text-[10px] text-gray-500 italic truncate pr-4">Note: {log.reason}</p>
-                    )}
-                 </div>
-                 <Button 
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setEditingLog(log);
-                      setOverrideStatus(log.dailyStatus);
-                      setOverrideReason(log.reason || "");
-                    }}
-                    className="h-10 w-10 p-0 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 border border-transparent hover:border-indigo-100 rounded-xl"
-                  >
-                    <Edit2 size={18} />
-                  </Button>
+                <div className="flex items-center justify-between pt-1 border-t border-gray-50 mt-auto">
+                   <div className="flex-1 truncate">
+                      {log.reason && (
+                         <p className="text-[9px] text-gray-400 italic truncate pr-2">Log: {log.reason}</p>
+                      )}
+                   </div>
+                   <Button 
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setEditingLog(log);
+                        setOverrideStatus(log.dailyStatus);
+                        setOverrideReason(log.reason || "");
+                      }}
+                      className="h-8 w-8 p-0 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 border border-transparent hover:border-indigo-100 rounded-lg transition-all"
+                    >
+                      <Edit2 size={14} />
+                    </Button>
+                </div>
               </div>
             </div>
           ))
@@ -209,7 +249,7 @@ export default function AdminLogsPage() {
             <div className="bg-white w-full max-w-sm rounded-xl shadow-2xl border border-gray-200 p-6 animate-in zoom-in-95 duration-150">
                <div className="flex justify-between items-start mb-6">
                   <div>
-                    <h2 className="text-sm font-bold text-gray-800 leading-none mb-1">Correction Record</h2>
+                    <h2 className="text-sm font-bold text-gray-800 leading-none mb-1">Perbaiki Catatan</h2>
                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{editingLog.student.name}</p>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setEditingLog(null)} className="p-0 h-auto text-gray-400">
@@ -219,22 +259,22 @@ export default function AdminLogsPage() {
 
                <div className="space-y-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Manual Status</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Status Operasional</label>
                     <select 
                       className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-3 text-sm font-bold focus:border-indigo-600 outline-none cursor-pointer"
                       value={overrideStatus}
                       onChange={(e) => setOverrideStatus(e.target.value)}
                     >
-                      <option value="NOT_RETURNED">NOT_RETURNED</option>
-                      <option value="ON_TIME">ON_TIME</option>
-                      <option value="LATE">LATE</option>
+                      <option value="NOT_RETURNED">BELUM KEMBALI</option>
+                      <option value="ON_TIME">TEPAT WAKTU</option>
+                      <option value="LATE">TERLAMBAT</option>
                     </select>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Operational Note</label>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Catatan Operasional</label>
                     <textarea 
-                      placeholder="Rationale for manual correction..."
+                      placeholder="Alasan melakukan perbaikan data..."
                       className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm focus:border-indigo-600 outline-none resize-none min-h-[100px]"
                       value={overrideReason}
                       onChange={(e) => setOverrideReason(e.target.value)}
@@ -247,7 +287,7 @@ export default function AdminLogsPage() {
                     onClick={handleOverride}
                     className="w-full h-12 rounded-xl text-xs font-bold uppercase tracking-widest"
                   >
-                    Save Correction
+                    Simpan Perbaikan
                   </Button>
                </div>
             </div>

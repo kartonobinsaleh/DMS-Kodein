@@ -37,18 +37,18 @@ export default function DashboardPage() {
   }, []);
 
   const cards = [
-    { name: "Total Inventory", value: stats?.totalDevices || 0, icon: Laptop, color: "text-gray-400" },
-    { name: "Available Assets", value: stats?.availableDevices || 0, icon: CheckCircle, color: "text-green-600" },
-    { name: "Currently In-Use", value: stats?.borrowedDevices || 0, icon: Clock, color: "text-indigo-600" },
-    { name: "Overdue Items", value: stats?.overdueDevices || 0, icon: AlertTriangle, color: "text-amber-500" },
-    { name: "Total Students", value: stats?.totalStudents || 0, icon: Users, color: "text-gray-400" },
+    { name: "Total Inventaris", value: stats?.totalDevices || 0, icon: Laptop, color: "text-gray-400" },
+    { name: "Perangkat Tersedia", value: stats?.availableDevices || 0, icon: CheckCircle, color: "text-green-600" },
+    { name: "Sedang Digunakan", value: stats?.borrowedDevices || 0, icon: Clock, color: "text-indigo-600" },
+    { name: "Kejadian Terlambat", value: stats?.overdueDevices || 0, icon: AlertTriangle, color: "text-amber-500" },
+    { name: "Total Siswa", value: stats?.totalStudents || 0, icon: Users, color: "text-gray-400" },
   ];
 
   return (
     <div className="space-y-4 page-fade-in">
       <PageHeader 
-        title="Dashboard Overview"
-        subtitle="Operational metrics for inventory and student activity."
+        title="Ringkasan Dashboard"
+        subtitle="Metrik operasional untuk inventaris dan aktivitas siswa."
       />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
@@ -67,11 +67,11 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
-          <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-4">Operational Shortcuts</h2>
+          <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-4">Akses Cepat Operasional</h2>
           <div className="space-y-2">
             {[
-              { label: "Check-In / Out Counter", href: "/attendance", icon: Activity },
-              { label: "Daily Monitoring", href: "/daily-monitoring", icon: ClipboardList },
+              { label: "Konter Check-In / Out", href: "/attendance", icon: Activity },
+              { label: "Monitoring Harian", href: "/daily-monitoring", icon: ClipboardList },
             ].map((link) => (
               <Link
                 key={link.label}
@@ -90,15 +90,15 @@ export default function DashboardPage() {
 
         <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 flex flex-col justify-between">
           <div>
-            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2">System Notice</h2>
+            <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2">Pemberitahuan Sistem</h2>
             <p className="text-xs text-gray-600 leading-relaxed font-medium">
-              Ensure all device check-ins are verified and logged before the shift ends at 17:00 WIB. Discrepancies must be reported to the supervisor immediately.
+              Pastikan semua pengembalian perangkat diverifikasi dan dicatat sebelum shift berakhir pada pukul 17:00 WIB. Ketidaksesuaian data harus segera dilaporkan.
             </p>
           </div>
           <div className="mt-6 pt-4 border-t border-gray-200 flex items-center justify-between">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">DMS Node v2.0.4</span>
             <div className="flex items-center gap-2">
-               <span className="text-[10px] font-bold text-green-600 uppercase">System Online</span>
+                <span className="text-[10px] font-bold text-green-600 uppercase">Sistem Online</span>
                <span className="h-2 w-2 rounded-full bg-green-600" />
             </div>
           </div>

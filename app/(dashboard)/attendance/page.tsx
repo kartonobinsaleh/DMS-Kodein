@@ -87,22 +87,22 @@ export default function AttendancePage() {
     return { totalItems, borrowed, late };
   }, [students]);
 
-  if (loading) return <div className="p-20 text-center text-xs font-semibold text-gray-400 uppercase tracking-widest animate-pulse">Syncing Operational Module...</div>;
+  if (loading) return <div className="p-20 text-center text-xs font-semibold text-gray-400 uppercase tracking-widest animate-pulse">Menyiapkan Modul Operasional...</div>;
 
   return (
     <div className="space-y-4 page-fade-in pb-20">
       <PageHeader
         title="Check-In / Out"
-        subtitle="Manage daily student device activity."
+        subtitle="Kelola aktivitas harian perangkat siswa."
       />
 
        {/* Summary Strip - Mobile Horizontal Scroll */}
        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
         {[
-          { label: "Total Assets", value: stats.totalItems, icon: Activity, color: "text-gray-400" },
-          { label: "Active", value: stats.borrowed, icon: LogOut, color: "text-indigo-600" },
-          { label: "Late Issues", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
-          { label: "In-Office", value: stats.totalItems - stats.borrowed, icon: CheckCircle, color: "text-green-600" },
+          { label: "Total Perangkat", value: stats.totalItems, icon: Activity, color: "text-gray-400" },
+          { label: "Dipinjam", value: stats.borrowed, icon: LogOut, color: "text-indigo-600" },
+          { label: "Terlambat", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
+          { label: "Tersedia", value: stats.totalItems - stats.borrowed, icon: CheckCircle, color: "text-green-600" },
         ].map((s) => (
           <div key={s.label} className="flex-shrink-0 bg-white border border-gray-200 rounded-xl p-3 min-w-[110px] shadow-sm">
             <div className="flex items-center justify-between mb-1">
@@ -119,7 +119,7 @@ export default function AttendancePage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
             type="text"
-            placeholder="Search student or class..."
+            placeholder="Cari nama siswa atau kelas..."
             className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm transition-all"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -131,7 +131,7 @@ export default function AttendancePage() {
         {filteredStudents.length === 0 ? (
           <div className="col-span-full text-center py-20 bg-white rounded-xl border border-dashed border-gray-200">
             <Clock size={32} className="mx-auto mb-2 text-gray-200" />
-            <p className="text-xs font-medium text-gray-400">No active students matched.</p>
+            <p className="text-xs font-medium text-gray-400">Tidak ada siswa yang sesuai.</p>
           </div>
         ) : (
           filteredStudents.map((student) => (
@@ -153,7 +153,7 @@ export default function AttendancePage() {
 
               <div className="p-3 space-y-2">
                 {student.ownedDevices.length === 0 ? (
-                  <div className="p-4 text-center text-xs text-gray-400 italic">No assets assigned.</div>
+                  <div className="p-4 text-center text-xs text-gray-400 italic">Tidak ada perangkat yang terdaftar.</div>
                 ) : (
                   student.ownedDevices.map((device) => {
                     const isBorrowed = device.status === "BORROWED";
