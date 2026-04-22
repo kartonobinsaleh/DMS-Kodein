@@ -96,20 +96,20 @@ export default function AttendancePage() {
         subtitle="Kelola aktivitas harian perangkat siswa."
       />
 
-       {/* Summary Strip - Mobile Horizontal Scroll */}
+       {/* Summary Strip - Standardized Dashboard Style */}
        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
         {[
-          { label: "Total Unit", value: stats.totalItems, icon: Activity, color: "text-gray-400" },
+          { label: "Total Unit", value: stats.totalItems, icon: Laptop, color: "text-gray-400" },
           { label: "Unit Keluar", value: stats.borrowed, icon: LogOut, color: "text-indigo-600" },
           { label: "Terlambat", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
           { label: "Unit Masuk", value: stats.totalItems - stats.borrowed, icon: CheckCircle, color: "text-green-600" },
         ].map((s) => (
-          <div key={s.label} className="flex-shrink-0 bg-white border border-gray-200 rounded-xl p-3 min-w-[110px] shadow-sm">
-            <div className="flex items-center justify-between mb-1">
-               <Activity size={14} className={s.color} />
-               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{s.label}</span>
+          <div key={s.label} className="flex-shrink-0 bg-white border border-gray-200 rounded-xl p-4 min-w-[170px] shadow-sm transition-all hover:border-gray-300">
+            <div className="flex items-center justify-between mb-2">
+               <s.icon size={18} className={s.color} />
+               <span className="text-xs font-semibold text-gray-500 uppercase tracking-tight">{s.label}</span>
             </div>
-            <p className="text-lg font-bold text-gray-900">{s.value}</p>
+            <p className="text-2xl font-bold text-gray-900 leading-none">{s.value}</p>
           </div>
         ))}
       </div>
