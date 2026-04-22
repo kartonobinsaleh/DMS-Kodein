@@ -17,6 +17,7 @@ import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { name: "Attendance", href: "/attendance", icon: Clock },
   { name: "Devices", href: "/devices", icon: Smartphone },
   { name: "Students", href: "/students", icon: Users },
   { name: "Transactions", href: "/transactions", icon: ArrowRightLeft },

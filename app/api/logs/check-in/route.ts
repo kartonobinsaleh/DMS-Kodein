@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { SYSTEM_CONFIG } from "@/lib/config";
 import * as z from "zod";
 
 const checkInSchema = z.object({
@@ -38,9 +39,8 @@ export async function POST(req: Request) {
         throw new Error("INVALID_STATE");
       }
 
-      // 2. Business Logic: Late Check (17:00 local time)
-      // Note: In a true prod system, we might use a school-specific timezone
-      const isLate = now.getHours() >= 17;
+      // 2. Business Logic: Late Check (Using centralized config)
+      const isLate = now.getHours() >= SYSTEM_CONFIG.RETURN_DEADLINE_HOUR;
 
       // 3. Atomic Updates
       const updatedLog = await tx.dailyLog.update({
@@ -48,6 +48,7 @@ export async function POST(req: Request) {
         data: {
           checkInTime: now,
           dailyStatus: isLate ? "RETURNED_LATE" : "RETURNED_ON_TIME",
+          staffId: (session.user as any).id, // Audit trail
         },
         include: {
           student: { select: { name: true, class: true } },

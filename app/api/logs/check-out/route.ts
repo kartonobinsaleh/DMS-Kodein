@@ -50,19 +50,21 @@ export async function POST(req: Request) {
       });
 
       // 3. Create Log (Unique constraint studentId_deviceId_date handles safety)
-      return await tx.dailyLog.create({
+      const log = await tx.dailyLog.create({
         data: {
           studentId,
           deviceId,
           date: today,
           dailyStatus: "PENDING",
           checkOutTime: now,
+          staffId: (session.user as any).id, // Audit trail
         },
         include: {
           student: { select: { name: true, class: true } },
           device: { select: { name: true, type: true } }
         }
       });
+      return log;
     });
 
     return NextResponse.json(result, { status: 201 });

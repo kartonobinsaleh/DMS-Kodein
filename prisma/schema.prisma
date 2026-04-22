@@ -14,6 +14,7 @@ model User {
   role      Role     @default(STAFF)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  dailyLogs DailyLog[]
 }
 
 model Student {
@@ -55,9 +56,11 @@ model DailyLog {
   
   studentId    String
   deviceId     String
+  staffId      String?
   
   student      Student   @relation(fields: [studentId], references: [id])
   device       Device    @relation(fields: [deviceId], references: [id])
+  staff        User?     @relation(fields: [staffId], references: [id])
   
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
