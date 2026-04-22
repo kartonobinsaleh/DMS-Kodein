@@ -170,25 +170,25 @@ export default function DevicesPage() {
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
           <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in-95 duration-150">
-             <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <Database size={16} className="text-indigo-600" />
+             <h2 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><Database size={16} /></div>
               Registrasi Perangkat Baru
             </h2>
-            <form onSubmit={handleAddDevice} className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500 ml-1">Nama / Label Unit</label>
+            <form onSubmit={handleAddDevice} className="space-y-5">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nama / Label Unit</label>
                 <input
                   autoFocus
                   type="text"
                   value={newDeviceName}
                   onChange={(e) => setNewDeviceName(e.target.value)}
                   placeholder="e.g. Laptop 05"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
-              <div className="flex gap-2 pt-2">
-                <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1">Batal</Button>
-                <Button type="submit" loading={submitLoading} disabled={!newDeviceName.trim() || submitLoading} className="flex-1">Simpan Perangkat</Button>
+              <div className="flex gap-3 pt-2">
+                <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Batal</Button>
+                <Button type="submit" loading={submitLoading} disabled={!newDeviceName.trim() || submitLoading} className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Simpan Perangkat</Button>
               </div>
             </form>
           </div>
@@ -198,25 +198,25 @@ export default function DevicesPage() {
       {showEditModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/20 backdrop-blur-sm">
           <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-xl border border-gray-200 animate-in zoom-in-95 duration-150">
-             <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <Edit2 size={16} className="text-indigo-600" />
+             <h2 className="text-sm font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <div className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"><Edit2 size={16} /></div>
               Perbaiki Data Perangkat
             </h2>
-            <form onSubmit={handleEditDevice} className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-gray-500 ml-1">Nama / Label Unit</label>
+            <form onSubmit={handleEditDevice} className="space-y-5">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nama / Label Unit</label>
                 <input
                   autoFocus
                   type="text"
                   value={newDeviceName}
                   onChange={(e) => setNewDeviceName(e.target.value)}
                   placeholder="e.g. Laptop 05"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:border-indigo-600 outline-none transition-all"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
-              <div className="flex gap-2 pt-2">
-                <Button onClick={() => setShowEditModal(false)} variant="ghost" className="flex-1">Batal</Button>
-                <Button type="submit" loading={submitLoading} disabled={!newDeviceName.trim() || submitLoading} className="flex-1">Simpan Perubahan</Button>
+              <div className="flex gap-3 pt-2">
+                <Button onClick={() => setShowEditModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Batal</Button>
+                <Button type="submit" loading={submitLoading} disabled={!newDeviceName.trim() || submitLoading} className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Simpan Perubahan</Button>
               </div>
             </form>
           </div>
