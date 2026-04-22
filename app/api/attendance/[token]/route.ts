@@ -58,7 +58,7 @@ export async function GET(
     }
 
     // 4. Transform Data
-    const devices = student.ownedDevices.map(device => {
+    const devices = student.ownedDevices.map((device: any) => {
       const log = device.dailyLogs[0] || null;
       // Using correct Enum values: ON_TIME, LATE, NOT_RETURNED
       const isReturnedOnTime = log?.dailyStatus === "ON_TIME";
