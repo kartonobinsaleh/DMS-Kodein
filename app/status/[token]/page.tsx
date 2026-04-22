@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { CheckCircle2, AlertCircle, Laptop, Smartphone, Clock, RefreshCcw, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SYSTEM_CONFIG } from "@/lib/config";
@@ -20,7 +20,10 @@ interface StudentStatus {
   lastSync: string;
 }
 
-export default function StudentStatusPage({ params }: { params: { token: string } }) {
+export default function StudentStatusPage({ params }: { params: Promise<{ token: string }> }) {
+  // Unwrap params using React.use()
+  const resolvedParams = use(params);
+  
   const [data, setData] = useState<StudentStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -31,7 +34,7 @@ export default function StudentStatusPage({ params }: { params: { token: string 
     else setIsSyncing(true);
 
     try {
-      const res = await fetch(`/api/attendance/${params.token}`);
+      const res = await fetch(`/api/attendance/${resolvedParams.token}`);
       if (!res.ok) throw new Error("Sync failed");
       const json = await res.json();
       setData(json);
@@ -50,7 +53,7 @@ export default function StudentStatusPage({ params }: { params: { token: string 
     // Silent auto refresh every 30 seconds
     const interval = setInterval(() => fetchStatus(true), 30000);
     return () => clearInterval(interval);
-  }, [params.token]);
+  }, [resolvedParams.token]);
 
   if (loading) return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
@@ -120,9 +123,9 @@ export default function StudentStatusPage({ params }: { params: { token: string 
       {/* 3. DYNAMIC DEVICE LIST */}
       {!noActivity && (
         <div className="mt-12 w-full max-w-[340px] space-y-3">
-          {data.devices.map(device => (
+          {data.devices.map((device, idx) => (
             <div 
-              key={device.id} 
+              key={`${device.id}-${idx}`} 
               className={cn(
                 "flex items-center justify-between p-5 rounded-[2rem] border-2 backdrop-blur-xl transition-all duration-500",
                 device.isReturned 

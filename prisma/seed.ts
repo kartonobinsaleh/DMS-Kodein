@@ -7,7 +7,6 @@ async function main() {
   // 1. CLEANUP
   console.log("Cleaning up old records...");
   await prisma.dailyLog.deleteMany();
-  await prisma.transaction.deleteMany();
   await prisma.device.deleteMany();
   await prisma.student.deleteMany();
   await prisma.user.deleteMany();

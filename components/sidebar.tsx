@@ -12,6 +12,7 @@ import {
   Monitor,
   ShieldAlert,
   Clock,
+  CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";

@@ -5,19 +5,22 @@ import { prisma } from "@/lib/prisma";
 import * as z from "zod";
 
 const patchSchema = z.object({
-  dailyStatus: z.enum(["PENDING", "RETURNED_ON_TIME", "RETURNED_LATE", "VIOLATION"]).optional(),
+  // Aligning with correct Prisma LogStatus enum: ON_TIME, LATE, NOT_RETURNED
+  dailyStatus: z.enum(["ON_TIME", "LATE", "NOT_RETURNED"]).optional(),
   checkInTime: z.string().datetime().optional(),
   reason: z.string().min(5, "Reason is required for manual overrides")
 });
 
 /**
  * HARDENED Admin Patch
+ * - Support Next.js 16 async params
  * - Enforced atomic state update
  * - Strict role check
+ * - Fixed Enum values
  */
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   
@@ -26,14 +29,15 @@ export async function PATCH(
   }
 
   try {
+    const { id } = await params;
     const json = await req.json();
     const data = patchSchema.parse(json);
 
     // Atomic update
     const updatedLog = await prisma.dailyLog.update({
-      where: { id: params.id },
+      where: { id },
       data: {
-        ...(data.dailyStatus && { dailyStatus: data.dailyStatus }),
+        ...(data.dailyStatus && { dailyStatus: data.dailyStatus as any }),
         ...(data.checkInTime && { checkInTime: new Date(data.checkInTime) }),
         reason: data.reason, // Audit trail reason
         staffId: (session.user as any).id, // Record who performed the override

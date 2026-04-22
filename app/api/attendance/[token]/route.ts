@@ -7,10 +7,10 @@ import { prisma } from "@/lib/prisma";
  */
 export async function GET(
   req: Request,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
   try {
-    const { token } = params;
+    const { token } = await params;
 
     // 1. Validation: Token must not be empty
     if (!token || token.trim() === "" || token === "undefined") {
@@ -57,11 +57,12 @@ export async function GET(
       }, { status: 404 });
     }
 
-    // 4. Transform Data (No sensitive data leakage like id/staffId)
+    // 4. Transform Data
     const devices = student.ownedDevices.map(device => {
       const log = device.dailyLogs[0] || null;
-      const isReturnedOnTime = log?.dailyStatus === "RETURNED_ON_TIME";
-      const isReturnedLate = log?.dailyStatus === "RETURNED_LATE";
+      // Using correct Enum values: ON_TIME, LATE, NOT_RETURNED
+      const isReturnedOnTime = log?.dailyStatus === "ON_TIME";
+      const isReturnedLate = log?.dailyStatus === "LATE";
       
       return {
         name: device.name,
