@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { LogIn, Loader2, AlertCircle } from "lucide-react";
+import { LogIn, Loader2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const loginSchema = z.object({
@@ -20,6 +20,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -99,15 +100,24 @@ export default function LoginPage() {
               <label className="block text-sm font-medium text-white/90">
                 Password
               </label>
-              <input
-                {...register("password")}
-                type="password"
-                className={cn(
-                  "mt-1 block w-full rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white placeholder-white/40 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all",
-                  errors.password && "border-red-400 focus:border-red-400"
-                )}
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <input
+                  {...register("password")}
+                  type={showPassword ? "text" : "password"}
+                  className={cn(
+                    "mt-1 block w-full rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white placeholder-white/40 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all",
+                    errors.password && "border-red-400 focus:border-red-400"
+                  )}
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
               {errors.password && (
                 <p className="mt-1 text-xs text-red-200">{errors.password.message}</p>
               )}
