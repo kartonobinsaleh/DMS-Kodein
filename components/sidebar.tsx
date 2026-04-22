@@ -39,8 +39,10 @@ export function Sidebar() {
     <div className="flex h-full w-full flex-col bg-white border-r border-gray-200">
       <div className="p-6 border-b border-gray-200 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-7 w-7 bg-indigo-600 rounded-lg shadow-sm" />
-          <h1 className="text-sm font-bold text-gray-800 tracking-tight">DMS System</h1>
+          <div className="h-8 w-8 flex items-center justify-center overflow-hidden">
+            <img src="/logo.png" alt="K" className="h-full w-full object-contain" />
+          </div>
+          <h1 className="text-sm font-black text-gray-800 tracking-tighter uppercase">DMS KODEIN</h1>
         </div>
         <Button
           variant="ghost"
@@ -113,8 +115,10 @@ export function Sidebar() {
             <Menu size={20} className="text-gray-600" />
           </Button>
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 bg-indigo-600 rounded-md shadow-sm" />
-            <span className="text-sm font-bold text-gray-800 tracking-tight">DMS System</span>
+            <div className="h-7 w-7 flex items-center justify-center overflow-hidden">
+              <img src="/logo.png" alt="K" className="h-full w-full object-contain" />
+            </div>
+            <span className="text-sm font-black text-gray-800 tracking-tighter uppercase">DMS KODEIN</span>
           </div>
         </div>
         <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-400 border border-gray-200">

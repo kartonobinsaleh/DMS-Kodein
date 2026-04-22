@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DMS Kodein | Device Management System",
-  description: "Secure and efficient device management for schools.",
+  title: "DMS Kodein School",
+  description: "Official Device Management System for Kodein School.",
 };
 
 export default function RootLayout({

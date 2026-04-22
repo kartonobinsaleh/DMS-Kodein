@@ -57,24 +57,25 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md space-y-10 rounded-container border border-slate-200 bg-background p-12 shadow-2xl relative overflow-hidden">
+      <div className="w-full max-w-md rounded-[2.5rem] border border-slate-200 bg-background shadow-xl relative overflow-hidden">
+        {/* Banner - Framed with Margins (Sharp Corners) */}
+        <div className="p-8 pb-0">
+          <div className="overflow-hidden border border-slate-100 shadow-sm">
+            <img src="/banner.png" alt="Kodein School Banner" className="w-full h-auto object-cover" />
+          </div>
+        </div>
+
         {/* Background Accent */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-50 rounded-full blur-3xl opacity-50" />
         <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-indigo-50 rounded-full blur-3xl opacity-50" />
 
-        <div className="text-center relative z-10">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-card bg-indigo-600 text-white shadow-xl shadow-indigo-100 mb-8">
-            <ShieldCheck size={40} />
-          </div>
-          <h2 className="text-4xl font-black tracking-tighter text-slate-900 leading-none">
-            DMS Login
-          </h2>
-          <p className="mt-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+        <div className="px-10 pb-8 pt-6 text-center relative z-10">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600">
             Device Management System
           </p>
         </div>
 
-        <form className="mt-10 space-y-8 relative z-10" onSubmit={handleSubmit(onSubmit)}>
+        <form className="px-10 pb-12 space-y-8 relative z-10" onSubmit={handleSubmit(onSubmit)}>
           {error && (
             <div className="flex items-center gap-3 rounded-2xl bg-rose-50 p-4 text-sm font-bold text-rose-600 border border-rose-100 animate-in shake duration-300">
               <AlertCircle size={20} />
@@ -134,14 +135,14 @@ export default function LoginPage() {
             type="submit"
             loading={isLoading}
             size="md"
-            className="w-full mt-4"
+            className="w-full"
           >
             SIGN IN ACCESS
           </Button>
         </form>
 
-        <div className="text-center text-[10px] font-black text-slate-300 uppercase tracking-widest relative z-10 pt-4">
-          &copy; 2026 DMS Kodein. Secured Access Only.
+        <div className="text-center text-[10px] font-black text-slate-300 uppercase tracking-widest relative z-10 pb-10 pt-2">
+          &copy; 2026 KODEIN SCHOOL. Secured Access Only.
         </div>
       </div>
     </div>
