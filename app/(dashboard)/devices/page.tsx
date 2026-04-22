@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDeviceStore } from "@/store/use-device-store";
+import { useStudentStore } from "@/store/use-student-store";
 import { Plus, Search, Smartphone, Laptop, Trash2, Database, Edit2 } from "lucide-react";
 import { toast } from "sonner";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -20,13 +21,17 @@ export default function DevicesPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [newDeviceName, setNewDeviceName] = useState("");
+  const [newDeviceType, setNewDeviceType] = useState<"LAPTOP" | "PHONE">("LAPTOP");
+  const [newDeviceOwner, setNewDeviceOwner] = useState("");
+  const { students, fetchStudents } = useStudentStore();
   const [activeDeviceId, setActiveDeviceId] = useState<string | null>(null);
   const [deviceToDelete, setDeviceToDelete] = useState<string | null>(null);
   const [submitLoading, setSubmitLoading] = useState(false);
 
   useEffect(() => {
     fetchDevices();
-  }, [fetchDevices]);
+    fetchStudents();
+  }, [fetchDevices, fetchStudents]);
 
   const filteredDevices = Array.isArray(devices) ? devices.filter((d) =>
     d.name.toLowerCase().includes(search.toLowerCase())
@@ -37,10 +42,15 @@ export default function DevicesPage() {
     if (!newDeviceName.trim()) return;
     setSubmitLoading(true);
     try {
-      await useDeviceStore.getState().addDevice(newDeviceName);
+      await useDeviceStore.getState().addDevice({
+        name: newDeviceName,
+        type: newDeviceType,
+        ownerId: newDeviceOwner
+      });
       setNewDeviceName("");
+      setNewDeviceOwner("");
       setShowAddModal(false);
-      toast.success("Catatan perangkat berhasil ditambahkan");
+      toast.success("Perangkat berhasil diregistrasi");
     } catch (error: any) {
       toast.error(error.message || "Gagal menambahkan perangkat");
     } finally {
@@ -195,7 +205,7 @@ export default function DevicesPage() {
               <div className="p-1.5 bg-primary-light text-primary rounded-lg"><Database size={16} /></div>
               Registrasi Perangkat Baru
             </h2>
-            <form onSubmit={handleAddDevice} className="space-y-5">
+            <form onSubmit={handleAddDevice} className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Nama / Label Unit</label>
                 <input
@@ -203,11 +213,37 @@ export default function DevicesPage() {
                   type="text"
                   value={newDeviceName}
                   onChange={(e) => setNewDeviceName(e.target.value)}
-                  placeholder="e.g. Laptop 05"
+                  placeholder="e.g. LAPTOP-A10"
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary outline-none transition-all placeholder:text-gray-400"
                 />
               </div>
-              <div className="flex gap-3 pt-2">
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Jenis</label>
+                  <select 
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm font-bold focus:border-primary outline-none"
+                    value={newDeviceType}
+                    onChange={(e) => setNewDeviceType(e.target.value as any)}
+                  >
+                    <option value="LAPTOP">LAPTOP</option>
+                    <option value="PHONE">HP / SMARTPHONE</option>
+                  </select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Kepemilikan</label>
+                  <select 
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 text-sm font-bold focus:border-primary outline-none"
+                    value={newDeviceOwner}
+                    onChange={(e) => setNewDeviceOwner(e.target.value)}
+                  >
+                    <option value="">TANPA PEMILIK</option>
+                    {students.map(s => <option key={s.id} value={s.id}>{s.class} - {s.name}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-4">
                 <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Batal</Button>
                 <Button type="submit" loading={submitLoading} disabled={!newDeviceName.trim() || submitLoading} className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest">Simpan Perangkat</Button>
               </div>

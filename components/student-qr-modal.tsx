@@ -11,6 +11,7 @@ interface StudentQRModalProps {
     id: string;
     name: string;
     class: string;
+    statusToken: string;
   } | null;
 }
 
@@ -58,7 +59,7 @@ export function StudentQRModal({ isOpen, onClose, student }: StudentQRModalProps
           <div className="bg-white p-6 rounded-3xl shadow-inner border border-gray-100 mb-6 group transition-all">
             <QRCodeSVG 
               id="student-qr-code"
-              value={student.id} 
+              value={student.statusToken} 
               size={200} 
               level="H"
               includeMargin={true}
@@ -69,7 +70,10 @@ export function StudentQRModal({ isOpen, onClose, student }: StudentQRModalProps
           <div className="space-y-1 mb-8">
             <h2 className="text-2xl font-black text-slate-900 tracking-tighter">{student.name}</h2>
             <p className="text-xs font-bold text-primary uppercase tracking-[0.2em]">{student.class}</p>
-            <p className="text-[10px] font-mono text-gray-300 mt-2">ID: {student.id}</p>
+            <div className="mt-4 p-2 bg-gray-50 rounded-lg border border-gray-100">
+              <p className="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-1">Pass Token</p>
+              <p className="text-[10px] font-mono text-primary font-bold break-all">{student.statusToken}</p>
+            </div>
           </div>
 
           {/* Actions - Hidden on Print */}

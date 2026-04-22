@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useStudentStore } from "@/store/use-student-store";
-import { Plus, Search, Trash2, User, GraduationCap, Edit2, QrCode } from "lucide-react";
+import { Plus, Search, Trash2, User, GraduationCap, Edit2, QrCode, Printer } from "lucide-react";
 import { toast } from "sonner";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { StudentQRModal } from "@/components/student-qr-modal";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { PageContainer } from "@/components/ui/page-container";
+import Link from "next/link";
 import { ActionBar } from "@/components/ui/action-bar";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -106,13 +107,24 @@ export default function StudentsPage() {
             className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-primary outline-none shadow-sm placeholder:text-gray-400 transition-all"
           />
         </div>
-        <Button
-          onClick={() => setShowAddModal(true)}
-          className="w-full sm:w-auto h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-sm"
-          leftIcon={<Plus size={16} />}
-        >
-          Registrasi Siswa Baru
-        </Button>
+        <div className="flex w-full sm:w-auto gap-2">
+          <Link href="/students/print">
+            <Button
+              variant="ghost"
+              className="h-12 px-4 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200 hover:bg-gray-50 shrink-0"
+              leftIcon={<Printer size={16} />}
+            >
+              Cetak Massal
+            </Button>
+          </Link>
+          <Button
+            onClick={() => setShowAddModal(true)}
+            className="flex-1 sm:flex-initial h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-sm"
+            leftIcon={<Plus size={16} />}
+          >
+            Registrasi Siswa
+          </Button>
+        </div>
       </ActionBar>
 
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

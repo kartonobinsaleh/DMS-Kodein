@@ -4,6 +4,7 @@ interface Student {
   id: string;
   name: string;
   class: string;
+  statusToken: string;
   createdAt: string;
 }
 

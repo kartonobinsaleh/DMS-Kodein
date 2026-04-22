@@ -3,6 +3,8 @@ import { create } from "zustand";
 interface Device {
   id: string;
   name: string;
+  type: "LAPTOP" | "PHONE";
+  ownerId?: string;
   status: "AVAILABLE" | "BORROWED" | "MAINTENANCE";
   createdAt: string;
 }
@@ -12,7 +14,7 @@ interface DeviceState {
   isLoading: boolean;
   error: string | null;
   fetchDevices: () => Promise<void>;
-  addDevice: (name: string) => Promise<void>;
+  addDevice: (data: { name: string; type: string; ownerId?: string }) => Promise<void>;
   updateDevice: (id: string, name: string) => Promise<void>;
   deleteDevice: (id: string) => Promise<void>;
 }
@@ -35,13 +37,13 @@ export const useDeviceStore = create<DeviceState>((set) => ({
     }
   },
 
-  addDevice: async (name: string) => {
+  addDevice: async (data) => {
     set({ isLoading: true, error: null });
     try {
       const response = await fetch("/api/devices", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify(data),
       });
       if (!response.ok) throw new Error("Failed to add device");
       const json = await response.json();
