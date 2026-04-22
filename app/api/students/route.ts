@@ -38,10 +38,34 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(student);
-  } catch (_error) {
+  } catch (error) {
     if (error instanceof Error) {
       return new NextResponse(error.message, { status: 400 });
     }
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "ADMIN") {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return new NextResponse("Missing student ID", { status: 400 });
+    }
+
+    await prisma.student.delete({
+      where: { id },
+    });
+
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

@@ -2,14 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useStudentStore } from "@/store/use-student-store";
-import { Plus, Search, Users } from "lucide-react";
+import { Plus, Search, Users, Trash2 } from "lucide-react";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { cn } from "@/lib/utils";
 
 export default function StudentsPage() {
-  const { students, isLoading, fetchStudents, addStudent } = useStudentStore();
+  const { students, isLoading, fetchStudents, addStudent, deleteStudent } = useStudentStore();
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [formData, setFormData] = useState({ name: "", class: "" });
+  const [studentToDelete, setStudentToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     fetchStudents();
@@ -26,6 +28,13 @@ export default function StudentsPage() {
     await addStudent(formData);
     setFormData({ name: "", class: "" });
     setShowAddModal(false);
+  };
+
+  const handleDelete = async () => {
+    if (studentToDelete) {
+      await deleteStudent(studentToDelete);
+      setStudentToDelete(null);
+    }
   };
 
   return (
@@ -65,7 +74,7 @@ export default function StudentsPage() {
             <tr>
               <th className="px-6 py-4">Student</th>
               <th className="px-6 py-4">Class</th>
-              <th className="px-6 py-4 text-right">Joined</th>
+              <th className="px-6 py-4 text-right">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -93,8 +102,13 @@ export default function StudentsPage() {
                       {student.class}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right text-muted-foreground">
-                    {new Date(student.createdAt).toLocaleDateString()}
+                  <td className="px-6 py-4 text-right">
+                    <button 
+                      onClick={() => setStudentToDelete(student.id)}
+                      className="text-muted-foreground hover:text-rose-500 transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   </td>
                 </tr>
               ))
@@ -109,6 +123,14 @@ export default function StudentsPage() {
           </tbody>
         </table>
       </div>
+
+      <ConfirmationModal
+        isOpen={!!studentToDelete}
+        onClose={() => setStudentToDelete(null)}
+        onConfirm={handleDelete}
+        title="Remove Student"
+        description="Are you sure you want to delete this student record? This cannot be undone."
+      />
 
       {/* Add Modal */}
       {showAddModal && (

@@ -2,15 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { useDeviceStore } from "@/store/use-device-store";
-import { Plus, Search, Smartphone, MoreVertical } from "lucide-react";
+import { Plus, Search, Smartphone, Trash2 } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { cn } from "@/lib/utils";
 
 export default function DevicesPage() {
-  const { devices, isLoading, fetchDevices, addDevice } = useDeviceStore();
+  const { devices, isLoading, fetchDevices, addDevice, deleteDevice } = useDeviceStore();
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [newDeviceName, setNewDeviceName] = useState("");
+  const [deviceToDelete, setDeviceToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     fetchDevices();
@@ -26,6 +28,13 @@ export default function DevicesPage() {
     await addDevice(newDeviceName);
     setNewDeviceName("");
     setShowAddModal(false);
+  };
+
+  const handleDelete = async () => {
+    if (deviceToDelete) {
+      await deleteDevice(deviceToDelete);
+      setDeviceToDelete(null);
+    }
   };
 
   return (
@@ -74,8 +83,11 @@ export default function DevicesPage() {
                 <div className="rounded-lg bg-muted p-2 text-muted-foreground">
                   <Smartphone size={24} />
                 </div>
-                <button className="text-muted-foreground hover:text-foreground">
-                  <MoreVertical size={18} />
+                <button 
+                  onClick={() => setDeviceToDelete(device.id)}
+                  className="text-muted-foreground hover:text-rose-500 transition-colors"
+                >
+                  <Trash2 size={18} />
                 </button>
               </div>
               <div className="mt-4">
@@ -97,6 +109,14 @@ export default function DevicesPage() {
           </div>
         )}
       </div>
+
+      <ConfirmationModal
+        isOpen={!!deviceToDelete}
+        onClose={() => setDeviceToDelete(null)}
+        onConfirm={handleDelete}
+        title="Delete Device"
+        description="Are you sure you want to remove this device? This action cannot be undone."
+      />
 
       {/* Add Modal */}
       {showAddModal && (

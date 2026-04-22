@@ -13,6 +13,7 @@ interface DeviceState {
   error: string | null;
   fetchDevices: () => Promise<void>;
   addDevice: (name: string) => Promise<void>;
+  deleteDevice: (id: string) => Promise<void>;
 }
 
 export const useDeviceStore = create<DeviceState>((set) => ({
@@ -44,6 +45,22 @@ export const useDeviceStore = create<DeviceState>((set) => ({
       const newDevice = await response.json();
       set((state) => ({
         devices: [newDevice, ...state.devices],
+        isLoading: false,
+      }));
+    } catch (error) {
+      set({ error: (error as Error).message, isLoading: false });
+    }
+  },
+
+  deleteDevice: async (id: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`/api/devices?id=${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete device");
+      set((state) => ({
+        devices: state.devices.filter((d) => d.id !== id),
         isLoading: false,
       }));
     } catch (error) {

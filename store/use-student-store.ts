@@ -13,6 +13,7 @@ interface StudentState {
   error: string | null;
   fetchStudents: () => Promise<void>;
   addStudent: (data: { name: string; class: string }) => Promise<void>;
+  deleteStudent: (id: string) => Promise<void>;
 }
 
 export const useStudentStore = create<StudentState>((set) => ({
@@ -44,6 +45,22 @@ export const useStudentStore = create<StudentState>((set) => ({
       const newStudent = await response.json();
       set((state) => ({
         students: [newStudent, ...state.students],
+        isLoading: false,
+      }));
+    } catch (error) {
+      set({ error: (error as Error).message, isLoading: false });
+    }
+  },
+
+  deleteStudent: async (id: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`/api/students?id=${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete student");
+      set((state) => ({
+        students: state.students.filter((s) => s.id !== id),
         isLoading: false,
       }));
     } catch (error) {
