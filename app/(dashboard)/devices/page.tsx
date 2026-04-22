@@ -7,6 +7,9 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
+import { PageContainer } from "@/components/ui/page-container";
+import { ActionBar } from "@/components/ui/action-bar";
+import { Card } from "@/components/ui/card";
 
 export default function DevicesPage() {
   const { devices, isLoading, fetchDevices, addDevice, deleteDevice } = useDeviceStore();
@@ -39,33 +42,31 @@ export default function DevicesPage() {
   };
 
   return (
-    <div className="space-y-4 page-fade-in pb-10">
+    <PageContainer>
       <PageHeader
         title="Data Perangkat"
         subtitle="Daftar seluruh unit perangkat dalam sistem dan status siaganya."
       />
 
-      <div className="sticky top-0 z-10 bg-gray-50/80 backdrop-blur-md pb-4 pt-1 sm:pt-0 -mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-            <input
-              type="text"
-              placeholder="Cari perangkat berdasarkan nama..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm transition-all placeholder:text-gray-400"
-            />
-          </div>
-          <Button
-            onClick={() => setShowAddModal(true)}
-            className="w-full sm:w-auto h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-sm"
-            leftIcon={<Plus size={16} />}
-          >
-            Registrasi Perangkat Baru
-          </Button>
+      <ActionBar>
+        <div className="relative w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+          <input
+            type="text"
+            placeholder="Cari perangkat berdasarkan nama..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm transition-all placeholder:text-gray-400"
+          />
         </div>
-      </div>
+        <Button
+          onClick={() => setShowAddModal(true)}
+          className="w-full sm:w-auto h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-sm"
+          leftIcon={<Plus size={16} />}
+        >
+          Registrasi Perangkat Baru
+        </Button>
+      </ActionBar>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isLoading && devices.length === 0 ? (
@@ -74,7 +75,7 @@ export default function DevicesPage() {
           ))
         ) : filteredDevices.length > 0 ? (
           filteredDevices.map((device) => (
-            <div key={device.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between group">
+            <Card key={device.id} className="p-4 flex flex-col justify-between group">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-gray-50 rounded-lg text-gray-400">
@@ -98,7 +99,7 @@ export default function DevicesPage() {
               <div className="flex items-center justify-between mt-auto">
                 <StatusBadge status={device.status} />
               </div>
-            </div>
+            </Card>
           ))
         ) : (
           <div className="col-span-full py-10 text-center text-sm text-gray-400 italic">Perangkat tidak ditemukan.</div>
@@ -140,6 +141,6 @@ export default function DevicesPage() {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

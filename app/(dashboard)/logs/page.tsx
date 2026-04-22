@@ -8,20 +8,21 @@ import {
   Filter,
   Calendar,
   ClipboardList,
-  Clock,
-  User,
   Smartphone,
   Laptop,
-  Activity,
   CheckCircle,
   AlertTriangle,
-  XCircle,
-  LogOut
+  XCircle
 } from "lucide-react";
 import { toast } from "sonner";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
+import { PageContainer } from "@/components/ui/page-container";
+import { ActionBar } from "@/components/ui/action-bar";
+import { Card } from "@/components/ui/card";
+import { SummaryStrip } from "@/components/ui/summary-strip";
+import { StatCard } from "@/components/ui/stat-card";
 
 interface DailyLog {
   id: string;
@@ -113,57 +114,51 @@ export default function AdminLogsPage() {
   const displayLogs = Array.isArray(logs) ? logs.filter(l => l.student.name.toLowerCase().includes(search.toLowerCase())) : [];
 
   return (
-    <div className="space-y-4 page-fade-in pb-20">
+    <PageContainer>
       <PageHeader 
         title="Riwayat Aktivitas"
         subtitle="Database aktivitas harian perangkat siswa."
       />
 
        {/* Summary Strip - Unified Visual System */}
-       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+       <SummaryStrip>
         {[
           { label: "Total Log", value: stats.total, icon: Laptop, color: "text-gray-400" },
           { label: "Tepat Waktu", value: stats.onTime, icon: CheckCircle, color: "text-green-600" },
           { label: "Terlambat", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
           { label: "Belum Kembali", value: stats.missing, icon: XCircle, color: "text-red-600" },
         ].map((s) => (
-          <div key={s.label} className="flex-shrink-0 bg-white border border-gray-200 rounded-xl p-4 min-w-[170px] shadow-sm transition-all hover:border-gray-300">
-            <div className="flex items-center justify-between mb-2">
-               <s.icon size={18} className={s.color} />
-               <span className="text-xs font-semibold text-gray-500 uppercase tracking-tight">{s.label}</span>
-            </div>
-            <p className="text-2xl font-bold text-gray-900 leading-none">{s.value}</p>
-          </div>
+          <StatCard key={s.label} label={s.label} value={s.value} icon={s.icon} iconColorClass={s.color} />
         ))}
-      </div>
+      </SummaryStrip>
 
       {/* Sticky Combined Filter Controls */}
-      <div className="bg-white border border-gray-200 rounded-xl p-3 flex flex-col gap-3 shadow-sm sticky top-0 z-10 transition-shadow">
-        <div className="relative">
+      <ActionBar>
+        <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
           <input
             type="text"
             placeholder="Cari nama siswa..."
-            className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
+            className="w-full pl-9 pr-4 py-3 rounded-xl border border-gray-200 bg-white shadow-sm text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
-        <div className="flex gap-2">
-          <div className="flex-1 flex items-center gap-2 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg text-gray-500">
+        <div className="flex w-full sm:w-auto gap-2 shrink-0">
+          <div className="flex-1 flex items-center gap-2 bg-white border border-gray-200 shadow-sm px-3 py-3 rounded-xl text-gray-500">
             <Calendar size={14} />
             <input 
               type="date" 
-              className="bg-transparent text-xs font-bold outline-none cursor-pointer w-full"
+              className="bg-transparent text-[11px] font-bold outline-none cursor-pointer w-full"
               value={filterDate}
               onChange={(e) => setFilterDate(e.target.value)}
             />
           </div>
-          <div className="flex-1 flex items-center gap-2 bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg text-gray-500">
+          <div className="flex-1 flex items-center gap-2 bg-white border border-gray-200 shadow-sm px-3 py-3 rounded-xl text-gray-500">
              <Filter size={14} />
              <select 
-               className="bg-transparent text-xs font-bold outline-none cursor-pointer w-full"
+               className="bg-transparent text-[11px] font-bold outline-none cursor-pointer w-full"
                value={filterClass}
                onChange={(e) => setFilterClass(e.target.value)}
              >
@@ -172,7 +167,7 @@ export default function AdminLogsPage() {
              </select>
           </div>
         </div>
-      </div>
+      </ActionBar>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {displayLogs.length === 0 ? (
@@ -182,7 +177,7 @@ export default function AdminLogsPage() {
           </div>
         ) : (
           displayLogs.map((log) => (
-            <div key={log.id} className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col overflow-hidden group hover:border-indigo-100 transition-all">
+            <Card key={log.id} className="flex flex-col group hover:border-indigo-100 transition-all">
               <div className="px-4 py-3 bg-gray-50/50 border-b border-gray-200 flex justify-between items-center group-hover:bg-indigo-50/10 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-indigo-600 font-bold text-xs shadow-sm">
@@ -239,7 +234,7 @@ export default function AdminLogsPage() {
                     </Button>
                 </div>
               </div>
-            </div>
+            </Card>
           ))
         )}
       </div>
@@ -293,6 +288,6 @@ export default function AdminLogsPage() {
             </div>
          </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

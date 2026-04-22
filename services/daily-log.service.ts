@@ -51,16 +51,24 @@ export class DailyLogService {
       throw new Error("DEVICE_ALREADY_CHECKED_OUT");
     }
 
-    // 3. Create DailyLog (Status: NOT_RETURNED)
-    return await prisma.dailyLog.create({
-      data: {
-        studentId,
-        deviceId,
-        date: today,
-        checkOutTime: new Date(),
-        dailyStatus: "NOT_RETURNED",
-      },
-    });
+    // 3. Execute Database Transaction (ACID Safe)
+    const [_, newLog] = await prisma.$transaction([
+      prisma.device.update({
+        where: { id: deviceId },
+        data: { status: "BORROWED" },
+      }),
+      prisma.dailyLog.create({
+        data: {
+          studentId,
+          deviceId,
+          date: today,
+          checkOutTime: new Date(),
+          dailyStatus: "NOT_RETURNED",
+        },
+      }),
+    ]);
+
+    return newLog;
   }
 
   static async checkInDevice(studentId: string, deviceId: string) {
@@ -88,14 +96,22 @@ export class DailyLogService {
     // Jika waktu sekarang > limit 17:00
     const finalStatus = now > deadline ? "LATE" : "ON_TIME";
 
-    // 3. Update log with Check-In Time
-    return await prisma.dailyLog.update({
-      where: { id: log.id },
-      data: {
-        checkInTime: now,
-        dailyStatus: finalStatus,
-      },
-    });
+    // 3. Execute Database Transaction (ACID Safe)
+    const [_, updatedLog] = await prisma.$transaction([
+      prisma.device.update({
+        where: { id: deviceId },
+        data: { status: "AVAILABLE" },
+      }),
+      prisma.dailyLog.update({
+        where: { id: log.id },
+        data: {
+          checkInTime: now,
+          dailyStatus: finalStatus,
+        },
+      }),
+    ]);
+
+    return updatedLog;
   }
 
   /**

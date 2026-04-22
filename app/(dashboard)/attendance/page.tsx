@@ -5,17 +5,19 @@ import {
   Search, 
   Smartphone, 
   Laptop, 
-  Activity,
   LogOut,
   CheckCircle,
   AlertTriangle,
-  XCircle,
   Clock
 } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { CheckOutButton, CheckInButton } from "@/components/daily-log-actions";
 import { PageHeader } from "@/components/ui/page-header";
-import { Button } from "@/components/ui/button";
+import { PageContainer } from "@/components/ui/page-container";
+import { ActionBar } from "@/components/ui/action-bar";
+import { Card } from "@/components/ui/card";
+import { SummaryStrip } from "@/components/ui/summary-strip";
+import { StatCard } from "@/components/ui/stat-card";
 import { cn } from "@/lib/utils";
 
 interface DailyLog {
@@ -90,32 +92,26 @@ export default function AttendancePage() {
   if (loading) return <div className="p-20 text-center text-xs font-semibold text-gray-400 uppercase tracking-widest animate-pulse">Menyiapkan Modul Operasional...</div>;
 
   return (
-    <div className="space-y-4 page-fade-in pb-20">
+    <PageContainer>
       <PageHeader
         title="Keluar / Masuk Perangkat"
         subtitle="Kelola aktivitas harian perangkat siswa."
       />
 
        {/* Summary Strip - Standardized Dashboard Style */}
-       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+       <SummaryStrip>
         {[
           { label: "Total Unit", value: stats.totalItems, icon: Laptop, color: "text-gray-400" },
           { label: "Unit Keluar", value: stats.borrowed, icon: LogOut, color: "text-indigo-600" },
           { label: "Terlambat", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
           { label: "Unit Masuk", value: stats.totalItems - stats.borrowed, icon: CheckCircle, color: "text-green-600" },
         ].map((s) => (
-          <div key={s.label} className="flex-shrink-0 bg-white border border-gray-200 rounded-xl p-4 min-w-[170px] shadow-sm transition-all hover:border-gray-300">
-            <div className="flex items-center justify-between mb-2">
-               <s.icon size={18} className={s.color} />
-               <span className="text-xs font-semibold text-gray-500 uppercase tracking-tight">{s.label}</span>
-            </div>
-            <p className="text-2xl font-bold text-gray-900 leading-none">{s.value}</p>
-          </div>
+          <StatCard key={s.label} label={s.label} value={s.value} icon={s.icon} iconColorClass={s.color} />
         ))}
-      </div>
+      </SummaryStrip>
 
-      <div className="sticky top-0 z-10 bg-gray-50/80 backdrop-blur-md pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="relative">
+      <ActionBar>
+        <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
             type="text"
@@ -125,7 +121,7 @@ export default function AttendancePage() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-      </div>
+      </ActionBar>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filteredStudents.length === 0 ? (
@@ -135,7 +131,7 @@ export default function AttendancePage() {
           </div>
         ) : (
           filteredStudents.map((student) => (
-            <div key={student.id} className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col overflow-hidden group hover:border-indigo-100 transition-all">
+            <Card key={student.id} className="flex flex-col group hover:border-indigo-100 transition-all">
               <div className="px-5 py-3 bg-gray-50/50 border-b border-gray-200 flex justify-between items-center group-hover:bg-indigo-50/10 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 bg-white border border-gray-200 rounded-xl flex items-center justify-center text-indigo-600 font-bold text-sm shadow-sm">
@@ -194,10 +190,10 @@ export default function AttendancePage() {
                   })
                 )}
               </div>
-            </div>
+            </Card>
           ))
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }

@@ -6,7 +6,6 @@ import {
   Clock,
   Smartphone,
   Laptop,
-  Activity,
   CheckCircle,
   AlertTriangle,
   XCircle
@@ -14,6 +13,10 @@ import {
 import { StatusBadge } from "@/components/ui/status-badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
+import { PageContainer } from "@/components/ui/page-container";
+import { Card } from "@/components/ui/card";
+import { SummaryStrip } from "@/components/ui/summary-strip";
+import { StatCard } from "@/components/ui/stat-card";
 
 interface DailyLog {
   id: string;
@@ -65,31 +68,25 @@ export default function DailyMonitoringPage() {
   };
 
   return (
-    <div className="space-y-4 page-fade-in pb-20">
+    <PageContainer>
       <PageHeader
         title="Monitoring Harian"
         subtitle="Status aktivitas harian perangkat siswa secara real-time."
       />
 
       {/* Summary Strip - Mobile Horizontal Scroll */}
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+      <SummaryStrip>
         {[
           { label: "Total Unit", value: stats.total, icon: Laptop, color: "text-gray-400" },
           { label: "Tepat Waktu", value: stats.onTime, icon: CheckCircle, color: "text-green-600" },
           { label: "Terlambat", value: stats.late, icon: AlertTriangle, color: "text-amber-500" },
           { label: "Belum Kembali", value: stats.missing, icon: XCircle, color: "text-red-600" },
         ].map((s) => (
-          <div key={s.label} className="flex-shrink-0 bg-white border border-gray-200 rounded-xl p-4 min-w-[170px] shadow-sm transition-all hover:border-gray-300">
-            <div className="flex items-center justify-between mb-2">
-               <s.icon size={18} className={s.color} />
-               <span className="text-xs font-semibold text-gray-500 uppercase tracking-tight">{s.label}</span>
-            </div>
-            <p className="text-2xl font-bold text-gray-900 leading-none">{s.value}</p>
-          </div>
+          <StatCard key={s.label} label={s.label} value={s.value} icon={s.icon} iconColorClass={s.color} />
         ))}
-      </div>
+      </SummaryStrip>
 
-      <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-200 flex justify-between items-center">
+      <Card className="p-3 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full bg-green-600 animate-pulse" />
           <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">Operasional Sedang Berjalan</span>
@@ -104,7 +101,7 @@ export default function DailyMonitoringPage() {
         >
           Perbarui
         </Button>
-      </div>
+      </Card>
 
       {error && (
         <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-[10px] font-bold uppercase tracking-tight">
@@ -125,7 +122,7 @@ export default function DailyMonitoringPage() {
           </div>
         ) : (
           logs.map((log) => (
-            <div key={log.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between hover:border-indigo-200 transition-colors group">
+            <Card key={log.id} className="p-4 flex flex-col justify-between hover:border-indigo-200 transition-colors group">
               <div className="flex justify-between items-start mb-3">
                 <div>
                   <h3 className="text-sm font-bold text-gray-900 leading-none mb-1 group-hover:text-indigo-600 transition-colors">{log.student.name}</h3>
@@ -156,10 +153,10 @@ export default function DailyMonitoringPage() {
                   </span>
                 </div>
               </div>
-            </div>
+            </Card>
           ))
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 }

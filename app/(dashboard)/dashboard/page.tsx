@@ -13,6 +13,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/page-header";
+import { PageContainer } from "@/components/ui/page-container";
+import { Card } from "@/components/ui/card";
+import { StatCard } from "@/components/ui/stat-card";
 
 interface Stats {
   totalDevices: number;
@@ -45,7 +48,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-4 page-fade-in">
+    <PageContainer>
       <PageHeader
         title="Beranda Operasional"
         subtitle="Metrik operasional untuk inventaris dan aktivitas siswa."
@@ -53,20 +56,19 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {cards.map((card) => (
-          <div key={card.name} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-tight">{card.name}</span>
-              <card.icon size={18} className={card.color} />
-            </div>
-            <p className="text-2xl font-bold text-gray-900">
-              {loading ? "..." : card.value}
-            </p>
-          </div>
+          <StatCard 
+            key={card.name} 
+            label={card.name} 
+            value={loading ? "..." : card.value} 
+            icon={card.icon} 
+            iconColorClass={card.color} 
+            className="min-w-0" 
+          />
         ))}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+        <Card className="p-5">
           <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-4">Akses Cepat</h2>
           <div className="space-y-2">
             {[
@@ -86,9 +88,9 @@ export default function DashboardPage() {
               </Link>
             ))}
           </div>
-        </div>
+        </Card>
 
-        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 flex flex-col justify-between">
+        <Card className="p-6 bg-gray-50 flex flex-col justify-between">
           <div>
             <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-2">Pemberitahuan Sistem</h2>
             <p className="text-xs text-gray-600 leading-relaxed font-medium">
@@ -102,8 +104,8 @@ export default function DashboardPage() {
               <span className="h-2 w-2 rounded-full bg-green-600" />
             </div>
           </div>
-        </div>
+        </Card>
       </div>
-    </div>
+    </PageContainer>
   );
 }
