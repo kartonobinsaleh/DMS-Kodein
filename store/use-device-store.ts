@@ -14,8 +14,8 @@ interface DeviceState {
   isLoading: boolean;
   error: string | null;
   fetchDevices: () => Promise<void>;
-  addDevice: (data: { name: string; type: string; ownerId?: string }) => Promise<void>;
-  updateDevice: (id: string, data: { name: string; type: string; ownerId?: string }) => Promise<void>;
+  addDevice: (data: { name: string; type: "LAPTOP" | "PHONE"; ownerId?: string }) => Promise<void>;
+  updateDevice: (id: string, data: { name: string; type: "LAPTOP" | "PHONE"; ownerId?: string }) => Promise<void>;
   deleteDevice: (id: string) => Promise<void>;
 }
 
@@ -69,11 +69,14 @@ export const useDeviceStore = create<DeviceState>((set) => ({
       const errorText = await response.text();
       if (!response.ok) throw new Error(errorText || "Failed to update device");
       
-      let updatedData = data;
-      try { updatedData = JSON.parse(errorText).data || JSON.parse(errorText); } catch(e) {}
+      let updatedData: any = data;
+      try { 
+        const parsed = JSON.parse(errorText);
+        updatedData = parsed.data || parsed; 
+      } catch(e) {}
 
       set((state) => ({
-        devices: state.devices.map(d => d.id === id ? { ...d, ...updatedData } : d),
+        devices: state.devices.map(d => d.id === id ? { ...d, ...updatedData } as Device : d),
         isLoading: false,
       }));
     } catch (error) {
