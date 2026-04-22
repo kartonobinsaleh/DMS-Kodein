@@ -125,22 +125,22 @@ export default function AttendancePage() {
           />
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          <Link href="/attendance/scan?mode=checkout" className="flex-1">
+          <Link href="/attendance/scan?target=LAPTOP" className="flex-1">
             <Button
-              className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em]"
-              leftIcon={<QrCode size={16} />}
+              className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-sm"
+              leftIcon={<Laptop size={16} />}
               variant="primary"
             >
-              SCAN CHECK-OUT
+              SCAN LAPTOP
             </Button>
           </Link>
-          <Link href="/attendance/scan?mode=checkin" className="flex-1">
+          <Link href="/attendance/scan?target=PHONE" className="flex-1">
             <Button
-              className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em]"
-              leftIcon={<QrCode size={16} />}
+              className="w-full h-12 px-6 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] shadow-sm"
+              leftIcon={<Smartphone size={16} />}
               variant="success"
             >
-              SCAN CHECK-IN
+              SCAN HP
             </Button>
           </Link>
         </div>

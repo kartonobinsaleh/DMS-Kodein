@@ -10,12 +10,12 @@ import {
   Smartphone,
   Laptop,
   CheckCircle2,
-  AlertCircle,
   Zap,
   Loader2
 } from "lucide-react";
 import { PageContainer } from "@/components/ui/page-container";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CheckInButton, CheckOutButton } from "@/components/daily-log-actions";
 import Link from "next/link";
@@ -25,15 +25,21 @@ import { logger } from "@/lib/logger";
 
 function ScannerContent() {
   const searchParams = useSearchParams();
-  const forcedMode = searchParams.get("mode"); // 'checkin' | 'checkout' | null
+  const targetType = searchParams.get("target") || "DEVICE"; // LAPTOP | PHONE | DEVICE
+  const [operationalMode, setOperationalMode] = useState<"checkin" | "checkout">("checkout");
 
   const [scannedId, setScannedId] = useState<string | null>(null);
   const [studentData, setStudentData] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
-  const [isProcessingBatch, setIsProcessingBatch] = useState(false);
   const [isAutoPilot, setIsAutoPilot] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [logs, setLogs] = useState<{msg: string, type: 'info' | 'success' | 'error'}[]>([]);
   const [lastProcessedId, setLastProcessedId] = useState<string | null>(null);
+  
+  const addLog = (msg: string, type: 'info' | 'success' | 'error' = 'info') => {
+    setLogs(prev => [{ msg, type }, ...prev].slice(0, 5));
+  };
   
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
 
@@ -45,12 +51,25 @@ function ScannerContent() {
       }
       
       setIsScanning(true);
+      addLog("Kamera diaktifkan", "info");
       await html5QrCodeRef.current.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 250, height: 250 } },
         (decodedText) => {
-          setScannedId(decodedText);
-          stopScanner();
+          if (isProcessing) return;
+          
+          // Normalize: remove prefix if exists
+          let cleanId = decodedText;
+          let type: 'STUDENT' | 'DEVICE' = 'STUDENT';
+
+          if (decodedText.startsWith("STUDENT_")) {
+            cleanId = decodedText.replace("STUDENT_", "");
+          } else if (decodedText.startsWith("DEVICE_")) {
+            cleanId = decodedText.replace("DEVICE_", "");
+            type = 'DEVICE';
+          }
+          
+          handleScannedData(cleanId, type);
         },
         () => {} // Silent scan error
       );
@@ -58,6 +77,7 @@ function ScannerContent() {
     } catch (err) {
       logger.error("Camera start failed", err);
       toast.error("Gagal menyalakan kamera. Pastikan izin kamera diberikan.");
+      addLog("Gagal menyalakan kamera", "error");
       setIsScanning(false);
     }
   };
@@ -90,48 +110,118 @@ function ScannerContent() {
     };
   }, []);
 
-  // Fetch Student 
-  useEffect(() => {
-    if (scannedId) {
-      fetchStudent(scannedId);
-    }
-  }, [scannedId]);
-
-  const fetchStudent = async (id: string) => {
-    if (isAutoPilot && id === lastProcessedId) return;
-
+  const handleScannedData = async (id: string, type: 'STUDENT' | 'DEVICE') => {
+    if (isProcessing) return;
+    setIsProcessing(true);
+    await stopScanner();
     setIsLoading(true);
+    
     try {
-      const res = await fetch(`/api/students`); 
-      const json = await res.json();
-      if (json.success) {
-        const found = json.data.find((s: any) => s.id === id);
-        if (found) {
-          setStudentData(found);
-          if (isAutoPilot) executeAutoProcess(found);
+      if (type === 'STUDENT') {
+        const res = await fetch(`/api/students`); 
+        const json = await res.json();
+        if (json.success) {
+          const found = json.data.find((s: any) => s.id === id || s.statusToken === id);
+          if (found) {
+            addLog(`Siswa: ${found.name}`, 'success');
+            if (isAutoPilot) {
+              await executeAutoProcess(found);
+            } else {
+              setStudentData(found);
+            }
+          } else {
+            addLog(`ID Siswa tidak dikenal: ${id}`, 'error');
+            resetScanner();
+            setTimeout(startScanner, 1000);
+          }
+        }
+      } else {
+        // DEVICE SPECIFIC SCAN
+        addLog(`Memproses Unit: ${id}`, 'info');
+        const res = await fetch(`/api/students`);
+        const json = await res.json();
+        const student = json.data.find((s: any) => s.ownedDevices.some((d: any) => d.id === id));
+        
+        if (student) {
+          const device = student.ownedDevices.find((d: any) => d.id === id);
+          
+          // STRICT FILTER: Check if device type matches the station target
+          if (targetType !== "DEVICE" && device.type !== targetType) {
+             const targetLabel = device.type === 'LAPTOP' ? 'LAPTOP' : 'HP';
+             addLog(`Salah Jenis! Khusus ${targetLabel}`, 'error');
+             toast.error(`KHUSUS ${targetLabel}!`, {
+               description: `Pindah ke Station ${targetLabel}`,
+               duration: 2000
+             });
+             resetScanner();
+             setTimeout(startScanner, 1200);
+             return;
+          }
+
+          const endpoint = operationalMode === "checkin" ? "/api/check-in" : "/api/check-out";
+          
+          const procRes = await fetch(endpoint, {
+            method: "POST",
+            body: JSON.stringify({ studentId: student.id, deviceId: device.id }),
+          });
+          const procJson = await procRes.json();
+          
+          if (procJson.success) {
+            const deviceLabel = device.type === 'LAPTOP' ? 'LAPTOP' : 'HP';
+            toast.success(`${deviceLabel} SUKSES!`, { duration: 1000 });
+            addLog(`${device.name} Sukses!`, 'success');
+            
+            if (isAutoPilot) {
+               // In Lightning mode, don't show info card, just go back to camera
+               resetScanner();
+               setTimeout(startScanner, 800);
+            } else {
+               setStudentData(student);
+            }
+          }
         } else {
-          toast.error("QR Code tidak valid");
+          addLog(`Device tidak terdaftar`, 'error');
           resetScanner();
+          setTimeout(startScanner, 1000);
         }
       }
     } catch (error) {
-      toast.error("Gagal mengambil data");
+      addLog("Gagal Sinkronisasi Server", 'error');
       resetScanner();
     } finally {
       setIsLoading(false);
+      setIsProcessing(false);
     }
   };
 
   const executeAutoProcess = async (student: any) => {
     if (!student.ownedDevices || student.ownedDevices.length === 0) {
-      toast.error("Tidak ada perangkat terdaftar");
-      setTimeout(resetScanner, 2000);
+      toast.error("Tidak ada perangkat");
+      setTimeout(() => {
+         startScanner();
+         resetScanner();
+      }, 2000);
       return;
     }
 
-    setIsProcessingBatch(true);
-    const devices = student.ownedDevices;
-    const isToReturn = forcedMode ? (forcedMode === "checkin") : (devices[0].status === "BORROWED");
+    setIsProcessing(true);
+    
+    // Filter devices based on station target
+    const devices = targetType === "DEVICE" 
+      ? student.ownedDevices 
+      : student.ownedDevices.filter((d: any) => d.type === targetType);
+
+    if (devices.length === 0) {
+      addLog(`Siswa tidak punya unit ${targetType}`, 'error');
+      toast.error(`Siswa ini tidak memiliki unit ${targetType}`);
+      setTimeout(() => {
+        startScanner();
+        resetScanner();
+      }, 2000);
+      return;
+    }
+
+    const isToReturn = operationalMode === "checkin";
     const endpoint = isToReturn ? "/api/check-in" : "/api/check-out";
     const actionLabel = isToReturn ? "MASUK" : "KELUAR";
 
@@ -147,27 +237,39 @@ function ScannerContent() {
       const allSuccess = results.every(r => r.success);
       if (allSuccess) {
         toast.success(`${student.name}: ${actionLabel} Berhasil`, { duration: 1500 });
+        addLog(`${student.name}: ${actionLabel} Berhasil`, 'success');
         logger.info(`Batch process success for ${student.name}`);
         setLastProcessedId(student.id);
-        setTimeout(resetScanner, 1500);
+        if (isAutoPilot) {
+          setTimeout(() => {
+            startScanner();
+            resetScanner();
+          }, 1500);
+        } else {
+          setTimeout(resetScanner, 1500);
+        }
       } else {
         logger.warn(`Batch process partial failure for ${student.name}`);
         toast.error("Gagal memproses perangkat.");
+        addLog("Gagal memproses perangkat", 'error');
         setTimeout(resetScanner, 3000);
       }
     } catch (error) {
       logger.error("System error during batch process", error);
       toast.error("Error Sistem.");
-      setTimeout(resetScanner, 3000);
+      addLog("Error Sistem", 'error');
+      setTimeout(() => {
+        startScanner();
+        resetScanner();
+      }, 3000);
     } finally {
-      setIsProcessingBatch(false);
+      setIsProcessing(false);
     }
   };
 
   const resetScanner = () => {
     setScannedId(null);
     setStudentData(null);
-    setIsProcessingBatch(false);
   };
 
   const handleBatchProcess = async () => {
@@ -184,11 +286,35 @@ function ScannerContent() {
           </Button>
         </Link>
         <h1 className="text-xl font-bold text-gray-900 tracking-tight uppercase">
-          Scanner: {forcedMode === 'checkin' ? 'Check-In' : (forcedMode === 'checkout' ? 'Check-Out' : 'Identitas')}
+          Scan {targetType === 'LAPTOP' ? 'Laptop' : (targetType === 'PHONE' ? 'Handphone' : 'Perangkat')}
         </h1>
       </div>
 
-      <div className="max-w-2xl mx-auto mb-6">
+      <div className="max-w-2xl mx-auto space-y-4 mb-6">
+         {/* Mode Selector - POS Style */}
+         <div className="grid grid-cols-2 gap-2 bg-gray-100 p-1.5 rounded-2xl">
+            <button
+              onClick={() => setOperationalMode("checkout")}
+              className={cn(
+                "flex items-center justify-center gap-2 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all",
+                operationalMode === "checkout" ? "bg-primary text-white shadow-lg" : "text-gray-400 hover:text-gray-600"
+              )}
+            >
+              <Zap size={14} fill={operationalMode === "checkout" ? "currentColor" : "none"} />
+              PENYERAHAN (KELUAR)
+            </button>
+            <button
+              onClick={() => setOperationalMode("checkin")}
+              className={cn(
+                "flex items-center justify-center gap-2 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all",
+                operationalMode === "checkin" ? "bg-success text-white shadow-lg" : "text-gray-400 hover:text-gray-600"
+              )}
+            >
+              <CheckCircle2 size={14} />
+              PENGEMBALIAN (MASUK)
+            </button>
+         </div>
+
          <Card 
             className={`p-4 border-2 transition-all cursor-pointer ${isAutoPilot ? 'border-amber-500 bg-amber-50' : 'border-gray-100 bg-white'}`}
             onClick={() => {
@@ -274,9 +400,9 @@ function ScannerContent() {
                     </div>
                     <Button 
                       onClick={handleBatchProcess}
-                      disabled={isProcessingBatch}
+                      disabled={isProcessing}
                       className="bg-white text-primary h-10 px-4 rounded-xl text-[10px] font-black uppercase"
-                      leftIcon={isProcessingBatch ? <Loader2 size={14} className="animate-spin" /> : null}
+                      leftIcon={isProcessing ? <Loader2 size={14} className="animate-spin" /> : null}
                     >
                       Eksekusi
                     </Button>
@@ -292,8 +418,8 @@ function ScannerContent() {
                            {device.type === 'LAPTOP' ? <Laptop size={20} className="text-gray-400" /> : <Smartphone size={20} className="text-gray-400" />}
                            <p className="text-sm font-bold text-gray-700">{device.name}</p>
                         </div>
-                        <div className="flex gap-2">
-                           {forcedMode === "checkin" || (forcedMode === null && isBorrowed) ? (
+                         <div className="flex gap-2">
+                           {operationalMode === "checkin" ? (
                               <CheckInButton 
                                 studentId={studentData.id} 
                                 deviceId={device.id} 
@@ -325,6 +451,33 @@ function ScannerContent() {
             </Card>
           </div>
         )}
+
+        {/* Live Debug Panel */}
+        <div className="mt-8 rounded-2xl bg-gray-950 p-4 border-2 border-gray-900 shadow-2xl">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Live Terminal Debug</span>
+            </div>
+            <div className="text-[10px] font-mono text-gray-700">DMS_VER: 1.0.0-PRO</div>
+          </div>
+          <div className="space-y-2 font-mono text-[11px]">
+            {logs.length === 0 && (
+              <div className="text-gray-800 italic">Menunggu aktivitas pemindaian...</div>
+            )}
+            {logs.map((log, i) => (
+              <div key={i} className={cn(
+                "flex gap-2 border-l-2 pl-2 transition-all animate-in slide-in-from-left-2 duration-300",
+                log.type === 'success' ? "border-emerald-500 text-emerald-400" :
+                log.type === 'error' ? "border-rose-500 text-rose-400" :
+                "border-primary text-primary-light"
+              )}>
+                <span className="opacity-30 whitespace-nowrap">[{new Date().toLocaleTimeString([], { hour12: false })}]</span>
+                <span className="font-bold">{log.msg}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </PageContainer>
   );
