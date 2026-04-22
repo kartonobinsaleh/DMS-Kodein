@@ -22,14 +22,47 @@ model Student {
   class        String
   createdAt    DateTime      @default(now())
   transactions Transaction[]
+  
+  // V2: Ownership & Daily Logs
+  ownedDevices Device[]      @relation("DeviceOwner")
+  dailyLogs    DailyLog[]
 }
 
 model Device {
   id           String        @id @default(cuid())
   name         String
+  type         DeviceType    @default(LAPTOP)
   status       DeviceStatus  @default(AVAILABLE)
   createdAt    DateTime      @default(now())
+  
+  // V1 Relations
   transactions Transaction[]
+  
+  // V2 Relations
+  ownerId      String?
+  owner        Student?      @relation("DeviceOwner", fields: [ownerId], references: [id])
+  dailyLogs    DailyLog[]
+
+  @@unique([ownerId, type])
+}
+
+model DailyLog {
+  id           String    @id @default(cuid())
+  date         DateTime  @db.Date @default(now())
+  checkOutTime DateTime?
+  checkInTime  DateTime?
+  dailyStatus  LogStatus @default(NOT_RETURNED)
+  
+  studentId    String
+  deviceId     String
+  
+  student      Student   @relation(fields: [studentId], references: [id])
+  device       Device    @relation(fields: [deviceId], references: [id])
+  
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([studentId, deviceId, date])
 }
 
 model Transaction {
@@ -50,10 +83,21 @@ enum Role {
   STAFF
 }
 
+enum DeviceType {
+  LAPTOP
+  PHONE
+}
+
 enum DeviceStatus {
   AVAILABLE
   BORROWED
   MAINTENANCE
+}
+
+enum LogStatus {
+  ON_TIME
+  LATE
+  NOT_RETURNED
 }
 
 enum TransactionStatus {

@@ -40,8 +40,8 @@ async function main() {
     },
   });
 
-  // Create Students
-  const students = [
+  // Create Students with their Devices
+  const studentNames = [
     { name: "Siti Aminah", class: "10-A" },
     { name: "Budi Santoso", class: "10-B" },
     { name: "Dewi Lestari", class: "11-A" },
@@ -49,24 +49,31 @@ async function main() {
     { name: "Fajar Ramadhan", class: "11-B" },
   ];
 
-  for (const s of students) {
-    await prisma.student.create({ data: s });
+  for (const s of studentNames) {
+    const student = await prisma.student.create({ data: s });
+    
+    // Every student has 1 Laptop
+    await prisma.device.create({
+      data: {
+        name: `Laptop - ${student.name}`,
+        type: "LAPTOP",
+        status: "AVAILABLE",
+        ownerId: student.id,
+      },
+    });
+
+    // Every student has 1 Phone
+    await prisma.device.create({
+      data: {
+        name: `Phone - ${student.name}`,
+        type: "PHONE",
+        status: "AVAILABLE",
+        ownerId: student.id,
+      },
+    });
   }
 
-  // Create Devices
-  const devices = [
-    { name: "Chromebook 01", status: DeviceStatus.AVAILABLE },
-    { name: "Chromebook 02", status: DeviceStatus.AVAILABLE },
-    { name: "Laptop Dell 01", status: DeviceStatus.AVAILABLE },
-    { name: "iPad Pro 01", status: DeviceStatus.AVAILABLE },
-    { name: "Tablet Samsung 01", status: DeviceStatus.BORROWED },
-  ];
-
-  for (const d of devices) {
-    await prisma.device.create({ data: d });
-  }
-
-  console.log("Seeding finished.");
+  console.log("Seeding finished with 5 students and 10 owned devices.");
 }
 
 main()
