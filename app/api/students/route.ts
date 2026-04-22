@@ -15,7 +15,7 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json(students);
-  } catch (error) {
+  } catch (_error) {
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(student);
-  } catch (error) {
+  } catch (_error) {
     if (error instanceof Error) {
       return new NextResponse(error.message, { status: 400 });
     }

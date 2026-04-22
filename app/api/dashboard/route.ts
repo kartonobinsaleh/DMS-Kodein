@@ -10,17 +10,27 @@ export async function GET() {
   }
 
   try {
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
     const [
       totalDevices,
       availableDevices,
       borrowedDevices,
       activeTransactions,
+      overdueDevices,
       totalStudents,
     ] = await Promise.all([
       prisma.device.count(),
       prisma.device.count({ where: { status: "AVAILABLE" } }),
       prisma.device.count({ where: { status: "BORROWED" } }),
       prisma.transaction.count({ where: { status: "ACTIVE" } }),
+      prisma.transaction.count({
+        where: {
+          status: "ACTIVE",
+          borrowTime: { lt: twoDaysAgo },
+        },
+      }),
       prisma.student.count(),
     ]);
 
@@ -29,9 +39,10 @@ export async function GET() {
       availableDevices,
       borrowedDevices,
       activeTransactions,
+      overdueDevices,
       totalStudents,
     });
-  } catch (error) {
+  } catch (_error) {
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

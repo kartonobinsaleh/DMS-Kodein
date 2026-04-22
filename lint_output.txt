@@ -1,0 +1,51 @@
+
+> dms-kodein@0.1.0 lint
+> eslint .
+
+
+/Users/kartonosaleh/Documents/kodein/incubator/DMS-Kodein/app/(dashboard)/dashboard/page.tsx
+  78:29  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  78:36  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/kartonosaleh/Documents/kodein/incubator/DMS-Kodein/app/(dashboard)/devices/page.tsx
+  7:10  warning  'cn' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/kartonosaleh/Documents/kodein/incubator/DMS-Kodein/app/(dashboard)/students/page.tsx
+  5:31  warning  'GraduationCap' is defined but never used  @typescript-eslint/no-unused-vars
+  5:46  warning  'Mail' is defined but never used           @typescript-eslint/no-unused-vars
+  6:10  warning  'cn' is defined but never used             @typescript-eslint/no-unused-vars
+
+/Users/kartonosaleh/Documents/kodein/incubator/DMS-Kodein/app/(dashboard)/transactions/page.tsx
+    9:3   warning  'Search' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+   19:36  warning  'loadingTx' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+   99:28  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/kartonosaleh/Documents/kodein/incubator/DMS-Kodein/app/(dashboard)/transactions/page.tsx:99:28
+   97 |                 tx.status === "ACTIVE" &&
+   98 |                 new Date(tx.borrowTime) <
+>  99 |                   new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+      |                            ^^^^^^^^^^ Cannot call impure function
+  100 |
+  101 |               return (
+  102 |                 <div  react-hooks/purity
+  130:49  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react/no-unescaped-entities
+  130:64  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   react/no-unescaped-entities
+
+/Users/kartonosaleh/Documents/kodein/incubator/DMS-Kodein/app/api/dashboard/route.ts
+  45:12  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/kartonosaleh/Documents/kodein/incubator/DMS-Kodein/app/api/devices/route.ts
+  18:12  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+  41:12  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/kartonosaleh/Documents/kodein/incubator/DMS-Kodein/app/api/students/route.ts
+  18:12  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+  41:12  warning  '_error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/kartonosaleh/Documents/kodein/incubator/DMS-Kodein/app/login/page.tsx
+  49:14  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 17 problems (5 errors, 12 warnings)
+
