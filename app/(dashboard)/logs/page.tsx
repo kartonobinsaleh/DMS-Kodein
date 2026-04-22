@@ -202,10 +202,10 @@ export default function AdminLogsPage() {
               onChange={(e) => setFilterDate(e.target.value)}
             />
           </div>
-          <div className="flex-1 flex items-center gap-2 bg-white border border-gray-200 shadow-sm px-3 py-3 rounded-xl text-gray-500">
-             <Filter size={14} />
+          <div className="flex-1 flex items-center gap-2 bg-white border border-gray-200 shadow-sm px-3 py-3 rounded-xl text-gray-400 group-focus-within:border-primary transition-all">
+             <GraduationCap size={16} className="shrink-0 group-focus-within:text-primary transition-colors" />
              <select 
-               className="bg-transparent text-[11px] font-bold outline-none cursor-pointer w-full"
+               className="bg-transparent text-[11px] font-bold outline-none cursor-pointer w-full text-gray-900"
                value={filterClass}
                onChange={(e) => setFilterClass(e.target.value)}
              >

@@ -158,16 +158,19 @@ export default function AttendancePage() {
           />
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-          <select 
-            className="h-12 px-4 bg-white border border-gray-200 rounded-xl text-xs font-bold focus:border-primary outline-none shadow-sm"
-            value={classFilter}
-            onChange={(e) => setClassFilter(e.target.value)}
-          >
-            <option value="">SEMUA KELAS</option>
-            <option value="10">KELAS 10</option>
-            <option value="11">KELAS 11</option>
-            <option value="12">KELAS 12</option>
-          </select>
+          <div className="relative group flex-1 sm:flex-initial">
+            <GraduationCap size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" />
+            <select 
+              className="h-12 pl-10 pr-8 bg-white border border-gray-200 rounded-xl text-xs font-bold focus:border-primary outline-none shadow-sm appearance-none cursor-pointer transition-all"
+              value={classFilter}
+              onChange={(e) => setClassFilter(e.target.value)}
+            >
+              <option value="">SEMUA KELAS</option>
+              <option value="10">KELAS 10</option>
+              <option value="11">KELAS 11</option>
+              <option value="12">KELAS 12</option>
+            </select>
+          </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Link href="/attendance/scan?target=LAPTOP" className="flex-1">

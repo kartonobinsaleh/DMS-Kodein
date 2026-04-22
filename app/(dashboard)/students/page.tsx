@@ -227,15 +227,18 @@ export default function StudentsPage() {
               </div>
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Tingkat Kelas</label>
-                <select 
-                  value={formData.class}
-                  onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-primary outline-none transition-all"
-                >
-                  <option value="10">KELAS 10</option>
-                  <option value="11">KELAS 11</option>
-                  <option value="12">KELAS 12</option>
-                </select>
+                <div className="relative group">
+                  <GraduationCap size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" />
+                  <select 
+                    value={formData.class}
+                    onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm font-bold focus:border-primary focus:bg-white outline-none transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="10">KELAS 10</option>
+                    <option value="11">KELAS 11</option>
+                    <option value="12">KELAS 12</option>
+                  </select>
+                </div>
               </div>
               <div className="flex gap-3 pt-2">
                 <Button onClick={() => setShowAddModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Batal</Button>
@@ -267,15 +270,18 @@ export default function StudentsPage() {
               </div>
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Tingkat Kelas</label>
-                <select 
-                  value={formData.class}
-                  onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-primary outline-none transition-all"
-                >
-                  <option value="10">KELAS 10</option>
-                  <option value="11">KELAS 11</option>
-                  <option value="12">KELAS 12</option>
-                </select>
+                <div className="relative group">
+                  <GraduationCap size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" />
+                  <select 
+                    value={formData.class}
+                    onChange={(e) => setFormData({ ...formData, class: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm font-bold focus:border-primary focus:bg-white outline-none transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="10">KELAS 10</option>
+                    <option value="11">KELAS 11</option>
+                    <option value="12">KELAS 12</option>
+                  </select>
+                </div>
               </div>
               <div className="flex gap-3 pt-2">
                 <Button onClick={() => setShowEditModal(false)} variant="ghost" className="flex-1 h-12 rounded-xl text-xs font-bold uppercase tracking-widest border border-gray-200">Batal</Button>
