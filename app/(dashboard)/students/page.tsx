@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useStudentStore } from "@/store/use-student-store";
-import { Plus, Search, Users, Trash2 } from "lucide-react";
+import { Plus, Search, Users, Trash2, LayoutGrid, ArrowRight } from "lucide-react";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { cn } from "@/lib/utils";
 
@@ -17,10 +17,10 @@ export default function StudentsPage() {
     fetchStudents();
   }, [fetchStudents]);
 
-  const filteredStudents = students.filter((s) =>
+  const filteredStudents = Array.isArray(students) ? students.filter((s) =>
     s.name.toLowerCase().includes(search.toLowerCase()) ||
     s.class.toLowerCase().includes(search.toLowerCase())
-  );
+  ) : [];
 
   const handleAddStudent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,143 +38,153 @@ export default function StudentsPage() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Students</h1>
-          <p className="text-muted-foreground">Manage student records and assignments.</p>
+    <div className="p-4 md:p-8 space-y-10 bg-slate-50/50 min-h-screen">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-indigo-600 font-black uppercase tracking-widest text-[10px]">
+            <Users size={14} />
+            <span>Manajemen Data</span>
+          </div>
+          <h1 className="text-4xl font-black tracking-tighter text-slate-900">Siswa</h1>
+          <p className="text-sm font-medium text-slate-500">Kelola identitas dan kepemilikan perangkat siswa.</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all hover:bg-indigo-700 active:scale-95"
+          className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-6 py-4 text-sm font-black text-white shadow-xl shadow-indigo-100 transition-all hover:bg-indigo-700 active:scale-95 uppercase tracking-widest"
         >
-          <Plus size={18} />
-          <span>Register Student</span>
+          <Plus size={20} />
+          <span>Tambah Siswa</span>
         </button>
       </div>
 
-      {/* Search */}
-      <div className="flex items-center gap-4">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-          <input
-            type="text"
-            placeholder="Search by name or class..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-border bg-card pl-10 pr-4 py-2.5 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
-          />
-        </div>
+      {/* Search Bar */}
+      <div className="relative group max-w-2xl">
+        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors" size={20} />
+        <input
+          type="text"
+          placeholder="Cari nama atau kelas siswa..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-[2rem] border border-slate-200 bg-white pl-14 pr-6 py-5 text-sm font-bold focus:ring-8 focus:ring-indigo-500/5 focus:border-indigo-500 focus:outline-none outline-none transition-all shadow-sm"
+        />
       </div>
 
       {/* List View */}
-      <div className="rounded-2xl border border-border bg-card overflow-hidden">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-muted/50 text-muted-foreground uppercase text-[10px] font-bold tracking-wider">
-            <tr>
-              <th className="px-6 py-4">Student</th>
-              <th className="px-6 py-4">Class</th>
-              <th className="px-6 py-4 text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {isLoading && students.length === 0 ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i}>
-                  <td colSpan={3} className="px-6 py-4">
-                    <div className="h-6 animate-pulse rounded bg-muted" />
-                  </td>
-                </tr>
-              ))
-            ) : filteredStudents.length > 0 ? (
-              filteredStudents.map((student) => (
-                <tr key={student.id} className="group hover:bg-muted/30 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
-                        {student.name[0]}
+      <div className="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm border-collapse">
+            <thead className="bg-slate-50/50 text-[10px] uppercase font-black text-slate-400 border-b border-slate-100 tracking-[0.2em]">
+              <tr>
+                <th className="px-10 py-6">Profil Siswa</th>
+                <th className="px-10 py-6 text-center">Kelas</th>
+                <th className="px-10 py-6 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {isLoading && students.length === 0 ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i}>
+                    <td colSpan={3} className="px-10 py-8">
+                      <div className="h-8 animate-pulse rounded-xl bg-slate-100 w-full" />
+                    </td>
+                  </tr>
+                ))
+              ) : filteredStudents.length > 0 ? (
+                filteredStudents.map((student) => (
+                  <tr key={student.id} className="group hover:bg-slate-50/50 transition-all">
+                    <td className="px-10 py-6">
+                      <div className="flex items-center gap-5">
+                        <div className="h-14 w-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-xl shadow-inner border border-indigo-100 group-hover:scale-110 transition-transform">
+                          {student.name[0]}
+                        </div>
+                        <div>
+                          <p className="font-bold text-slate-900 text-lg tracking-tight leading-tight">{student.name}</p>
+                          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-1">ID: {student.id.slice(-8)}</p>
+                        </div>
                       </div>
-                      <span className="font-medium">{student.name}</span>
+                    </td>
+                    <td className="px-10 py-6 text-center">
+                      <span className="rounded-xl bg-slate-100 px-4 py-2 text-[10px] font-black text-slate-600 uppercase tracking-widest">
+                        {student.class}
+                      </span>
+                    </td>
+                    <td className="px-10 py-6 text-right">
+                      <button 
+                        onClick={() => setStudentToDelete(student.id)}
+                        className="p-3 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                      >
+                        <Trash2 size={20} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3} className="px-10 py-24 text-center text-slate-300">
+                    <div className="flex flex-col items-center justify-center">
+                      <LayoutGrid size={64} className="mb-4 opacity-5" />
+                      <p className="font-black uppercase tracking-widest text-xs">Data siswa tidak ditemukan</p>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium">
-                      {student.class}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button 
-                      onClick={() => setStudentToDelete(student.id)}
-                      className="text-muted-foreground hover:text-rose-500 transition-colors"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={3} className="px-6 py-4 text-center text-muted-foreground py-12">
-                  <Users size={32} className="mx-auto mb-2 opacity-10" />
-                  No students matching your search.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
+      {/* Confirmation Modal */}
       <ConfirmationModal
         isOpen={!!studentToDelete}
         onClose={() => setStudentToDelete(null)}
         onConfirm={handleDelete}
-        title="Remove Student"
-        description="Are you sure you want to delete this student record? This cannot be undone."
+        title="Hapus Data Siswa"
+        description="Apakah Anda yakin ingin menghapus data siswa ini? Seluruh data riwayat yang terkait mungkin ikut terdampak."
       />
 
       {/* Add Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-2xl">
-            <h2 className="text-xl font-bold">Register Student</h2>
-            <p className="text-sm text-muted-foreground mt-1">Add a new student to the management system.</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md rounded-[2.5rem] border border-slate-100 bg-white p-10 shadow-2xl animate-in zoom-in-95 duration-200">
+            <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Registrasi Siswa</h2>
+            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Masukkan identitas lengkap siswa baru.</p>
             
-            <form onSubmit={handleAddStudent} className="mt-6 space-y-4">
-              <div>
-                <label className="text-sm font-medium">Full Name</label>
+            <form onSubmit={handleAddStudent} className="mt-8 space-y-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Nama Lengkap</label>
                 <input
                   autoFocus
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Siti Aminah"
-                  className="mt-1 w-full rounded-lg border border-border bg-muted/50 px-4 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                  placeholder="Contoh: Siti Aminah"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-5 py-4 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:outline-none outline-none transition-all"
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">Class</label>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Kelas</label>
                 <input
                   type="text"
                   value={formData.class}
                   onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                  placeholder="e.g. 10-A"
-                  className="mt-1 w-full rounded-lg border border-border bg-muted/50 px-4 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                  placeholder="Contoh: 10-A atau XI-IPS-1"
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-5 py-4 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 focus:outline-none outline-none transition-all"
                 />
               </div>
-              <div className="flex gap-3 pt-4">
+              <div className="flex gap-4 pt-6">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="flex-1 rounded-lg border border-border py-2 text-sm font-medium hover:bg-muted transition-colors"
+                  className="flex-1 rounded-2xl border border-slate-200 py-4 text-sm font-black text-slate-400 hover:bg-slate-50 transition-all uppercase tracking-widest"
                 >
-                  Cancel
+                  Batal
                 </button>
                 <button
                   type="submit"
                   disabled={!formData.name.trim() || !formData.class.trim()}
-                  className="flex-1 rounded-lg bg-indigo-600 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors"
+                  className="flex-1 rounded-2xl bg-indigo-600 py-4 text-sm font-black text-white shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all uppercase tracking-widest active:scale-95 disabled:opacity-50"
                 >
-                  Register
+                  Daftarkan
                 </button>
               </div>
             </form>

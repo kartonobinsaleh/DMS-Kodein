@@ -26,8 +26,9 @@ export const useDeviceStore = create<DeviceState>((set) => ({
     try {
       const response = await fetch("/api/devices");
       if (!response.ok) throw new Error("Failed to fetch devices");
-      const data = await response.json();
-      set({ devices: data, isLoading: false });
+      const json = await response.json();
+      // Handle the { success: boolean, data: array } format
+      set({ devices: Array.isArray(json.data) ? json.data : [], isLoading: false });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
     }
@@ -42,7 +43,9 @@ export const useDeviceStore = create<DeviceState>((set) => ({
         body: JSON.stringify({ name }),
       });
       if (!response.ok) throw new Error("Failed to add device");
-      const newDevice = await response.json();
+      const json = await response.json();
+      // Handle { success: true, data: device }
+      const newDevice = json.data || json;
       set((state) => ({
         devices: [newDevice, ...state.devices],
         isLoading: false,

@@ -12,9 +12,12 @@ export async function GET() {
 
   try {
     const devices = await prisma.device.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { name: "asc" },
     });
-    return NextResponse.json(devices);
+    return NextResponse.json({
+      success: true,
+      data: devices
+    });
   } catch (_error) {
     return new NextResponse("Internal Error", { status: 500 });
   }
@@ -37,7 +40,10 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json(device);
+    return NextResponse.json({
+      success: true,
+      data: device
+    });
   } catch (error) {
     if (error instanceof Error) {
       return new NextResponse(error.message, { status: 400 });

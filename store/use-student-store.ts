@@ -26,8 +26,9 @@ export const useStudentStore = create<StudentState>((set) => ({
     try {
       const response = await fetch("/api/students");
       if (!response.ok) throw new Error("Failed to fetch students");
-      const data = await response.json();
-      set({ students: data, isLoading: false });
+      const json = await response.json();
+      // Handle the { success: boolean, data: array } format
+      set({ students: Array.isArray(json.data) ? json.data : [], isLoading: false });
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
     }
@@ -42,7 +43,9 @@ export const useStudentStore = create<StudentState>((set) => ({
         body: JSON.stringify(data),
       });
       if (!response.ok) throw new Error("Failed to add student");
-      const newStudent = await response.json();
+      const json = await response.json();
+      // Expecting { success: true, data: newStudent } or just newStudent based on API state
+      const newStudent = json.data || json;
       set((state) => ({
         students: [newStudent, ...state.students],
         isLoading: false,

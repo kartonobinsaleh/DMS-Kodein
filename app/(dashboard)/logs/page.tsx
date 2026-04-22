@@ -16,11 +16,12 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { SYSTEM_CONFIG } from "@/lib/config";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 interface DailyLog {
   id: string;
   date: string;
-  dailyStatus: "PENDING" | "RETURNED_ON_TIME" | "RETURNED_LATE" | "VIOLATION";
+  dailyStatus: "ON_TIME" | "LATE" | "NOT_RETURNED";
   checkOutTime: string;
   checkInTime: string | null;
   staffId: string | null;
@@ -49,10 +50,15 @@ export default function AdminLogsPage() {
         ...(filterClass && { class: filterClass })
       });
       const res = await fetch(`/api/daily-logs?${params.toString()}`);
-      const data = await res.json();
-      setLogs(data);
+      const json = await res.json();
+      if (json.success) {
+        setLogs(json.data);
+      } else {
+        setLogs([]);
+      }
     } catch (error) {
       toast.error("Failed to load audit logs");
+      setLogs([]);
     } finally {
       setLoading(false);
     }
@@ -64,6 +70,8 @@ export default function AdminLogsPage() {
 
   // PROBLEM GROUPING LOGIC (Grouped by Student)
   const problemSiswa = useMemo(() => {
+    if (!Array.isArray(logs)) return [];
+    
     const now = new Date();
     const currentHour = now.getHours();
     const isToday = filterDate === new Date().toISOString().split('T')[0];
@@ -71,11 +79,11 @@ export default function AdminLogsPage() {
     const groups: Record<string, { student: any, logs: DailyLog[], lateness: string }> = {};
 
     logs.forEach(log => {
-      const isPending = log.dailyStatus === "PENDING";
+      // New Enum check: NOT_RETURNED means hasn't checked in
+      const isNotReturned = log.dailyStatus === "NOT_RETURNED";
       const isOverdue = isToday && currentHour >= SYSTEM_CONFIG.RETURN_DEADLINE_HOUR;
-      const isViolation = log.dailyStatus === "VIOLATION";
 
-      if ((isPending && isOverdue) || isViolation) {
+      if (isNotReturned && isOverdue) {
         if (!groups[log.student.id]) {
           // Calculate lateness duration
           let duration = "Overdue";
@@ -127,21 +135,23 @@ export default function AdminLogsPage() {
 
   if (loading) return <div className="p-8 text-center animate-pulse">Scanning Logs...</div>;
 
+  const displayLogs = Array.isArray(logs) ? logs.filter(l => l.student.name.toLowerCase().includes(search.toLowerCase())) : [];
+
   return (
     <div className="space-y-8 pb-20">
       {/* 1. STICKY FILTER BAR */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b border-border -mx-6 px-6 py-4 flex flex-wrap items-center gap-4 shadow-sm">
+      <div className="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-slate-100 -mx-6 px-6 py-4 flex flex-wrap items-center gap-4 shadow-sm">
         <div className="flex items-center gap-2 font-black text-xs uppercase tracking-widest text-slate-400">
-          <ShieldAlert size={14} className="text-primary" />
+          <ShieldAlert size={14} className="text-indigo-600" />
           Audit Monitoring
         </div>
         
         <div className="flex-1 min-w-[200px] relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
           <input
             type="text"
             placeholder="Quick search student..."
-            className="w-full pl-9 pr-4 py-2 rounded-lg border border-border bg-card text-sm focus:ring-2 focus:ring-primary outline-none"
+            className="w-full pl-9 pr-4 py-2 rounded-lg border border-slate-200 bg-slate-50/50 text-sm focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -150,12 +160,12 @@ export default function AdminLogsPage() {
         <div className="flex gap-2 items-center">
           <input 
             type="date" 
-            className="bg-card border rounded-lg px-3 py-2 text-sm outline-none cursor-pointer"
+            className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none cursor-pointer"
             value={filterDate}
             onChange={(e) => setFilterDate(e.target.value)}
           />
           <select 
-            className="bg-card border rounded-lg px-3 py-2 text-sm outline-none cursor-pointer"
+            className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm outline-none cursor-pointer"
             value={filterClass}
             onChange={(e) => setFilterClass(e.target.value)}
           >
@@ -173,38 +183,38 @@ export default function AdminLogsPage() {
         </h3>
         
         {problemSiswa.length === 0 ? (
-          <div className="bg-emerald-50 border border-emerald-100 p-8 rounded-2xl text-center">
+          <div className="bg-emerald-50 border border-emerald-100 p-8 rounded-[2rem] text-center">
             <CheckCircle2 size={32} className="mx-auto text-emerald-500 mb-2" />
             <p className="text-emerald-700 font-bold">No violations detected for this day.</p>
-            <p className="text-emerald-600 text-xs mt-1">All devices returned or deadline not yet passed.</p>
+            <p className="text-emerald-600 text-[10px] uppercase font-bold tracking-widest mt-1">All rewards safe or deadline not yet passed</p>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {problemSiswa.map(p => (
-              <div key={p.student.id} className="bg-white p-4 rounded-2xl border-2 border-rose-100 shadow-sm relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-3">
-                   <div className="px-2 py-1 bg-rose-600 text-white text-[9px] font-black rounded-lg">
+              <div key={p.student.id} className="bg-white p-6 rounded-[2rem] border border-rose-100 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all">
+                <div className="absolute top-0 right-0 p-4">
+                   <div className="px-2.5 py-1 bg-rose-600 text-white text-[9px] font-black rounded-lg uppercase tracking-widest">
                     {p.lateness}
                    </div>
                 </div>
                 
-                <h4 className="font-black text-slate-800 pr-12">{p.student.name}</h4>
-                <p className="text-[10px] text-muted-foreground font-bold uppercase mb-4">{p.student.class}</p>
+                <h4 className="font-black text-slate-800 pr-12 text-lg tracking-tight">{p.student.name}</h4>
+                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mb-6">{p.student.class}</p>
                 
                 <div className="space-y-2">
                   {p.logs.map(log => (
-                    <div key={log.id} className="flex justify-between items-center bg-rose-50 p-2 rounded-lg border border-rose-100/50">
-                      <span className="text-[10px] font-bold text-rose-700 uppercase tracking-tighter">
+                    <div key={log.id} className="flex justify-between items-center bg-rose-50/50 p-3 rounded-xl border border-rose-100/30">
+                      <span className="text-[10px] font-black text-rose-900 uppercase tracking-widest">
                         {log.device.name}
                       </span>
-                      <span className="text-[10px] text-rose-500 font-medium">PENDING</span>
+                      <StatusBadge status="NOT_RETURNED" className="scale-75 origin-right" />
                     </div>
                   ))}
                 </div>
                 
-                <div className="mt-4 pt-3 border-t flex justify-between items-center">
-                   <button className="text-[10px] text-rose-600 font-bold hover:underline">Notify Student</button>
-                   <span className="text-[9px] text-slate-300">Last seen: {new Date(p.logs[0].checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                <div className="mt-6 pt-4 border-t border-rose-50 flex justify-between items-center">
+                   <button className="text-[10px] text-rose-600 font-black uppercase tracking-widest hover:underline">Siswa Ditegur</button>
+                   <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Last Out: {new Date(p.logs[0].checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                 </div>
               </div>
             ))}
@@ -213,65 +223,59 @@ export default function AdminLogsPage() {
       </section>
 
       {/* 3. LOG TABLE */}
-      <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
-        <div className="p-4 border-b bg-muted/20 flex justify-between items-center">
-          <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest">Audit Transparency</h3>
-          <span className="text-[10px] font-bold bg-slate-100 px-2 py-1 rounded text-slate-500 uppercase">{logs.length} Transactions</span>
+      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-slate-50 bg-slate-50/20 flex justify-between items-center">
+          <h3 className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Audit Transparency</h3>
+          <span className="text-[10px] font-black bg-slate-100 px-3 py-1 rounded-full text-slate-500 uppercase tracking-widest">{displayLogs.length} Records</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm border-collapse">
-            <thead className="bg-muted/30 text-[9px] uppercase font-black text-muted-foreground border-b tracking-widest">
+            <thead className="bg-slate-50/50 text-[10px] uppercase font-black text-slate-400 border-b border-slate-100 tracking-[0.2em]">
               <tr>
-                <th className="px-6 py-4">Student</th>
-                <th className="px-6 py-4">Device</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Staff Audit</th>
-                <th className="px-6 py-4 text-right">Action</th>
+                <th className="px-8 py-5">Siswa</th>
+                <th className="px-8 py-5">Perangkat</th>
+                <th className="px-8 py-5">Status Log</th>
+                <th className="px-8 py-5">Audit Staf</th>
+                <th className="px-8 py-5 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
-              {logs.filter(l => l.student.name.toLowerCase().includes(search.toLowerCase())).map((log) => (
-                <tr key={log.id} className="hover:bg-muted/5 group transition-colors">
-                  <td className="px-6 py-4">
-                    <p className="font-bold text-slate-900 leading-none mb-1">{log.student.name}</p>
-                    <p className="text-[10px] text-muted-foreground font-bold uppercase">{log.student.class}</p>
+            <tbody className="divide-y divide-slate-50">
+              {displayLogs.map((log) => (
+                <tr key={log.id} className="hover:bg-slate-50/50 group transition-colors">
+                  <td className="px-8 py-5">
+                    <p className="font-bold text-slate-900 tracking-tight mb-0.5">{log.student.name}</p>
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{log.student.class}</p>
                   </td>
-                  <td className="px-6 py-4">
-                    <p className="text-[11px] font-bold text-slate-700 uppercase">{log.device.name}</p>
-                    <div className="flex gap-2 text-[9px] text-muted-foreground font-medium mt-1">
-                       <span>Out: {new Date(log.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                       {log.checkInTime && <span>In: {new Date(log.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>}
+                  <td className="px-8 py-5">
+                    <p className="text-xs font-bold text-slate-700 uppercase tracking-tight">{log.device.name}</p>
+                    <div className="flex gap-3 text-[10px] text-slate-400 font-bold mt-1.5 uppercase tracking-tighter">
+                       <span className="flex items-center gap-1"><Clock size={10} /> Out: {new Date(log.checkOutTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                       {log.checkInTime && <span className="flex items-center gap-1"><Clock size={10} /> In: {new Date(log.checkInTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-col gap-1">
-                      <div className={cn(
-                        "inline-flex w-fit items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter shadow-sm",
-                        log.dailyStatus === "RETURNED_ON_TIME" ? "bg-emerald-500 text-white" :
-                        log.dailyStatus === "PENDING" ? "bg-amber-500 text-white" :
-                        "bg-rose-500 text-white"
-                      )}>
-                        {log.dailyStatus.replace('_', ' ')}
-                      </div>
-                      {log.reason && <p className="text-[9px] text-rose-500 font-bold italic truncate max-w-[120px]">Reason: {log.reason}</p>}
+                  <td className="px-8 py-5">
+                    <div className="flex flex-col gap-1.5">
+                      <StatusBadge status={log.dailyStatus} />
+                      {log.reason && <p className="text-[10px] text-rose-500 font-bold italic truncate max-w-[150px]">Alasan: {log.reason}</p>}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-8 py-5">
                    <div className="flex items-center gap-2">
-                      <User size={12} className="text-muted-foreground" />
-                      <span className="text-[10px] font-bold text-slate-400">ID: {log.staffId?.slice(-6) || "AUTO"}</span>
+                      <div className="p-1 px-2 border border-slate-100 rounded-lg bg-slate-50">
+                        <span className="text-[10px] font-black text-slate-400 tracking-widest">ID: {log.staffId?.slice(-6) || "AUTO"}</span>
+                      </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-8 py-5 text-right">
                     <button 
                       onClick={() => {
                         setEditingLog(log);
                         setOverrideStatus(log.dailyStatus);
                         setOverrideReason("");
                       }}
-                      className="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors group-hover:text-primary"
+                      className="p-2.5 hover:bg-white hover:shadow-md hover:border-slate-200 border border-transparent rounded-xl text-slate-400 transition-all group-hover:text-indigo-600"
                     >
-                      <Edit2 size={14} />
+                      <Edit2 size={16} />
                     </button>
                   </td>
                 </tr>
@@ -283,38 +287,37 @@ export default function AdminLogsPage() {
 
       {/* 4. OVERRIDE DIALOG */}
       {editingLog && (
-         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="bg-card w-full max-w-md rounded-2xl shadow-2xl border border-border p-6 animate-in slide-in-from-bottom-4 duration-200">
-               <div className="flex justify-between items-center mb-6">
+         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+            <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl border border-slate-100 p-8 animate-in zoom-in-95 duration-200">
+               <div className="flex justify-between items-start mb-8">
                   <div>
-                    <h2 className="text-xl font-black text-slate-800 ring-offset-background">Log Correction</h2>
-                    <p className="text-xs text-muted-foreground uppercase font-bold">{editingLog.student.name} • {editingLog.device.name}</p>
+                    <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Koreksi Log</h2>
+                    <p className="text-[10px] text-slate-400 uppercase font-bold tracking-[0.2em] mt-1">{editingLog.student.name} • {editingLog.device.name}</p>
                   </div>
-                  <button onClick={() => setEditingLog(null)} className="p-2 hover:bg-muted rounded-full transition-colors">
-                    <X size={20} />
+                  <button onClick={() => setEditingLog(null)} className="p-2 hover:bg-slate-50 rounded-full transition-colors text-slate-400">
+                    <X size={24} />
                   </button>
                </div>
 
-               <div className="space-y-4">
+               <div className="space-y-6">
                   <div>
-                    <label className="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Override Status</label>
+                    <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Override Status</label>
                     <select 
-                      className="w-full bg-muted/50 border border-border rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none"
+                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-bold focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
                       value={overrideStatus}
                       onChange={(e) => setOverrideStatus(e.target.value)}
                     >
-                      <option value="PENDING">PENDING</option>
-                      <option value="RETURNED_ON_TIME">RETURNED ON TIME</option>
-                      <option value="RETURNED_LATE">RETURNED LATE</option>
-                      <option value="VIOLATION">VIOLATION</option>
+                      <option value="NOT_RETURNED">BELUM KEMBALI (NOT RETURNED)</option>
+                      <option value="ON_TIME">TEPAT WAKTU (ON TIME)</option>
+                      <option value="LATE">TERLAMBAT (LATE)</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="text-[10px] font-black uppercase text-slate-400 mb-1.5 block">Audit Reason (Required)</label>
+                    <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Alasan Audit (Wajib)</label>
                     <textarea 
-                      placeholder="e.g., Device reported found in backpack, or manual correction for mis-input"
-                      className="w-full bg-muted/50 border border-border rounded-xl px-4 py-3 text-sm min-h-[100px] focus:ring-2 focus:ring-primary outline-none resize-none"
+                      placeholder="Contoh: Perangkat tertinggal di tas, atau koreksi manual karena kesalahan input staf"
+                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-4 text-sm font-medium min-h-[120px] focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none resize-none transition-all"
                       value={overrideReason}
                       onChange={(e) => setOverrideReason(e.target.value)}
                     />
@@ -323,9 +326,10 @@ export default function AdminLogsPage() {
                   <button 
                     disabled={isSaving}
                     onClick={handleOverride}
-                    className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-black text-sm shadow-lg shadow-primary/20 active:scale-95 transition-all flex items-center justify-center"
+                    className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black text-sm shadow-xl shadow-indigo-100 active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                   >
-                    {isSaving ? <Loader2 className="animate-spin" size={20} /> : "SAVE CORRECTION"}
+                    {isSaving ? <Loader2 className="animate-spin" size={20} /> : <CheckCircle2 size={20} />}
+                    SIMPAN KOREKSI
                   </button>
                </div>
             </div>
