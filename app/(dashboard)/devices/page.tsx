@@ -45,24 +45,26 @@ export default function DevicesPage() {
         subtitle="Daftar seluruh unit perangkat dalam sistem dan status siaganya."
       />
 
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div className="relative w-full max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
-          <input
-            type="text"
-            placeholder="Cari perangkat berdasarkan nama..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-4 py-2 text-sm focus:border-indigo-600 outline-none transition-all placeholder:text-gray-400"
-          />
+      <div className="sticky top-0 z-10 bg-gray-50/80 backdrop-blur-md pb-4 pt-1 sm:pt-0 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input
+              type="text"
+              placeholder="Cari perangkat berdasarkan nama..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm transition-all placeholder:text-gray-400"
+            />
+          </div>
+          <Button
+            onClick={() => setShowAddModal(true)}
+            className="w-full sm:w-auto h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-sm"
+            leftIcon={<Plus size={16} />}
+          >
+            Registrasi Perangkat Baru
+          </Button>
         </div>
-        <Button
-          onClick={() => setShowAddModal(true)}
-          size="sm"
-          leftIcon={<Plus size={14} />}
-        >
-          Registrasi Perangkat Baru
-        </Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

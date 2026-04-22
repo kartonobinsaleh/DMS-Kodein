@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { 
-  Laptop, 
-  Users, 
+import {
+  Laptop,
+  Users,
   CheckCircle,
-  Clock, 
+  Clock,
   AlertTriangle,
   ArrowRight,
   ClipboardList,
@@ -46,7 +46,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-4 page-fade-in">
-      <PageHeader 
+      <PageHeader
         title="Beranda Operasional"
         subtitle="Metrik operasional untuk inventaris dan aktivitas siswa."
       />
@@ -67,10 +67,10 @@ export default function DashboardPage() {
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
-          <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-4">Akses Cepat Operasional</h2>
+          <h2 className="text-sm font-bold text-gray-600 uppercase tracking-wider mb-4">Akses Cepat</h2>
           <div className="space-y-2">
             {[
-              { label: "Konter Check-In / Out", href: "/attendance", icon: Activity },
+              { label: "Konter Keluar / Masuk", href: "/attendance", icon: Activity },
               { label: "Monitoring Harian", href: "/daily-monitoring", icon: ClipboardList },
             ].map((link) => (
               <Link
@@ -98,8 +98,8 @@ export default function DashboardPage() {
           <div className="mt-6 pt-4 border-t border-gray-200 flex items-center justify-between">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">DMS Node v2.0.4</span>
             <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-green-600 uppercase">Sistem Online</span>
-               <span className="h-2 w-2 rounded-full bg-green-600" />
+              <span className="text-[10px] font-bold text-green-600 uppercase">Sistem Online</span>
+              <span className="h-2 w-2 rounded-full bg-green-600" />
             </div>
           </div>
         </div>

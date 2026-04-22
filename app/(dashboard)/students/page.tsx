@@ -45,24 +45,26 @@ export default function StudentsPage() {
         subtitle="Basis data operasional siswa terdaftar untuk aktivitas perangkat harian."
       />
 
-      <div className="sticky top-0 z-10 space-y-3 bg-gray-50/80 backdrop-blur-md pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-          <input
-            type="text"
-            placeholder="Cari nama atau kelas..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm placeholder:text-gray-400 transition-all"
-          />
+      <div className="sticky top-0 z-10 bg-gray-50/80 backdrop-blur-md pb-4 pt-1 sm:pt-0 -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+            <input
+              type="text"
+              placeholder="Cari nama atau kelas..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-indigo-600 outline-none shadow-sm placeholder:text-gray-400 transition-all"
+            />
+          </div>
+          <Button
+            onClick={() => setShowAddModal(true)}
+            className="w-full sm:w-auto h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-sm"
+            leftIcon={<Plus size={16} />}
+          >
+            Registrasi Siswa Baru
+          </Button>
         </div>
-        <Button
-          onClick={() => setShowAddModal(true)}
-          className="w-full h-12 rounded-xl text-xs font-bold uppercase tracking-widest"
-          leftIcon={<Plus size={16} />}
-        >
-          Registrasi Siswa Baru
-        </Button>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
