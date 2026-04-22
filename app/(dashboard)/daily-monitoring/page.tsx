@@ -52,39 +52,44 @@ export default function DailyMonitoringPage() {
   }, []);
 
   return (
-    <div className="p-4 md:p-8 space-y-8 bg-slate-50/50 min-h-screen">
+    <div className="space-y-12 page-fade-in pb-32">
       <PageHeader
-        title="Aktivitas Harian"
-        subtitle="Memantau status pengambilan dan pengembalian perangkat hari ini."
-        category="Sistem Monitoring"
-        icon={<LayoutGrid size={14} />}
-        action={
-          <Button
-            onClick={fetchLogs}
-            variant="outline"
-            loading={loading}
-            leftIcon={<RefreshCcw size={16} />}
-          >
-            Perbarui Data
-          </Button>
-        }
+        title="Status Siswa"
+        subtitle="Pantau status harian pengambilan dan pengembalian perangkat."
       />
 
+      <div className="flex justify-between items-center gap-6">
+        <div className="flex items-center gap-3">
+          <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Aktif Hari Ini</span>
+        </div>
+        <Button
+          onClick={fetchLogs}
+          variant="outline"
+          loading={loading}
+          size="sm"
+          leftIcon={<RefreshCcw size={16} />}
+          className="border-slate-200"
+        >
+          Perbarui
+        </Button>
+      </div>
+
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-sm font-bold">
+        <div className="p-5 bg-rose-50 border border-rose-100 text-rose-600 rounded-2xl text-sm font-bold">
           {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         {loading && logs.length === 0 ? (
-          Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-40 bg-white border border-slate-100 animate-pulse rounded-card" />
+          Array.from({ length: 9 }).map((_, i) => (
+            <div key={i} className="h-44 bg-white border border-slate-50 animate-pulse rounded-card" />
           ))
         ) : logs.length === 0 ? (
-          <div className="col-span-full py-20 flex flex-col items-center justify-center text-slate-400 bg-white border border-dashed border-slate-200 rounded-card">
-            <LayoutGrid size={48} className="opacity-10 mb-4" />
-            <p className="font-bold uppercase tracking-widest text-xs">Belum ada aktivitas terekam hari ini</p>
+          <div className="col-span-full py-40 flex flex-col items-center justify-center text-slate-100 bg-white border border-slate-100 rounded-container">
+            <LayoutGrid size={64} className="mb-4 opacity-50" />
+            <p className="font-bold uppercase tracking-widest text-xs text-slate-300">Belum ada aktivitas hari ini</p>
           </div>
         ) : (
           logs.map((log) => (

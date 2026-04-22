@@ -77,100 +77,84 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="p-4 md:p-8 space-y-10 bg-slate-50/30 min-h-screen">
+    <div className="space-y-12 page-fade-in pb-32">
       <PageHeader 
-        title="Dashboard"
-        subtitle="Pantau kesehatan operasional perangkat DMS hari ini."
-        category="Statistik Real-time"
-        icon={<TrendingUp size={14} />}
+        title="Ringkasan Hari Ini"
+        subtitle="Pantau ketersediaan dan status pengambilan perangkat siswa."
       />
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {cards.map((card) => (
           <div
             key={card.name}
-            className="group relative overflow-hidden rounded-card border border-slate-200 bg-white p-8 transition-all hover:shadow-2xl hover:border-indigo-100 hover:-translate-y-1"
+            className="flex flex-col rounded-card bg-white border border-slate-100 p-6 shadow-card hover:border-indigo-100 transition-all"
           >
-            <div className="flex items-center justify-between relative z-10">
-              <div className={cn("rounded-2xl p-4 transition-transform group-hover:scale-110 duration-500", card.bg, card.color)}>
-                <card.icon size={28} />
-              </div>
+            <div className={cn("inline-flex w-fit rounded-xl p-3 mb-4", card.bg, card.color)}>
+              <card.icon size={22} />
             </div>
-            <div className="mt-8 relative z-10">
-              <p className="text-xs font-black uppercase tracking-widest text-slate-400">
-                {card.name}
-              </p>
-              <h3 className="text-4xl font-black text-slate-900 mt-2 tracking-tighter">
-                {loading ? (
-                  <div className="h-10 w-20 animate-pulse rounded-lg bg-slate-100" />
-                ) : (
-                  card.value
-                )}
-              </h3>
-            </div>
-            <div className="absolute -right-6 -bottom-6 text-slate-100 opacity-20 transition-all group-hover:scale-125 group-hover:text-indigo-100">
-              <card.icon size={140} />
-            </div>
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+              {card.name}
+            </p>
+            <h3 className="text-3xl font-bold text-slate-900 mt-1 tracking-tight">
+              {loading ? "..." : card.value}
+            </h3>
           </div>
         ))}
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <div className="rounded-container border border-slate-200 bg-white p-10 shadow-sm">
-          <div className="flex items-center justify-between mb-8">
-             <h3 className="text-2xl font-black tracking-tighter text-slate-900">Aksi Cepat</h3>
-             <div className="w-12 h-1 bg-indigo-100 rounded-full" />
-          </div>
+        <section className="space-y-6">
+          <h3 className="text-lg font-bold text-slate-900 tracking-tight ml-1">Menu Cepat</h3>
           
           <div className="grid gap-4">
-            <Link 
-              href="/attendance"
-              className="group flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/50 p-6 transition-all hover:bg-indigo-50 hover:border-indigo-100"
-            >
-              <div className="flex items-center gap-4">
-                <div className="rounded-xl bg-indigo-600 p-3 text-white shadow-lg shadow-indigo-200 group-hover:scale-110 transition-transform">
-                  <ArrowRightLeft size={24} />
+            <Link href="/attendance">
+              <div className="group flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-6 hover:bg-slate-50 transition-all shadow-sm">
+                <div className="flex items-center gap-5">
+                  <div className="rounded-2xl bg-indigo-600 p-4 text-white shadow-lg shadow-indigo-100 group-hover:scale-105 transition-transform">
+                    <ArrowRightLeft size={20} />
+                  </div>
+                  <div>
+                    <p className="text-base font-bold text-slate-900">Check In / Out</p>
+                    <p className="text-xs text-slate-500 font-medium mt-1">Kelola pengambilan harian siswa</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <p className="text-lg font-black tracking-tight text-slate-800">Check-Out / In</p>
-                  <p className="text-xs font-medium text-slate-400">Kelola pengambilan harian siswa</p>
-                </div>
+                <ArrowRight size={18} className="text-slate-300 group-hover:translate-x-1 transition-transform" />
               </div>
-              <ArrowRight size={20} className="text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />
             </Link>
 
-            <Link 
-              href="/daily-monitoring"
-              className="group flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/50 p-6 transition-all hover:bg-emerald-50 hover:border-emerald-100"
-            >
-              <div className="flex items-center gap-4">
-                <div className="rounded-xl bg-emerald-600 p-3 text-white shadow-lg shadow-emerald-200 group-hover:scale-110 transition-transform">
-                  <TrendingUp size={24} />
+            <Link href="/daily-monitoring">
+              <div className="group flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-6 hover:bg-slate-50 transition-all shadow-sm">
+                <div className="flex items-center gap-5">
+                  <div className="rounded-2xl bg-emerald-600 p-4 text-white shadow-lg shadow-emerald-100 group-hover:scale-105 transition-transform">
+                    <TrendingUp size={20} />
+                  </div>
+                  <div>
+                    <p className="text-base font-bold text-slate-900">Status Siswa</p>
+                    <p className="text-xs text-slate-500 font-medium mt-1">Lihat kepatuhan pengembalian hari ini</p>
+                  </div>
                 </div>
-                <div className="text-left">
-                  <p className="text-lg font-black tracking-tight text-slate-800">Monitoring</p>
-                  <p className="text-xs font-medium text-slate-400">Lihat kepatuhan pengembalian</p>
-                </div>
+                <ArrowRight size={18} className="text-slate-300 group-hover:translate-x-1 transition-transform" />
               </div>
-              <ArrowRight size={20} className="text-slate-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" />
             </Link>
           </div>
-        </div>
+        </section>
 
-        <div className="rounded-container border border-slate-200 bg-indigo-600 p-10 text-white shadow-2xl shadow-indigo-200 overflow-hidden relative">
-           <div className="relative z-10 h-full flex flex-col justify-between">
+        <section className="bg-indigo-600 rounded-container p-10 text-white relative overflow-hidden flex flex-col justify-center">
+            <div className="relative z-10 space-y-6">
               <div>
-                <h3 className="text-3xl font-black tracking-tighter mb-2">Update Harian</h3>
-                <p className="text-indigo-200 font-medium">Jangan lupa untuk memastikan semua perangkat kembali sebelum jam 17:00 WIB hari ini.</p>
+                <h3 className="text-2xl font-bold tracking-tight mb-2">Ingatkan Orang Tua</h3>
+                <p className="text-indigo-100 text-sm max-w-[280px] leading-relaxed">
+                  Pastikan semua perangkat kembali sebelum jam 17:00 WIB untuk menghindari status terlambat.
+                </p>
               </div>
               <Link href="/logs">
-                <Button variant="outline" size="lg" rightIcon={<ArrowRight size={16} />} className="bg-white border-none text-indigo-600 hover:bg-indigo-50 mt-8">
-                  Lihat Log Riwayat
-                </Button>
+                <button className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-2.5 rounded-xl text-sm font-bold transition-all inline-flex items-center gap-2">
+                  Lihat Riwayat <ArrowRight size={16} />
+                </button>
               </Link>
-           </div>
-           <Clock size={240} className="absolute -right-20 -bottom-20 text-indigo-500 opacity-30 rotate-12" />
-        </div>
+            </div>
+            <Clock size={180} className="absolute -right-10 -bottom-10 text-white/10 rotate-12" />
+        </section>
       </div>
     </div>
   );
