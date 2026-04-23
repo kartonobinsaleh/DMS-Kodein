@@ -34,6 +34,7 @@ function ScannerContent() {
   const [isScanning, setIsScanning] = useState(false);
   const [isAutoPilot, setIsAutoPilot] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [cameraMode, setCameraMode] = useState<"environment" | "user">("environment");
   const [lastProcessedId, setLastProcessedId] = useState<string | null>(null);
   
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
@@ -105,7 +106,7 @@ function ScannerContent() {
       
       setIsScanning(true);
       await html5QrCodeRef.current.start(
-        { facingMode: "environment" },
+        { facingMode: cameraMode },
         { 
           fps: 15, 
           qrbox: (viewfinderWidth, viewfinderHeight) => {
@@ -158,6 +159,13 @@ function ScannerContent() {
   };
 
   // Cleanup saat unmount
+  useEffect(() => {
+    // Restart scanner if cameraMode changes while scanning
+    if (isScanning) {
+      stopScanner().then(() => startScanner());
+    }
+  }, [cameraMode]);
+
   useEffect(() => {
     return () => {
       if (html5QrCodeRef.current && html5QrCodeRef.current.isScanning) {
@@ -419,14 +427,25 @@ function ScannerContent() {
                   Nyalakan Kamera & Scan
                 </Button>
               ) : (
-                <Button 
-                  onClick={stopScanner} 
-                  variant="ghost"
-                  className="w-full h-12 text-red-500 font-bold uppercase tracking-widest text-xs"
-                  leftIcon={<X size={18} />}
-                >
-                  Matikan Kamera
-                </Button>
+                <div className="space-y-4 w-full">
+                  <Button 
+                    onClick={stopScanner} 
+                    variant="ghost"
+                    className="w-full h-12 text-red-500 font-bold uppercase tracking-widest text-xs"
+                    leftIcon={<X size={18} />}
+                  >
+                    Matikan Kamera
+                  </Button>
+                  
+                  <Button
+                    onClick={() => setCameraMode(prev => prev === "environment" ? "user" : "environment")}
+                    variant="ghost"
+                    className="w-full h-10 text-primary font-bold uppercase tracking-widest text-[10px] border border-primary/10"
+                    leftIcon={<Camera size={16} />}
+                  >
+                    Ganti ke Kamera {cameraMode === "environment" ? "Depan" : "Belakang"}
+                  </Button>
+                </div>
               )}
                <p className="text-[10px] text-gray-400 font-bold uppercase mt-6 tracking-widest">Arahkan Kamera ke QR Pass Siswa</p>
             </div>
