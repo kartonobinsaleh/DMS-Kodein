@@ -38,8 +38,66 @@ function ScannerContent() {
   
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
 
+  const playSound = (type: 'success' | 'error') => {
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      if (type === 'success') {
+        // iPhone-style "Note" / "Chime" synthesizer
+        const playNote = (freq: number, start: number, duration: number) => {
+          const osc = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, start);
+          g.gain.setValueAtTime(0, start);
+          g.gain.linearRampToValueAtTime(0.1, start + 0.01);
+          g.gain.exponentialRampToValueAtTime(0.01, start + duration);
+          osc.connect(g);
+          g.connect(audioCtx.destination);
+          osc.start(start);
+          osc.stop(start + duration);
+        };
+
+        const now = audioCtx.currentTime;
+        playNote(1046.50, now, 0.15); // C6
+        playNote(1318.51, now + 0.07, 0.15); // E6
+        playNote(1567.98, now + 0.14, 0.2); // G6
+      } else {
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(220, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.3);
+      }
+    } catch (e) {
+      console.error("Audio failed", e);
+    }
+  };
+
   // Fungsi Inisialisasi Kamera
   const startScanner = async () => {
+    // "Wake up" audio context for macOS/Chrome/Safari
+    try {
+      const tempCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      if (tempCtx.state === 'suspended') {
+        await tempCtx.resume();
+      }
+      // Play a tiny silent puff to officially unlock audio
+      const oscillator = tempCtx.createOscillator();
+      const gain = tempCtx.createGain();
+      gain.gain.value = 0.0001; // Silent
+      oscillator.connect(gain);
+      gain.connect(tempCtx.destination);
+      oscillator.start(0);
+      oscillator.stop(0.01);
+    } catch (e) {}
+
     try {
       if (!html5QrCodeRef.current) {
         html5QrCodeRef.current = new Html5Qrcode("reader");
@@ -123,12 +181,14 @@ function ScannerContent() {
         if (json.success) {
           const found = json.data.find((s: any) => s.id === id || s.statusToken === id);
           if (found) {
+            playSound('success');
             if (isAutoPilot) {
               await executeAutoProcess(found);
             } else {
               setStudentData(found);
             }
           } else {
+            playSound('error');
             resetScanner();
             setTimeout(startScanner, 1000);
           }
@@ -145,6 +205,7 @@ function ScannerContent() {
           // STRICT FILTER: Check if device type matches the station target
           if (targetType !== "DEVICE" && device.type !== targetType) {
              const targetLabel = device.type === 'LAPTOP' ? 'LAPTOP' : 'HP';
+             playSound('error');
              toast.error(`KHUSUS ${targetLabel}!`, {
                description: `Pindah ke Station ${targetLabel}`,
                duration: 2000
@@ -164,6 +225,7 @@ function ScannerContent() {
           
           if (procJson.success) {
             const deviceLabel = device.type === 'LAPTOP' ? 'LAPTOP' : 'HP';
+            playSound('success');
             toast.success(`${deviceLabel} SUKSES!`, { duration: 1000 });
 
             
@@ -176,7 +238,7 @@ function ScannerContent() {
             }
           }
         } else {
-
+          playSound('error');
           resetScanner();
           setTimeout(startScanner, 1000);
         }
@@ -232,6 +294,7 @@ function ScannerContent() {
       const results = await Promise.all(promises);
       const allSuccess = results.every(r => r.success);
       if (allSuccess) {
+        playSound('success');
         toast.success(`${student.name}: ${actionLabel} Berhasil`, { duration: 1500 });
 
         logger.info(`Batch process success for ${student.name}`);
