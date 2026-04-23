@@ -12,7 +12,8 @@ import {
   Activity,
   Menu,
   X,
-  ShieldAlert
+  ShieldAlert,
+  Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
@@ -27,6 +28,7 @@ const navigation = [
   { name: "Data Siswa", href: "/students", icon: Users, roles: ["ADMIN", "STAFF"] },
   { name: "Riwayat Aktivitas", href: "/logs", icon: History, roles: ["ADMIN", "STAFF"] },
   { name: "Manajemen Staf", href: "/admin/users", icon: Users, roles: ["ADMIN"] },
+  { name: "Pengaturan", href: "/admin/settings", icon: Settings, roles: ["ADMIN"] },
 ];
 
 export function Sidebar() {

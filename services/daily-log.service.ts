@@ -1,12 +1,26 @@
 import { prisma } from "@/lib/prisma";
 
-const LATE_LIMIT_HOUR = 17;
-const LATE_LIMIT_MINUTE = 0;
-
 export class DailyLogService {
   /**
+   * Mendapatkan jam deadline dari database (Default: 17:00)
+   */
+  private static async getDeadlineConfig() {
+    try {
+      const config = await prisma.systemConfig.findUnique({
+        where: { key: "check_in_deadline" }
+      });
+      if (config && config.value) {
+        const [hour, minute] = config.value.split(":").map(Number);
+        return { hour, minute };
+      }
+    } catch (e) {
+      console.error("Gagal mengambil config", e);
+    }
+    return { hour: 17, minute: 0 }; // Fallback default
+  }
+
+  /**
    * Menstandarisasi pencarian tanggal hari ini (UTC Midnight)
-   * Penting untuk sinkronisasi dengan kolom @db.Date Prisma
    */
   private static getTodayDate() {
     const now = new Date();
@@ -14,11 +28,12 @@ export class DailyLogService {
   }
 
   /**
-   * Mendapatkan objek deadline (17:00) pada hari ini
+   * Mendapatkan objek deadline pada hari ini secara asinkron
    */
-  private static getDeadline() {
+  private static async getDeadline() {
+    const { hour, minute } = await this.getDeadlineConfig();
     const deadline = new Date();
-    deadline.setHours(LATE_LIMIT_HOUR, LATE_LIMIT_MINUTE, 0, 0);
+    deadline.setHours(hour, minute, 0, 0);
     return deadline;
   }
 
@@ -75,7 +90,7 @@ export class DailyLogService {
 
     const today = this.getTodayDate();
     const now = new Date();
-    const deadline = this.getDeadline();
+    const deadline = await this.getDeadline();
 
     // 1. Cari log peminjaman hari ini yang belum kembali (Latest Active Session)
     const log = await prisma.dailyLog.findFirst({

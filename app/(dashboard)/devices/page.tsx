@@ -14,8 +14,11 @@ import { ActionBar } from "@/components/ui/action-bar";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useSession } from "next-auth/react";
 
 export default function DevicesPage() {
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
   const { devices, isLoading, fetchDevices, addDevice, deleteDevice } = useDeviceStore();
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
@@ -122,13 +125,15 @@ export default function DevicesPage() {
             className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-primary outline-none shadow-sm transition-all placeholder:text-gray-400"
           />
         </div>
-        <Button
-          onClick={() => setShowAddModal(true)}
-          className="w-full sm:w-auto h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-sm"
-          leftIcon={<Plus size={16} />}
-        >
-          Registrasi Perangkat Baru
-        </Button>
+        {isAdmin && (
+          <Button
+            onClick={() => setShowAddModal(true)}
+            className="w-full sm:w-auto h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-sm"
+            leftIcon={<Plus size={16} />}
+          >
+            Registrasi Perangkat Baru
+          </Button>
+        )}
       </ActionBar>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -164,24 +169,26 @@ export default function DevicesPage() {
                     <p className="text-[10px] text-gray-400 font-medium">ID: {device.id.slice(-6).toUpperCase()}</p>
                   </div>
                 </div>
-                <div className="flex gap-1 shrink-0">
-                  <Button 
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => openEditModal(device)}
-                    className="p-2 h-auto text-gray-400 hover:text-primary hover:bg-primary-light rounded-lg transition-all"
-                  >
-                    <Edit2 size={15} />
-                  </Button>
-                  <Button 
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setDeviceToDelete(device.id)}
-                    className="p-2 h-auto text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                  >
-                    <Trash2 size={15} />
-                  </Button>
-                </div>
+                {isAdmin && (
+                  <div className="flex gap-1 shrink-0">
+                    <Button 
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => openEditModal(device)}
+                      className="p-2 h-auto text-gray-400 hover:text-primary hover:bg-primary-light rounded-lg transition-all"
+                    >
+                      <Edit2 size={15} />
+                    </Button>
+                    <Button 
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setDeviceToDelete(device.id)}
+                      className="p-2 h-auto text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                    >
+                      <Trash2 size={15} />
+                    </Button>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-between mt-auto">

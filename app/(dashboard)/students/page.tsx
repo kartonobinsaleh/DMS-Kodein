@@ -14,8 +14,11 @@ import { ActionBar } from "@/components/ui/action-bar";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useSession } from "next-auth/react";
 
 export default function StudentsPage() {
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
   const { students, isLoading, fetchStudents, addStudent, deleteStudent } = useStudentStore();
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
@@ -117,13 +120,15 @@ export default function StudentsPage() {
               Cetak Massal
             </Button>
           </Link>
-          <Button
-            onClick={() => setShowAddModal(true)}
-            className="flex-1 sm:flex-initial h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-sm"
-            leftIcon={<Plus size={16} />}
-          >
-            Registrasi Siswa
-          </Button>
+          {isAdmin && (
+            <Button
+              onClick={() => setShowAddModal(true)}
+              className="flex-1 sm:flex-initial h-12 px-6 rounded-xl text-xs font-bold uppercase tracking-widest shrink-0 shadow-sm"
+              leftIcon={<Plus size={16} />}
+            >
+              Registrasi Siswa
+            </Button>
+          )}
         </div>
       </ActionBar>
 
@@ -170,22 +175,26 @@ export default function StudentsPage() {
                 >
                   <QrCode size={18} />
                 </Button>
-                <Button 
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => openEditModal(student)}
-                  className="h-10 w-10 p-0 text-gray-300 hover:text-primary hover:bg-primary-light rounded-xl transition-all"
-                >
-                  <Edit2 size={16} />
-                </Button>
-                <Button 
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setStudentToDelete(student.id)}
-                  className="h-10 w-10 p-0 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
-                >
-                  <Trash2 size={18} />
-                </Button>
+                {isAdmin && (
+                  <>
+                    <Button 
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => openEditModal(student)}
+                      className="h-10 w-10 p-0 text-gray-300 hover:text-primary hover:bg-primary-light rounded-xl transition-all"
+                    >
+                      <Edit2 size={16} />
+                    </Button>
+                    <Button 
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setStudentToDelete(student.id)}
+                      className="h-10 w-10 p-0 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                    >
+                      <Trash2 size={18} />
+                    </Button>
+                  </>
+                )}
               </div>
             </Card>
           ))
