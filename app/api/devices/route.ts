@@ -87,30 +87,41 @@ export async function PATCH(req: Request) {
       return new NextResponse("Missing device ID", { status: 400 });
     }
 
-    if (data.ownerId && data.ownerId.trim() !== "") {
-      const existingDevice = await prisma.device.findFirst({
-        where: {
-          ownerId: data.ownerId,
-          type: data.type,
-          NOT: {
-            id: id
-          }
-        }
-      });
+    // Validasi kepemilikan ganda (hanya jika ownerId ATAU type dikirim)
+    const ownerIdToSideCheck = data.ownerId;
+    
+    if (ownerIdToSideCheck && ownerIdToSideCheck.trim() !== "") {
+      // Ambil data perangkat saat ini untuk perbandingan type jika tidak dikirim
+      let typeToCheck = data.type;
+      if (!typeToCheck) {
+        const current = await prisma.device.findUnique({ where: { id }, select: { type: true } });
+        typeToCheck = current?.type;
+      }
 
-      if (existingDevice) {
-        logger.warn(`Update DITOLAK: Siswa ${data.ownerId} sudah punya ${data.type}`, existingDevice);
-        return new NextResponse(`Siswa ini sudah memiliki perangkat berjenis ${data.type} yang terdaftar.`, { status: 400 });
+      if (typeToCheck) {
+        const existingDevice = await prisma.device.findFirst({
+          where: {
+            ownerId: ownerIdToSideCheck,
+            type: typeToCheck,
+            NOT: { id }
+          }
+        });
+
+        if (existingDevice) {
+          logger.warn(`Update DITOLAK: Siswa ${ownerIdToSideCheck} sudah punya ${typeToCheck}`, existingDevice);
+          return new NextResponse(`Siswa ini sudah memiliki perangkat berjenis ${typeToCheck} yang terdaftar.`, { status: 400 });
+        }
       }
     }
 
+    const updateData: any = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.type !== undefined) updateData.type = data.type;
+    if (data.ownerId !== undefined) updateData.ownerId = data.ownerId || null;
+
     const device = await prisma.device.update({
       where: { id },
-      data: {
-        name: data.name,
-        type: data.type,
-        ownerId: data.ownerId || null,
-      },
+      data: updateData,
     });
 
     return NextResponse.json({
